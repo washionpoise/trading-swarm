@@ -99,7 +99,7 @@ trading_agents = [
       "timeframe" => "1m",
       "profit_target" => 0.001,
       "max_hold_time" => 300,
-      "volume_threshold" => 1000000
+      "volume_threshold" => 1_000_000
     }
   },
   %{
