@@ -93,5 +93,6 @@ config :trading_swarm, :nvidia_api,
 # Kraken API Configuration
 config :trading_swarm, :kraken_api,
   api_key: "gEwMvNBdcq+hhur8TIkM2Vf+8YXK5Q7BA3bkX9fLmFDHkSGQzB8OtgyJ",
-  api_secret: "bQA1v2Wtz7ioQDrn0TuSRy8/uNQbVuH6ouy1ofHeToR3zl38JDyTGMlrPTf28KiHw9AzBm5dzj1X7ItWUD0mpg==",
+  api_secret:
+    "bQA1v2Wtz7ioQDrn0TuSRy8/uNQbVuH6ouy1ofHeToR3zl38JDyTGMlrPTf28KiHw9AzBm5dzj1X7ItWUD0mpg==",
   base_url: "https://api.kraken.com/0"

@@ -1,7 +1,7 @@
 defmodule TradingSwarm.Brokers.BrokerManager do
   @moduledoc """
   Central manager for multiple trading platforms integration.
-  
+
   Supports:
   - Crypto: Kraken
   - Forex: Markets4you, TIOmarkets, RoboForex, Capital.com, Exness  
@@ -25,7 +25,7 @@ defmodule TradingSwarm.Brokers.BrokerManager do
       features: [:high_security, :regulated],
       client: KrakenClient
     },
-    
+
     # Forex
     markets4you: %{
       name: "Markets4you (Forex4you)",
@@ -35,7 +35,6 @@ defmodule TradingSwarm.Brokers.BrokerManager do
       features: [:cent_account, :low_spreads],
       client: Markets4youClient
     },
-    
     tiomarkets: %{
       name: "TIOmarkets",
       type: :forex,
@@ -44,16 +43,15 @@ defmodule TradingSwarm.Brokers.BrokerManager do
       features: [:multi_regulated, :unlimited_leverage],
       client: TIOmarketsClient
     },
-    
     roboforex: %{
-      name: "RoboForex", 
+      name: "RoboForex",
       type: :forex,
       min_deposit: 10,
       min_withdrawal: 10,
       features: [:copy_trading, :low_deposit],
       client: RoboForexClient
     },
-    
+
     # Binary Options
     pocket_option: %{
       name: "Pocket Option",
@@ -63,7 +61,6 @@ defmodule TradingSwarm.Brokers.BrokerManager do
       features: [:brazil_best, :variety_assets],
       client: PocketOptionClient
     },
-    
     olymp_trade: %{
       name: "Olymp Trade",
       type: :binary_options,
@@ -88,7 +85,7 @@ defmodule TradingSwarm.Brokers.BrokerManager do
 
   def init(_opts) do
     Logger.info("Starting Broker Manager with #{map_size(@broker_configs)} brokers")
-    
+
     state = %{
       brokers: @broker_configs,
       routing_rules: @default_routing_rules,
@@ -96,10 +93,10 @@ defmodule TradingSwarm.Brokers.BrokerManager do
       balance_cache: %{},
       last_update: DateTime.utc_now()
     }
-    
+
     # Start broker clients
     start_broker_clients()
-    
+
     {:ok, state}
   end
 
@@ -147,23 +144,23 @@ defmodule TradingSwarm.Brokers.BrokerManager do
   end
 
   def handle_call({:get_brokers, filter}, _from, state) when is_atom(filter) do
-    brokers = 
+    brokers =
       state.brokers
       |> Enum.filter(fn {_id, config} -> config.type == filter end)
       |> Enum.into(%{})
-    
+
     {:reply, brokers, state}
   end
 
   def handle_call({:get_brokers, strategy}, _from, state) when is_binary(strategy) do
     strategy_atom = String.to_existing_atom(strategy)
     broker_ids = Map.get(state.routing_rules, strategy_atom, [])
-    
-    brokers = 
+
+    brokers =
       broker_ids
       |> Enum.map(fn id -> {id, state.brokers[id]} end)
       |> Enum.into(%{})
-    
+
     {:reply, brokers, state}
   end
 
@@ -176,14 +173,14 @@ defmodule TradingSwarm.Brokers.BrokerManager do
     } = order_params
 
     optimal_broker = find_optimal_broker(order_params, state)
-    
+
     case optimal_broker do
       nil ->
         {:reply, {:error, :no_suitable_broker}, state}
-        
+
       broker_id ->
         broker_config = state.brokers[broker_id]
-        
+
         result = %{
           broker_id: broker_id,
           broker_name: broker_config.name,
@@ -193,7 +190,7 @@ defmodule TradingSwarm.Brokers.BrokerManager do
           features: broker_config.features,
           routed_at: DateTime.utc_now()
         }
-        
+
         Logger.info("Order routed to #{broker_config.name} for #{strategy_type} strategy")
         {:reply, {:ok, result}, state}
     end
@@ -205,25 +202,28 @@ defmodule TradingSwarm.Brokers.BrokerManager do
   end
 
   def handle_call({:check_withdrawal_limits, amount}, _from, state) do
-    limits_check = 
+    limits_check =
       state.brokers
       |> Enum.map(fn {broker_id, config} ->
-        can_withdraw = case config.min_withdrawal do
-          0 -> true
-          "varies_by_crypto" -> true  # Need specific crypto check
-          min_amount when is_number(min_amount) -> amount >= min_amount
-          _ -> false
-        end
-        
-        {broker_id, %{
-          broker_name: config.name,
-          min_withdrawal: config.min_withdrawal,
-          can_withdraw: can_withdraw,
-          deficit: if(can_withdraw, do: 0, else: config.min_withdrawal - amount)
-        }}
+        can_withdraw =
+          case config.min_withdrawal do
+            0 -> true
+            # Need specific crypto check
+            "varies_by_crypto" -> true
+            min_amount when is_number(min_amount) -> amount >= min_amount
+            _ -> false
+          end
+
+        {broker_id,
+         %{
+           broker_name: config.name,
+           min_withdrawal: config.min_withdrawal,
+           can_withdraw: can_withdraw,
+           deficit: if(can_withdraw, do: 0, else: config.min_withdrawal - amount)
+         }}
       end)
       |> Enum.into(%{})
-    
+
     {:reply, limits_check, state}
   end
 
@@ -235,7 +235,7 @@ defmodule TradingSwarm.Brokers.BrokerManager do
       by_currency: %{},
       last_updated: state.last_update
     }
-    
+
     {:reply, consolidated, state}
   end
 
@@ -248,19 +248,19 @@ defmodule TradingSwarm.Brokers.BrokerManager do
 
   defp find_optimal_broker(order_params, state) do
     %{strategy_type: strategy_type, amount: amount} = order_params
-    
+
     # Get brokers for strategy
     strategy_atom = String.to_existing_atom(strategy_type)
     candidate_brokers = Map.get(state.routing_rules, strategy_atom, [])
-    
+
     # Filter by minimum deposit
-    suitable_brokers = 
+    suitable_brokers =
       candidate_brokers
       |> Enum.filter(fn broker_id ->
         config = state.brokers[broker_id]
         amount >= config.min_deposit
       end)
-    
+
     # Select based on priority (first in list for now)
     List.first(suitable_brokers)
   end
