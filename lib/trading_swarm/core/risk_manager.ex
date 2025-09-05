@@ -155,7 +155,7 @@ defmodule TradingSwarm.Core.RiskManager do
   defp violates_correlation_limits?(trade, state) do
     # Get existing positions by symbol
     existing_positions = get_positions_by_symbol(state)
-    
+
     # If this is the first position or no correlation data, allow it
     if map_size(existing_positions) < 2 do
       false
@@ -163,11 +163,12 @@ defmodule TradingSwarm.Core.RiskManager do
       # Calculate correlation with existing positions
       trade_symbol = trade.symbol
       trade_exposure = trade.quantity * trade.price
-      
+
       # Check correlation with each existing position
       Enum.any?(existing_positions, fn {symbol, exposure} ->
-        symbol != trade_symbol and 
-        calculate_position_correlation(trade_symbol, symbol, trade_exposure, exposure) > @max_correlation
+        symbol != trade_symbol and
+          calculate_position_correlation(trade_symbol, symbol, trade_exposure, exposure) >
+            @max_correlation
       end)
     end
   end
@@ -180,7 +181,9 @@ defmodule TradingSwarm.Core.RiskManager do
       case limits do
         %{symbol: symbol, exposure: exposure} when exposure > 0 ->
           Map.update(acc, symbol, exposure, &(&1 + exposure))
-        _ -> acc
+
+        _ ->
+          acc
       end
     end)
   end
@@ -188,18 +191,19 @@ defmodule TradingSwarm.Core.RiskManager do
   defp calculate_position_correlation(symbol1, symbol2, exposure1, exposure2) do
     # Simplified correlation calculation based on symbol similarity and exposure
     # In production, this would use historical price correlation data
-    
+
     # Basic correlation based on symbol type and exposure ratio
     exposure_ratio = min(exposure1, exposure2) / max(exposure1, exposure2)
-    
+
     # Mock correlation - in production would fetch from market data
-    base_correlation = cond do
-      symbol1 == symbol2 -> 1.0
-      similar_symbols?(symbol1, symbol2) -> 0.8
-      same_sector?(symbol1, symbol2) -> 0.6
-      true -> 0.3
-    end
-    
+    base_correlation =
+      cond do
+        symbol1 == symbol2 -> 1.0
+        similar_symbols?(symbol1, symbol2) -> 0.8
+        same_sector?(symbol1, symbol2) -> 0.6
+        true -> 0.3
+      end
+
     # Adjust by exposure ratio
     base_correlation * exposure_ratio
   end
@@ -215,12 +219,12 @@ defmodule TradingSwarm.Core.RiskManager do
     # Simple sector classification
     crypto_symbols = ["BTC", "ETH", "ADA", "DOT", "LINK"]
     forex_symbols = ["USD", "EUR", "GBP", "JPY", "CHF"]
-    
+
     base1 = String.split(symbol1, "/") |> hd()
     base2 = String.split(symbol2, "/") |> hd()
-    
+
     (base1 in crypto_symbols and base2 in crypto_symbols) or
-    (base1 in forex_symbols and base2 in forex_symbols)
+      (base1 in forex_symbols and base2 in forex_symbols)
   end
 
   defp calculate_agent_limits(risk_tolerance) do
