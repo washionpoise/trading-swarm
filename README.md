@@ -40,7 +40,8 @@
 
 - **Digital Swarm Ecosystem** - Hundreds of autonomous trading agents operating as intelligent swarm
 - **Genetic Evolution** - Continuous strategy evolution every 5 minutes through genetic algorithms
-- **Multi-Species Strategies** - 5 distinct strategy species: Scalping, Trend Following, Mean Reversion, Arbitrage, Momentum
+- **Multi-Species Strategies** - 5 distinct strategy species: Scalping, Trend Following, Mean Reversion, Arbitrage,
+  Momentum
 - **Elite Preservation** - Top 10% performers preserved and used for breeding next generation
 - **Strategic Mutations** - Random mutations introduce novel trading approaches
 - **🆕 Real-time Competition** - Agents compete for resources and capital allocation
@@ -501,16 +502,20 @@ If you find this project helpful, please give it a star ⭐ to help others disco
 
 ## ⚠️ Risk Disclaimer
 
-**IMPORTANT**: TradingSwarm is an experimental system designed for educational and research purposes. Trading involves substantial risk and may result in significant financial loss. This software is provided "as is" without warranty of any kind.
+**IMPORTANT**: TradingSwarm is an experimental system designed for educational and research purposes. Trading involves
+substantial risk and may result in significant financial loss. This software is provided "as is" without warranty of any
+kind.
 
 **Risk Warnings**:
+
 - **Capital Risk** - Only use funds you can afford to lose completely
-- **Market Risk** - Past performance does not guarantee future results  
+- **Market Risk** - Past performance does not guarantee future results
 - **Technology Risk** - Software bugs may cause unexpected losses
 - **Regulatory Risk** - Ensure compliance with local trading regulations
 - **Liquidity Risk** - Market conditions may prevent order execution
 
 **Recommendations**:
+
 - Start with paper trading or minimal capital
 - Thoroughly test all strategies before live deployment
 - Monitor system performance continuously
