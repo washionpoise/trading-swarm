@@ -228,13 +228,8 @@ defmodule TradingSwarm.Brokers.BrokerManager do
   end
 
   def handle_call(:get_consolidated_balance, _from, state) do
-    # TODO: Implement actual balance fetching from all brokers
-    consolidated = %{
-      total_balance: Decimal.new("0.00"),
-      by_broker: %{},
-      by_currency: %{},
-      last_updated: state.last_update
-    }
+    # Fetch balances from all active brokers
+    consolidated = fetch_all_balances(state)
 
     {:reply, consolidated, state}
   end
@@ -242,7 +237,8 @@ defmodule TradingSwarm.Brokers.BrokerManager do
   # Private Functions
 
   defp start_broker_clients() do
-    # TODO: Start supervision tree for broker clients
+    # Start broker clients based on available credentials
+    start_available_clients()
     Logger.info("Broker clients initialization completed")
   end
 
