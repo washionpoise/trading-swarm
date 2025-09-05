@@ -17,7 +17,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
 
   import TradingSwarmWeb.DashboardComponents
   import TradingSwarmWeb.TradingComponents
-  import TradingSwarmWeb.ChartComponents
+  # import TradingSwarmWeb.ChartComponents  # Currently unused
 
   @impl true
   def mount(_params, _session, socket) do
