@@ -287,12 +287,11 @@ defmodule TradingSwarmWeb.RiskController do
           |> put_flash(:info, "Risk limits updated successfully")
           |> redirect(to: ~p"/risk/limits")
 
-        {:error, reason} ->
-          Logger.warning("Failed to update risk limits: #{inspect(reason)}")
-
-          conn
-          |> put_flash(:error, "Failed to update risk limits")
-          |> redirect(to: ~p"/risk/limits")
+        # Note: Currently Risk.update_limits only returns {:ok, _}
+        # This clause is kept for future error handling if needed
+        # {:error, reason} ->
+        #   Logger.warning("Failed to update risk limits: #{inspect(reason)}")
+        #   conn |> put_flash(:error, "Failed to update risk limits") |> redirect(to: ~p"/risk/limits")
       end
     rescue
       error ->
