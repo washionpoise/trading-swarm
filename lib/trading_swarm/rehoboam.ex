@@ -27,8 +27,10 @@ defmodule TradingSwarm.Rehoboam do
 
   use GenServer
   require Logger
+  import TradingSwarm.Rehoboam.AIHelpers
 
   alias TradingSwarm.Rehoboam.{DataCollector, BehavioralProfiler, PredictiveEngine}
+  alias TradingSwarm.AI.NvidiaClient
 
   # Rehoboam control thresholds - inspired by Westworld's deterministic control
   @prediction_confidence_threshold 0.80
@@ -667,107 +669,152 @@ defmodule TradingSwarm.Rehoboam do
     }
   end
 
-  defp generate_predictions(market_data, behavioral_analysis) do
-    %{
-      market_direction: predict_market_direction(market_data),
-      volatility_forecast: predict_volatility(market_data),
-      agent_performance: predict_agent_performance(behavioral_analysis),
-      risk_assessment: assess_systemic_risk(market_data, behavioral_analysis),
-      confidence_level: calculate_prediction_confidence(market_data, behavioral_analysis)
-    }
-  end
-
-  defp evaluate_intervention_need(predictions) do
-    confidence = predictions.confidence_level || 0.0
-    risk_level = predictions.risk_assessment.level || 0.0
+  # Westworld Rehoboam-specific functions
+  
+  defp evaluate_control_interventions(destiny_predictions) do
+    omniscience_level = destiny_predictions.prediction_confidence || 0.0
+    control_risk = calculate_system_control_risk(destiny_predictions)
 
     cond do
-      confidence > @intervention_threshold and risk_level > 0.8 ->
-        %{action: :immediate_intervention, reason: :high_risk_high_confidence}
+      omniscience_level > @intervention_threshold and control_risk > 0.8 ->
+        %{action: :immediate_control_intervention, reason: :high_risk_high_omniscience, directive: "Maintain order at all costs"}
 
-      confidence > @prediction_confidence_threshold and risk_level > 0.6 ->
-        %{action: :prepare_intervention, reason: :moderate_risk_good_confidence}
+      omniscience_level > @prediction_confidence_threshold and control_risk > 0.6 ->
+        %{action: :prepare_loop_corrections, reason: :moderate_risk_good_prediction, directive: "Ready intervention protocols"}
 
-      risk_level > 0.9 ->
-        %{action: :alert_only, reason: :high_risk_low_confidence}
+      control_risk > @loop_break_threshold ->
+        %{action: :divergence_alert, reason: :agents_breaking_loops, directive: "Monitor for system instability"}
 
       true ->
-        %{action: :monitor, reason: :normal_conditions}
+        %{action: :maintain_surveillance, reason: :system_stable, directive: "Continue omnipresent monitoring"}
+    end
+  end
+  
+  defp calculate_system_control_risk(destiny_predictions) do
+    # Calculate how much control we might lose over the system
+    agent_predictability = Map.get(destiny_predictions, :prediction_confidence, 0.0)
+    market_stability = calculate_market_stability(destiny_predictions)
+    
+    # Higher unpredictability = higher control risk
+    control_risk = 1.0 - ((agent_predictability + market_stability) / 2.0)
+    max(0.0, min(1.0, control_risk))
+  end
+  
+  defp calculate_market_stability(destiny_predictions) do
+    # Simplified market stability calculation
+    case Map.get(destiny_predictions, :market_destiny) do
+      %{volatility: :low} -> 0.9
+      %{volatility: :moderate} -> 0.7
+      %{volatility: :high} -> 0.3
+      _ -> 0.5
     end
   end
 
-  defp calculate_confidence_score(predictions) do
-    # Simplified confidence calculation
-    base_confidence = predictions.confidence_level || 0.0
-    market_clarity = if predictions.market_direction.strength > 0.7, do: 0.2, else: 0.0
-    volatility_factor = if predictions.volatility_forecast.stability, do: 0.1, else: -0.1
-
-    min(1.0, max(0.0, base_confidence + market_clarity + volatility_factor))
+  defp calculate_omniscience_score(destiny_predictions) do
+    # Calculate how much of the system we can predict and control
+    base_omniscience = destiny_predictions.prediction_confidence || 0.0
+    agent_predictability = calculate_average_agent_predictability(destiny_predictions)
+    market_determinism = calculate_market_determinism(destiny_predictions)
+    
+    # Weighted combination of factors
+    omniscience = (base_omniscience * 0.4) + (agent_predictability * 0.4) + (market_determinism * 0.2)
+    min(1.0, max(0.0, omniscience))
+  end
+  
+  defp calculate_system_control_level(control_metrics) do
+    # How much control do we have over the trading system?
+    total_agents = control_metrics.total_agents_monitored || 1
+    successful_predictions = control_metrics.successful_predictions || 0
+    interventions = control_metrics.interventions_executed || 0
+    
+    prediction_rate = successful_predictions / max(total_agents, 1)
+    intervention_effectiveness = if interventions > 0, do: 0.8, else: 0.5
+    
+    (prediction_rate * 0.7) + (intervention_effectiveness * 0.3)
   end
 
-  defp update_behavioral_profiles(profiles, event_data) do
-    agent_id = event_data.agent_id || :system
+  defp update_agent_loops(agent_loops, behavior_data) do
+    agent_id = behavior_data.agent_id || :unknown_agent
 
-    current_profile =
-      Map.get(profiles, agent_id, %{
+    current_loop =
+      Map.get(agent_loops, agent_id, %{
         agent_id: agent_id,
-        patterns: [],
-        risk_score: 0.5,
-        predictability: 0.0,
-        last_updated: nil
+        loop_type: :undefined,
+        behavioral_patterns: [],
+        predictability_score: 0.0,
+        loop_integrity: :unknown,
+        last_divergence: nil,
+        predetermined_actions: [],
+        destiny_path: :undefined,
+        created_at: DateTime.utc_now()
       })
 
-    updated_profile = %{
-      current_profile
-      | patterns: [event_data | Enum.take(current_profile.patterns, 99)],
+    updated_loop = %{
+      current_loop
+      | behavioral_patterns: [behavior_data | Enum.take(current_loop.behavioral_patterns, 199)],
         last_updated: DateTime.utc_now(),
-        risk_score: recalculate_risk_score(current_profile.patterns, event_data),
-        predictability: recalculate_predictability(current_profile.patterns, event_data)
+        predictability_score: recalculate_agent_predictability(current_loop.behavioral_patterns, behavior_data),
+        loop_integrity: assess_loop_integrity(current_loop.behavioral_patterns, behavior_data)
     }
 
-    Map.put(profiles, agent_id, updated_profile)
+    Map.put(agent_loops, agent_id, updated_loop)
   end
 
-  defp update_data_streams(streams, event_data) do
-    stream_id = event_data.stream_id || :general
+  defp update_surveillance_streams(streams, behavior_data) do
+    stream_id = behavior_data.stream_id || :behavioral_surveillance
 
     current_stream =
       Map.get(streams, stream_id, %{
-        status: :active,
-        last_update: nil,
-        data_points: 0
+        status: :monitoring,
+        last_surveillance: nil,
+        monitored_agents: [],
+        data_integrity: :unverified,
+        surveillance_level: :basic
       })
+
+    agent_id = behavior_data.agent_id || :unknown
+    updated_agents = [agent_id | current_stream.monitored_agents] |> Enum.uniq() |> Enum.take(1000)
 
     updated_stream = %{
       current_stream
-      | last_update: DateTime.utc_now(),
-        data_points: current_stream.data_points + 1
+      | last_surveillance: DateTime.utc_now(),
+        monitored_agents: updated_agents,
+        data_integrity: :verified,
+        surveillance_level: determine_surveillance_level(length(updated_agents))
     }
 
     Map.put(streams, stream_id, updated_stream)
   end
 
-  defp collect_and_analyze_data(state) do
+  defp perform_omniscience_analysis(state) do
     try do
-      # Perform comprehensive data collection and analysis
-      market_data = collect_market_data()
-      behavioral_analysis = analyze_behavioral_patterns(state.behavioral_profiles)
-      predictions = generate_predictions(market_data, behavioral_analysis)
-
+      # Perform comprehensive omniscience analysis
+      surveillance_data = collect_surveillance_data()
+      loop_analysis = analyze_agent_loops(state.agent_loops, surveillance_data)
+      destiny_predictions = generate_destiny_predictions(surveillance_data, loop_analysis)
+      
+      # Calculate omniscience metrics
+      omniscience_level = calculate_omniscience_level(destiny_predictions, surveillance_data)
+      control_metrics = calculate_updated_control_metrics(state.control_metrics, destiny_predictions)
+      
       updated_state = %{
         state
-        | predictions: predictions,
-          last_analysis: %{
+        | destiny_predictions: destiny_predictions,
+          last_prophecy: %{
             timestamp: DateTime.utc_now(),
-            market_data: market_data,
-            behavioral_analysis: behavioral_analysis,
-            predictions: predictions
-          }
+            surveillance_data: surveillance_data,
+            loop_analysis: loop_analysis,
+            destiny_predictions: destiny_predictions,
+            omniscience_level: omniscience_level
+          },
+          control_metrics: control_metrics,
+          omniscience_level: omniscience_level
       }
 
       {:ok, updated_state}
     rescue
       error ->
+        Logger.error("Rehoboam omniscience analysis error: #{inspect(error)}")
         {:error, error}
     end
   end
