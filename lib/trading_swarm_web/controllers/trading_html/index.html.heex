@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
-    <!-- Header -->
+<!-- Header -->
     <div class="mb-8">
       <div class="flex items-center justify-between">
         <div>
@@ -10,28 +10,26 @@
             Monitor and analyze trading operations across all agents
           </p>
         </div>
-        
+
         <div class="flex space-x-3">
-          <.link 
-            navigate={~p"/trading/statistics"} 
+          <.link
+            navigate={~p"/trading/statistics"}
             class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
           >
-            <.icon name="hero-chart-bar" class="w-4 h-4 mr-2" />
-            Statistics
+            <.icon name="hero-chart-bar" class="w-4 h-4 mr-2" /> Statistics
           </.link>
-          
-          <.link 
-            navigate={~p"/trading/export"} 
+
+          <.link
+            navigate={~p"/trading/export"}
             class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
           >
-            <.icon name="hero-arrow-down-tray" class="w-4 h-4 mr-2" />
-            Export
+            <.icon name="hero-arrow-down-tray" class="w-4 h-4 mr-2" /> Export
           </.link>
         </div>
       </div>
     </div>
-
-    <!-- Trading Summary Cards -->
+    
+<!-- Trading Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
@@ -40,11 +38,11 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Trades</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.total_trades %></p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{@stats.total_trades}</p>
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
           <div class="flex-shrink-0">
@@ -52,11 +50,13 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Executed</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.executed_trades %></p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {@stats.executed_trades}
+            </p>
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
           <div class="flex-shrink-0">
@@ -64,11 +64,13 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total P&L</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">$<%= Decimal.to_string(@stats.total_pnl, :normal) %></p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              ${Decimal.to_string(@stats.total_pnl, :normal)}
+            </p>
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
           <div class="flex-shrink-0">
@@ -76,18 +78,20 @@
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Win Rate</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= :erlang.float_to_binary(@stats.win_rate * 100, decimals: 1) %>%</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {:erlang.float_to_binary(@stats.win_rate * 100, decimals: 1)}%
+            </p>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Trades Table -->
+    
+<!-- Trades Table -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Trades</h2>
       </div>
-      
+
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead class="bg-gray-50 dark:bg-gray-900">
@@ -118,7 +122,7 @@
               </th>
             </tr>
           </thead>
-          
+
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             <%= if @trades.entries == [] do %>
               <tr>
@@ -132,32 +136,38 @@
               <%= for trade <- @trades.entries do %>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    <%= Calendar.strftime(trade.executed_at, "%m/%d %H:%M") %>
+                    {Calendar.strftime(trade.executed_at, "%m/%d %H:%M")}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    <%= trade.symbol %>
+                    {trade.symbol}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <span class={[
                       "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
-                      if(trade.side == :buy, do: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200", else: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200")
+                      if(trade.side == :buy,
+                        do: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                        else: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                      )
                     ]}>
-                      <%= String.upcase(Atom.to_string(trade.side)) %>
+                      {String.upcase(Atom.to_string(trade.side))}
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    <%= Decimal.to_string(trade.quantity, :normal) %>
+                    {Decimal.to_string(trade.quantity, :normal)}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    $<%= Decimal.to_string(trade.price, :normal) %>
+                    ${Decimal.to_string(trade.price, :normal)}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm">
                     <%= if trade.pnl do %>
                       <span class={[
                         "font-medium",
-                        if(Decimal.positive?(trade.pnl), do: "text-green-600", else: "text-red-600")
+                        if(Decimal.positive?(trade.pnl),
+                          do: "text-green-600",
+                          else: "text-red-600"
+                        )
                       ]}>
-                        $<%= Decimal.to_string(trade.pnl, :normal) %>
+                        ${Decimal.to_string(trade.pnl, :normal)}
                       </span>
                     <% else %>
                       <span class="text-gray-400">-</span>
@@ -167,23 +177,32 @@
                     <span class={[
                       "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
                       case trade.status do
-                        :executed -> "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        :pending -> "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                        :cancelled -> "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
-                        :failed -> "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                        _ -> "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                        :executed ->
+                          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+
+                        :pending ->
+                          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+
+                        :cancelled ->
+                          "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+
+                        :failed ->
+                          "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+
+                        _ ->
+                          "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
                       end
                     ]}>
-                      <%= String.upcase(Atom.to_string(trade.status)) %>
+                      {String.upcase(Atom.to_string(trade.status))}
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                     <%= if trade.agent do %>
-                      <.link 
-                        navigate={~p"/trading/by_agent/#{trade.agent.id}"} 
+                      <.link
+                        navigate={~p"/trading/by_agent/#{trade.agent.id}"}
                         class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                       >
-                        <%= trade.agent.name %>
+                        {trade.agent.name}
                       </.link>
                     <% else %>
                       <span class="text-gray-400">Unknown</span>
@@ -197,11 +216,14 @@
       </div>
     </div>
     
-    <!-- Pagination if needed -->
+<!-- Pagination if needed -->
     <%= if @trades.total_entries > 0 do %>
       <div class="mt-6 flex items-center justify-between">
         <div class="text-sm text-gray-700 dark:text-gray-300">
-          Showing <%= (@current_page - 1) * 50 + 1 %> to <%= min(@current_page * 50, @trades.total_entries) %> of <%= @trades.total_entries %> trades
+          Showing {(@current_page - 1) * 50 + 1} to {min(
+            @current_page * 50,
+            @trades.total_entries
+          )} of {@trades.total_entries} trades
         </div>
       </div>
     <% end %>

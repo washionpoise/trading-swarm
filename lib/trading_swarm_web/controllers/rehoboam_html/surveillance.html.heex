@@ -1,34 +1,35 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
-    <!-- Header -->
+<!-- Header -->
     <div class="mb-8">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Rehoboam AI Surveillance</h1>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            Rehoboam AI Surveillance
+          </h1>
           <p class="mt-2 text-gray-600 dark:text-gray-400">
             Omnipresent monitoring and behavioral analysis of trading agents
           </p>
         </div>
-        
+
         <div class="flex items-center space-x-3">
           <div class="flex items-center space-x-2">
             <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <span class="text-sm text-gray-600 dark:text-gray-400">System Active</span>
           </div>
-          
-          <.link 
-            navigate={~p"/app/surveillance"} 
+
+          <.link
+            navigate={~p"/app/surveillance"}
             class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
           >
-            <.icon name="hero-eye" class="w-4 h-4 mr-2" />
-            Live View
+            <.icon name="hero-eye" class="w-4 h-4 mr-2" /> Live View
           </.link>
         </div>
       </div>
     </div>
-
-    <!-- System Status Cards -->
+    
+<!-- System Status Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <div class="bg-gradient-to-r from-orange-500 to-red-500 rounded-lg p-6 text-white">
         <div class="flex items-center">
@@ -39,7 +40,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
           <.icon name="hero-users" class="w-8 h-8 text-blue-500 mr-3" />
@@ -49,7 +50,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
           <.icon name="hero-chart-pie" class="w-8 h-8 text-purple-500 mr-3" />
@@ -59,7 +60,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div class="flex items-center">
           <.icon name="hero-exclamation-triangle" class="w-8 h-8 text-yellow-500 mr-3" />
@@ -70,33 +71,33 @@
         </div>
       </div>
     </div>
-
-    <!-- AI Insights Section -->
+    
+<!-- AI Insights Section -->
     <div class="bg-gradient-to-r from-orange-500 via-yellow-500 to-red-500 rounded-2xl p-8 text-white mb-8">
       <div class="flex items-start">
         <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mr-6 backdrop-blur-sm">
           <.icon name="hero-cpu-chip-solid" class="w-10 h-10 text-white" />
         </div>
-        
+
         <div class="flex-1">
           <h2 class="text-2xl font-bold mb-4">Rehoboam AI Analysis</h2>
           <p class="text-lg opacity-90 mb-6">
-            "Market patterns indicate increased volatility in the next 4 hours. Agent behavioral loops show 
-            coordination patterns suggesting optimal arbitrage opportunities. Recommendation: Increase position 
+            "Market patterns indicate increased volatility in the next 4 hours. Agent behavioral loops show
+            coordination patterns suggesting optimal arbitrage opportunities. Recommendation: Increase position
             sizes for Alpha and Gamma agents by 15%."
           </p>
-          
+
           <div class="flex items-center space-x-6">
             <div class="flex items-center">
               <.icon name="hero-clock" class="w-5 h-5 mr-2" />
               <span class="text-sm opacity-90">Generated 2 minutes ago</span>
             </div>
-            
+
             <div class="flex items-center">
               <.icon name="hero-chart-bar" class="w-5 h-5 mr-2" />
               <span class="text-sm opacity-90">Confidence: 94.7%</span>
             </div>
-            
+
             <div class="flex items-center">
               <.icon name="hero-shield-check" class="w-5 h-5 mr-2" />
               <span class="text-sm opacity-90">Risk Level: Low</span>
@@ -105,14 +106,18 @@
         </div>
       </div>
     </div>
-
-    <!-- Recent Interventions -->
+    
+<!-- Recent Interventions -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden mb-8">
       <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent AI Interventions</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">Automated adjustments to maintain optimal performance</p>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Recent AI Interventions
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Automated adjustments to maintain optimal performance
+        </p>
       </div>
-      
+
       <div class="divide-y divide-gray-200 dark:divide-gray-700">
         <div class="p-6">
           <div class="flex items-start">
@@ -121,10 +126,12 @@
                 <.icon name="hero-check" class="w-4 h-4 text-green-600 dark:text-green-400" />
               </div>
             </div>
-            
+
             <div class="ml-4 flex-1">
               <div class="flex items-center justify-between">
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">Risk Reduction Applied</h4>
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
+                  Risk Reduction Applied
+                </h4>
                 <span class="text-xs text-gray-500 dark:text-gray-400">5 minutes ago</span>
               </div>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -139,18 +146,23 @@
             </div>
           </div>
         </div>
-        
+
         <div class="p-6">
           <div class="flex items-start">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
-                <.icon name="hero-exclamation-triangle" class="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                <.icon
+                  name="hero-exclamation-triangle"
+                  class="w-4 h-4 text-yellow-600 dark:text-yellow-400"
+                />
               </div>
             </div>
-            
+
             <div class="ml-4 flex-1">
               <div class="flex items-center justify-between">
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">Behavioral Adjustment</h4>
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
+                  Behavioral Adjustment
+                </h4>
                 <span class="text-xs text-gray-500 dark:text-gray-400">12 minutes ago</span>
               </div>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -167,38 +179,42 @@
         </div>
       </div>
     </div>
-
-    <!-- Performance Metrics -->
+    
+<!-- Performance Metrics -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Performance</h3>
-        
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          System Performance
+        </h3>
+
         <div class="space-y-4">
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-600 dark:text-gray-400">Prediction Accuracy</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">94.7%</span>
           </div>
-          
+
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-600 dark:text-gray-400">Successful Interventions</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">847/892</span>
           </div>
-          
+
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-600 dark:text-gray-400">System Uptime</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">99.97%</span>
           </div>
-          
+
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-600 dark:text-gray-400">Response Time</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">0.23s</span>
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Market Analysis Status</h3>
-        
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Market Analysis Status
+        </h3>
+
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <span class="text-sm text-gray-600 dark:text-gray-400">Data Sources Active</span>
@@ -207,17 +223,17 @@
               <span class="text-sm font-medium text-gray-900 dark:text-white">8/8</span>
             </div>
           </div>
-          
+
           <div class="flex items-center justify-between">
             <span class="text-sm text-gray-600 dark:text-gray-400">Market Coverage</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">Global</span>
           </div>
-          
+
           <div class="flex items-center justify-between">
             <span class="text-sm text-gray-600 dark:text-gray-400">Processing Queue</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">3 pending</span>
           </div>
-          
+
           <div class="flex items-center justify-between">
             <span class="text-sm text-gray-600 dark:text-gray-400">Last Market Scan</span>
             <span class="text-sm font-medium text-gray-900 dark:text-white">30s ago</span>

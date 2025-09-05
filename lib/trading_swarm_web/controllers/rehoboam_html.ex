@@ -1,7 +1,7 @@
 defmodule TradingSwarmWeb.RehoboamHTML do
   @moduledoc """
   HTML templates and rendering functions for RehoboamController.
-  
+
   Provides templates for:
   - Market destiny predictions
   - AI surveillance dashboard
