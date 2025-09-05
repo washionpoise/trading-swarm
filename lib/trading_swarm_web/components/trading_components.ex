@@ -179,7 +179,7 @@ defmodule TradingSwarmWeb.TradingComponents do
     Number.Currency.number_to_currency(value)
   end
 
-  defp format_currency(value), do: "$0.00"
+  defp format_currency(_value), do: "$0.00"
 
   defp format_change(change) when is_number(change) do
     sign = if change >= 0, do: "+", else: ""
@@ -188,7 +188,9 @@ defmodule TradingSwarmWeb.TradingComponents do
 
   defp format_change(_), do: ""
 
-  defp format_number(value, decimals \\ 0) when is_number(value) do
+  defp format_number(value, decimals \\ 0)
+  
+  defp format_number(value, decimals) when is_number(value) do
     Number.Delimit.number_to_delimited(value, precision: decimals)
   end
 
