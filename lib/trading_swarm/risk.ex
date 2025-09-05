@@ -13,7 +13,8 @@ defmodule TradingSwarm.Risk do
   alias TradingSwarm.Repo
 
   alias TradingSwarm.Risk.RiskEvent
-  alias TradingSwarm.Trading.{TradingAgent, Trade}
+  alias TradingSwarm.Trading.Trade
+  # alias TradingSwarm.Trading.TradingAgent  # Currently unused
 
   ## Risk Event functions
 
