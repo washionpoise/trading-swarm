@@ -102,14 +102,14 @@ defmodule TradingSwarm.Core.RiskManager do
 
   @impl true
   def handle_info({:evaluate_risk}, state) do
-    Logger.info("Avaliando métricas de risco do sistema")
+    Logger.info("Evaluating system risk metrics")
 
-    # Log métricas principais
+    # Log main metrics
     Logger.info(
-      "Drawdown atual: #{Float.round(state.drawdown_tracking.current_drawdown * 100, 2)}%"
+      "Current drawdown: #{Float.round(state.drawdown_tracking.current_drawdown * 100, 2)}%"
     )
 
-    Logger.info("Exposição total: $#{Decimal.to_float(state.total_exposure)}")
+    Logger.info("Total exposure: $#{Decimal.to_float(state.total_exposure)}")
 
     schedule_risk_evaluation()
     {:noreply, state}
@@ -292,13 +292,13 @@ defmodule TradingSwarm.Core.RiskManager do
 
     cond do
       current_dd >= state.alert_levels.emergency ->
-        {:emergency, "Drawdown crítico: #{Float.round(current_dd * 100, 2)}%"}
+        {:emergency, "Critical drawdown: #{Float.round(current_dd * 100, 2)}%"}
 
       current_dd >= state.alert_levels.critical ->
-        {:warning, :critical, "Drawdown crítico: #{Float.round(current_dd * 100, 2)}%"}
+        {:warning, :critical, "Critical drawdown: #{Float.round(current_dd * 100, 2)}%"}
 
       current_dd >= state.alert_levels.warning ->
-        {:warning, :warning, "Drawdown de aviso: #{Float.round(current_dd * 100, 2)}%"}
+        {:warning, :warning, "Warning drawdown: #{Float.round(current_dd * 100, 2)}%"}
 
       true ->
         {:ok, :normal}
@@ -324,7 +324,7 @@ defmodule TradingSwarm.Core.RiskManager do
       {:risk_alert, level, message}
     )
 
-    Logger.warning("ALERTA DE RISCO [#{level}]: #{message}")
+    Logger.warning("RISK ALERT [#{level}]: #{message}")
   end
 
   defp initialize_risk_metrics do
@@ -343,7 +343,7 @@ defmodule TradingSwarm.Core.RiskManager do
     Process.send_after(self(), {:evaluate_risk}, 60_000)
   end
 
-  # API Pública
+  # Public API
 
   def validate_trades(trades, agent_limits) when is_list(trades) do
     validated =
