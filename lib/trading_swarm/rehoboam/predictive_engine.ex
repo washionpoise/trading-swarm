@@ -360,7 +360,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
         parameters: %{
           indicators: [:sma, :ema, :rsi, :macd, :bollinger_bands],
           lookback_periods: [5, 10, 20, 50],
-          weight: @model_weights.technical_analysis
+          weight: 0.25  # Legacy technical analysis weight
         },
         accuracy: 0.6,
         last_update: DateTime.utc_now()
