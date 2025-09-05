@@ -142,7 +142,7 @@ defmodule TradingSwarmWeb.AgentsLive.Index do
           trade_count: 24,
           win_rate: 0.75,
           strategy: "momentum",
-          created_at: DateTime.utc_now() |> DateTime.add(-86400, :second)
+          created_at: DateTime.utc_now() |> DateTime.add(-86_400, :second)
         },
         %{
           id: "agent_002",
