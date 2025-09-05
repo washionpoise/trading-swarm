@@ -393,34 +393,48 @@ defmodule TradingSwarmWeb.API.TradingController do
 
   defp build_trades_query(status_filter, agent_filter, symbol_filter, sort_by) do
     import Ecto.Query
-    query = from(t in Trade, preload: [:agent])
+    
+    from(t in Trade, preload: [:agent])
+    |> apply_api_status_filter(status_filter)
+    |> apply_api_agent_filter(agent_filter)
+    |> apply_api_symbol_filter(symbol_filter)
+    |> apply_api_trades_sort(sort_by)
+  end
 
-    # Apply status filter
-    query =
-      if status_filter && status_filter != "" do
-        from(t in query, where: t.status == ^status_filter)
-      else
-        query
-      end
+  defp apply_api_status_filter(query, status_filter) do
+    import Ecto.Query
+    
+    if status_filter && status_filter != "" do
+      from(t in query, where: t.status == ^status_filter)
+    else
+      query
+    end
+  end
 
-    # Apply agent filter
-    query =
-      if agent_filter && agent_filter != "" do
-        agent_id = String.to_integer(agent_filter)
-        from(t in query, where: t.agent_id == ^agent_id)
-      else
-        query
-      end
+  defp apply_api_agent_filter(query, agent_filter) do
+    import Ecto.Query
+    
+    if agent_filter && agent_filter != "" do
+      agent_id = String.to_integer(agent_filter)
+      from(t in query, where: t.agent_id == ^agent_id)
+    else
+      query
+    end
+  end
 
-    # Apply symbol filter
-    query =
-      if symbol_filter && symbol_filter != "" do
-        from(t in query, where: t.symbol == ^symbol_filter)
-      else
-        query
-      end
+  defp apply_api_symbol_filter(query, symbol_filter) do
+    import Ecto.Query
+    
+    if symbol_filter && symbol_filter != "" do
+      from(t in query, where: t.symbol == ^symbol_filter)
+    else
+      query
+    end
+  end
 
-    # Apply sorting
+  defp apply_api_trades_sort(query, sort_by) do
+    import Ecto.Query
+    
     case sort_by do
       "executed_at" -> from(t in query, order_by: [desc: t.executed_at])
       "symbol" -> from(t in query, order_by: [asc: t.symbol, desc: t.executed_at])
