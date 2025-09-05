@@ -5,6 +5,8 @@ defmodule TradingSwarm.Application do
 
   use Application
 
+  alias TradingSwarm.Core.SwarmSupervisor
+
   @impl true
   def start(_type, _args) do
     children = [
@@ -17,7 +19,7 @@ defmodule TradingSwarm.Application do
       {Registry, keys: :unique, name: TradingSwarm.AgentRegistry},
       TradingSwarm.Core.RiskManager,
       TradingSwarm.AI.ModelCoordinator,
-      TradingSwarm.Core.SwarmSupervisor,
+      SwarmSupervisor,
 
       # Start to serve requests, typically the last entry
       TradingSwarmWeb.Endpoint
@@ -33,7 +35,7 @@ defmodule TradingSwarm.Application do
         Task.start(fn ->
           # Wait for components to initialize
           Process.sleep(1000)
-          TradingSwarm.Core.SwarmSupervisor.start_initial_population()
+          SwarmSupervisor.start_initial_population()
         end)
 
         {:ok, pid}
