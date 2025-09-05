@@ -276,9 +276,9 @@ defmodule TradingSwarmWeb.TradingLive.Index do
     # Mock volume chart data
     [
       {"BTC-USD", 125_000},
-      {"ETH-USD", 89000},
-      {"ADA-USD", 45000},
-      {"SOL-USD", 32000}
+      {"ETH-USD", 89_000},
+      {"ADA-USD", 45_000},
+      {"SOL-USD", 32_000}
     ]
   end
 

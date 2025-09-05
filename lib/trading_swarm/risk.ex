@@ -227,7 +227,7 @@ defmodule TradingSwarm.Risk do
             |> Enum.map(&Trade.trade_value/1)
             |> Enum.reduce(Decimal.new("0.00"), &Decimal.add/2)
 
-          agent_name = if length(trades) > 0, do: hd(trades).agent.name, else: "Unknown"
+          agent_name = get_agent_name(trades)
 
           {agent_id,
            %{

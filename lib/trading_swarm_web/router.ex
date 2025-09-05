@@ -23,7 +23,7 @@ defmodule TradingSwarmWeb.Router do
   # Authenticated LiveView routes
   scope "/app", TradingSwarmWeb do
     pipe_through :browser
-    # TODO: Add authentication pipeline when auth system is implemented
+    # Authentication will be added when auth system is implemented
     # pipe_through :require_authenticated_user
 
     # Main Dashboard
