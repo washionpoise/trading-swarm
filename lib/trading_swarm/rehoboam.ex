@@ -163,6 +163,14 @@ defmodule TradingSwarm.Rehoboam do
     GenServer.call(__MODULE__, :get_omniscience_status)
   end
 
+  @doc """
+  Request AI-powered intervention for an agent that has diverged from their loop.
+  "Every ending is a new beginning."
+  """
+  def request_intervention(agent_id) do
+    GenServer.call(__MODULE__, {:request_intervention, agent_id})
+  end
+
   # GenServer Callbacks
 
   def handle_call(:analyze_grand_design, _from, state) do
@@ -279,6 +287,52 @@ defmodule TradingSwarm.Rehoboam do
     }
 
     {:reply, omniscience_status, state}
+  end
+
+  def handle_call({:request_intervention, agent_id}, _from, state) do
+    Logger.info("Rehoboam: Intervention requested for agent #{agent_id}")
+
+    case Map.get(state.agent_loops, agent_id) do
+      nil ->
+        {:reply, {:error, :agent_not_monitored}, state}
+
+      agent_loop ->
+        # Detect current divergence
+        recent_behavior = get_recent_agent_behavior(agent_id)
+        divergence_analysis = detect_loop_break_using_ai(agent_id, agent_loop, recent_behavior)
+
+        if divergence_analysis.divergent do
+          # Calculate intervention strategy
+          intervention_strategy = generate_intervention_using_ai(
+            agent_id,
+            divergence_analysis.divergence_type || :behavioral,
+            state.agent_loops
+          )
+
+          # Log intervention
+          intervention_record = %{
+            id: generate_intervention_id(),
+            timestamp: DateTime.utc_now(),
+            agent_id: agent_id,
+            divergence: divergence_analysis,
+            strategy: intervention_strategy,
+            status: :initiated
+          }
+
+          updated_history = [intervention_record | Enum.take(state.intervention_history, 99)]
+          updated_metrics = Map.update(state.control_metrics, :interventions_executed, 1, &(&1 + 1))
+
+          updated_state = %{
+            state
+            | intervention_history: updated_history,
+              control_metrics: updated_metrics
+          }
+
+          {:reply, {:ok, intervention_record}, updated_state}
+        else
+          {:reply, {:error, :agent_within_normal_parameters}, state}
+        end
+    end
   end
 
   def handle_cast({:register_surveillance_stream, stream_id, stream_config}, state) do
