@@ -55,38 +55,7 @@ defmodule TradingSwarmWeb.TradingComponents do
   attr :class, :string, default: ""
 
   def status_badge(assigns) do
-    {bg_class, text_class} =
-      case assigns.status do
-        :active ->
-          {"bg-green-100 dark:bg-green-900", "text-green-800 dark:text-green-200"}
-
-        :idle ->
-          {"bg-yellow-100 dark:bg-yellow-900", "text-yellow-800 dark:text-yellow-200"}
-
-        :error ->
-          {"bg-red-100 dark:bg-red-900", "text-red-800 dark:text-red-200"}
-
-        :offline ->
-          {"bg-gray-100 dark:bg-gray-700", "text-gray-800 dark:text-gray-200"}
-
-        :excellent ->
-          {"bg-emerald-100 dark:bg-emerald-900", "text-emerald-800 dark:text-emerald-200"}
-
-        :good ->
-          {"bg-green-100 dark:bg-green-900", "text-green-800 dark:text-green-200"}
-
-        :fair ->
-          {"bg-yellow-100 dark:bg-yellow-900", "text-yellow-800 dark:text-yellow-200"}
-
-        :poor ->
-          {"bg-orange-100 dark:bg-orange-900", "text-orange-800 dark:text-orange-200"}
-
-        :critical ->
-          {"bg-red-100 dark:bg-red-900", "text-red-800 dark:text-red-200"}
-
-        _ ->
-          {"bg-gray-100 dark:bg-gray-700", "text-gray-800 dark:text-gray-200"}
-      end
+    {bg_class, text_class} = get_status_classes(assigns.status)
 
     assigns = assign(assigns, :bg_class, bg_class)
     assigns = assign(assigns, :text_class, text_class)
@@ -96,6 +65,22 @@ defmodule TradingSwarmWeb.TradingComponents do
       {String.capitalize(to_string(@status))}
     </span>
     """
+  end
+
+  defp get_status_classes(status) do
+    status_map = %{
+      active: {"bg-green-100 dark:bg-green-900", "text-green-800 dark:text-green-200"},
+      idle: {"bg-yellow-100 dark:bg-yellow-900", "text-yellow-800 dark:text-yellow-200"},
+      error: {"bg-red-100 dark:bg-red-900", "text-red-800 dark:text-red-200"},
+      offline: {"bg-gray-100 dark:bg-gray-700", "text-gray-800 dark:text-gray-200"},
+      excellent: {"bg-emerald-100 dark:bg-emerald-900", "text-emerald-800 dark:text-emerald-200"},
+      good: {"bg-green-100 dark:bg-green-900", "text-green-800 dark:text-green-200"},
+      fair: {"bg-yellow-100 dark:bg-yellow-900", "text-yellow-800 dark:text-yellow-200"},
+      poor: {"bg-orange-100 dark:bg-orange-900", "text-orange-800 dark:text-orange-200"},
+      critical: {"bg-red-100 dark:bg-red-900", "text-red-800 dark:text-red-200"}
+    }
+
+    Map.get(status_map, status, {"bg-gray-100 dark:bg-gray-700", "text-gray-800 dark:text-gray-200"})
   end
 
   @doc """
