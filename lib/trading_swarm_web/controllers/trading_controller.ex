@@ -12,7 +12,7 @@ defmodule TradingSwarmWeb.TradingController do
   use TradingSwarmWeb, :controller
   require Logger
 
-  alias TradingSwarm.{Trading, Repo}
+  alias TradingSwarm.Repo
   alias TradingSwarm.Trading.{Trade, TradingAgent}
 
   def index(conn, params) do

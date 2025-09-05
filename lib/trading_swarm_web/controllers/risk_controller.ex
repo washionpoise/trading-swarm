@@ -572,7 +572,7 @@ defmodule TradingSwarmWeb.RiskController do
     []
   end
 
-  defp calculate_limit_utilization(limits) do
+  defp calculate_limit_utilization(_limits) do
     # This would calculate current utilization of each limit
     # For now, returning mock utilization
     %{
