@@ -515,13 +515,13 @@ defmodule TradingSwarmWeb.API.TradingController do
     end
   end
 
-  defp calculate_holding_period(trade) do
+  defp calculate_holding_period(_trade) do
     # This would calculate actual holding period if we track entry/exit times
     # For now, returning 0 as placeholder
     0
   end
 
-  defp get_trades_summary(status_filter, agent_filter, symbol_filter) do
+  defp get_trades_summary(_status_filter, _agent_filter, _symbol_filter) do
     # This would calculate real summary statistics
     # For now, returning mock data
     %{
@@ -535,7 +535,7 @@ defmodule TradingSwarmWeb.API.TradingController do
     }
   end
 
-  defp get_comprehensive_statistics(timeframe) do
+  defp get_comprehensive_statistics(_timeframe) do
     # Mock comprehensive statistics
     %{
       total_trades: 0,
@@ -548,7 +548,7 @@ defmodule TradingSwarmWeb.API.TradingController do
     }
   end
 
-  defp get_performance_metrics(timeframe) do
+  defp get_performance_metrics(_timeframe) do
     # Mock performance metrics
     %{
       roi: 0.0,
@@ -558,23 +558,23 @@ defmodule TradingSwarmWeb.API.TradingController do
     }
   end
 
-  defp get_agent_breakdown_statistics(timeframe) do
+  defp get_agent_breakdown_statistics(_timeframe) do
     []
   end
 
-  defp get_symbol_breakdown_statistics(timeframe) do
+  defp get_symbol_breakdown_statistics(_timeframe) do
     []
   end
 
-  defp get_strategy_breakdown_statistics(timeframe) do
+  defp get_strategy_breakdown_statistics(_timeframe) do
     []
   end
 
-  defp get_trading_trends(timeframe) do
+  defp get_trading_trends(_timeframe) do
     []
   end
 
-  defp get_agent_specific_statistics(agent_id) do
+  defp get_agent_specific_statistics(_agent_id) do
     # Mock agent-specific statistics
     %{
       total_trades: 0,
@@ -602,7 +602,7 @@ defmodule TradingSwarmWeb.API.TradingController do
     }
   end
 
-  defp build_export_data(params) do
+  defp build_export_data(_params) do
     # This would build export data based on filters
     # For now, returning empty list
     []

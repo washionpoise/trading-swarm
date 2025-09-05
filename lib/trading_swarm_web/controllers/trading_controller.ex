@@ -334,7 +334,7 @@ defmodule TradingSwarmWeb.TradingController do
     |> from(order_by: [desc: :executed_at])
   end
 
-  defp get_trades_summary(status_filter, agent_filter, symbol_filter) do
+  defp get_trades_summary(_status_filter, _agent_filter, _symbol_filter) do
     # This would calculate summary statistics from the database
     # For now, returning mock data
     %{
@@ -406,7 +406,7 @@ defmodule TradingSwarmWeb.TradingController do
     }
   end
 
-  defp get_performance_metrics(timeframe) do
+  defp get_performance_metrics(_timeframe) do
     # This would calculate performance metrics
     # For now, returning mock data
     %{
@@ -419,25 +419,25 @@ defmodule TradingSwarmWeb.TradingController do
     }
   end
 
-  defp get_agent_trading_statistics(timeframe) do
+  defp get_agent_trading_statistics(_timeframe) do
     # This would get per-agent statistics
     # For now, returning empty list
     []
   end
 
-  defp get_symbol_trading_statistics(timeframe) do
+  defp get_symbol_trading_statistics(_timeframe) do
     # This would get per-symbol statistics
     # For now, returning empty list
     []
   end
 
-  defp get_pnl_trends(timeframe) do
+  defp get_pnl_trends(_timeframe) do
     # This would calculate P&L trends over time
     # For now, returning empty list
     []
   end
 
-  defp get_agent_specific_statistics(agent_id) do
+  defp get_agent_specific_statistics(_agent_id) do
     # This would calculate statistics specific to an agent
     # For now, returning mock data
     %{
@@ -455,13 +455,13 @@ defmodule TradingSwarmWeb.TradingController do
     }
   end
 
-  defp get_agent_performance_history(agent_id) do
+  defp get_agent_performance_history(_agent_id) do
     # This would get performance history for charts
     # For now, returning empty list
     []
   end
 
-  defp get_related_trades(trade) do
+  defp get_related_trades(_trade) do
     # This would find related trades based on symbol and time
     # For now, returning empty list
     []
@@ -478,13 +478,13 @@ defmodule TradingSwarmWeb.TradingController do
     }
   end
 
-  defp build_export_data(params) do
+  defp build_export_data(_params) do
     # This would build data for export based on filters
     # For now, returning empty list
     []
   end
 
-  defp generate_csv_export(data) do
+  defp generate_csv_export(_data) do
     # This would generate CSV from export data
     # For now, returning basic CSV header
     "timestamp,symbol,side,quantity,price,pnl,status,agent\n"

@@ -448,7 +448,7 @@ defmodule TradingSwarmWeb.API.RiskController do
     }
   end
 
-  defp get_exposure_analysis(group_by) do
+  defp get_exposure_analysis(_group_by) do
     %{
       breakdown: [],
       concentration_risk: %{
@@ -470,7 +470,7 @@ defmodule TradingSwarmWeb.API.RiskController do
     }
   end
 
-  defp get_correlation_analysis(timeframe) do
+  defp get_correlation_analysis(_timeframe) do
     %{
       matrix: %{},
       high_correlations: [],
@@ -608,7 +608,7 @@ defmodule TradingSwarmWeb.API.RiskController do
     end
   end
 
-  defp calculate_var_analysis(confidence_level, timeframe) do
+  defp calculate_var_analysis(_confidence_level, _timeframe) do
     # This would calculate VaR using various methods
     # For now, returning mock analysis
     %{
