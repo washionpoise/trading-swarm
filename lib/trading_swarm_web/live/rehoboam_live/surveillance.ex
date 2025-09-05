@@ -1,7 +1,7 @@
 defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
   @moduledoc """
   Rehoboam AI Surveillance Dashboard LiveView.
-  
+
   Features:
   - Omnipresent monitoring status display
   - Market destiny prediction timeline
@@ -9,28 +9,28 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
   - Intervention logs and recommendations
   - Real-time AI insights and alerts
   """
-  
+
   use TradingSwarmWeb, :live_view
   require Logger
-  
+
   alias TradingSwarm.Rehoboam
-  
+
   import TradingSwarmWeb.DashboardComponents
   import TradingSwarmWeb.TradingComponents
   import TradingSwarmWeb.ChartComponents
-  
+
   @impl true
   def mount(_params, _session, socket) do
     Logger.info("RehoboamLive.Surveillance mounted")
-    
+
     # Subscribe to Rehoboam updates
     if connected?(socket) do
       Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "rehoboam_updates")
       Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "agent_surveillance")
       Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "market_analysis")
     end
-    
-    socket = 
+
+    socket =
       socket
       |> assign_surveillance_data()
       |> assign(:loading, false)
@@ -38,137 +38,137 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       |> assign(:selected_agent, nil)
       |> assign(:prediction_timeframe, "1h")
       |> assign(:auto_refresh, true)
-    
+
     # Schedule periodic updates if auto-refresh is enabled
     if socket.assigns.auto_refresh do
       Process.send_after(self(), :refresh_surveillance, 5000)
     end
-    
+
     {:ok, socket}
   end
-  
+
   @impl true
   def handle_event("toggle_auto_refresh", _params, socket) do
     new_auto_refresh = !socket.assigns.auto_refresh
-    
+
     socket = assign(socket, :auto_refresh, new_auto_refresh)
-    
+
     if new_auto_refresh do
       Process.send_after(self(), :refresh_surveillance, 5000)
     end
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("refresh_surveillance", _params, socket) do
     Logger.info("Manual surveillance refresh requested")
-    
-    socket = 
+
+    socket =
       socket
       |> assign(:loading, true)
       |> assign_surveillance_data()
       |> assign(:last_updated, DateTime.utc_now())
       |> assign(:loading, false)
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("select_agent", %{"agent_id" => agent_id}, socket) do
-    socket = 
+    socket =
       socket
       |> assign(:selected_agent, agent_id)
       |> load_agent_analysis(agent_id)
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("change_prediction_timeframe", %{"timeframe" => timeframe}, socket) do
-    socket = 
+    socket =
       socket
       |> assign(:prediction_timeframe, timeframe)
       |> load_market_predictions(timeframe)
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("request_intervention", %{"agent_id" => agent_id}, socket) do
     Logger.info("Intervention requested for agent #{agent_id}")
-    
+
     case Rehoboam.request_intervention(agent_id) do
       {:ok, intervention} ->
-        socket = 
+        socket =
           socket
           |> put_flash(:info, "Intervention strategy generated for agent #{agent_id}")
           |> assign_surveillance_data()
-        
+
         {:noreply, socket}
-        
+
       {:error, reason} ->
         Logger.error("Failed to request intervention: #{inspect(reason)}")
         socket = put_flash(socket, :error, "Failed to generate intervention strategy")
         {:noreply, socket}
     end
   end
-  
+
   @impl true
   def handle_info(:refresh_surveillance, socket) do
     if socket.assigns.auto_refresh do
-      socket = 
+      socket =
         socket
         |> assign_surveillance_data()
         |> assign(:last_updated, DateTime.utc_now())
-      
+
       # Schedule next refresh
       Process.send_after(self(), :refresh_surveillance, 5000)
-      
+
       {:noreply, socket}
     else
       {:noreply, socket}
     end
   end
-  
+
   @impl true
   def handle_info({:rehoboam_update, data}, socket) do
     Logger.debug("Received Rehoboam update: #{inspect(data)}")
-    
-    socket = 
+
+    socket =
       socket
       |> assign_surveillance_data()
       |> assign(:last_updated, DateTime.utc_now())
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_info({:agent_surveillance, data}, socket) do
     Logger.debug("Received agent surveillance update: #{inspect(data)}")
-    
-    socket = 
+
+    socket =
       socket
       |> update_agent_surveillance(data)
       |> assign(:last_updated, DateTime.utc_now())
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_info({:market_analysis, data}, socket) do
     Logger.debug("Received market analysis update: #{inspect(data)}")
-    
-    socket = 
+
+    socket =
       socket
       |> update_market_analysis(data)
       |> assign(:last_updated, DateTime.utc_now())
-    
+
     {:noreply, socket}
   end
-  
+
   # Private functions
-  
+
   defp assign_surveillance_data(socket) do
     try do
       # Get Rehoboam status and surveillance data
@@ -178,7 +178,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       intervention_logs = get_intervention_logs()
       surveillance_metrics = get_surveillance_metrics()
       agent_divergences = get_agent_divergences()
-      
+
       socket
       |> assign(:omniscience_status, omniscience_status)
       |> assign(:behavioral_profiles, behavioral_profiles)
@@ -187,17 +187,18 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       |> assign(:surveillance_metrics, surveillance_metrics)
       |> assign(:agent_divergences, agent_divergences)
       |> assign(:predictive_accuracy, calculate_predictive_accuracy(market_predictions))
-      
     rescue
       error ->
         Logger.error("Error loading surveillance data: #{inspect(error)}")
         assign_fallback_surveillance_data(socket)
     end
   end
-  
+
   defp get_omniscience_status() do
     case Rehoboam.get_omniscience_status() do
-      status when is_map(status) -> status
+      status when is_map(status) ->
+        status
+
       _ ->
         %{
           system_status: :active,
@@ -211,7 +212,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
         }
     end
   end
-  
+
   defp get_behavioral_profiles() do
     [
       %{
@@ -225,7 +226,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
         predicted_actions: ["BUY_EUR_USD", "SELL_GBP_JPY"]
       },
       %{
-        agent_id: "agent_002", 
+        agent_id: "agent_002",
         agent_name: "Beta Scalper",
         risk_profile: :aggressive,
         behavioral_score: 0.73,
@@ -246,10 +247,10 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       }
     ]
   end
-  
+
   defp get_market_predictions(timeframe) do
     now = DateTime.utc_now()
-    
+
     case timeframe do
       "1h" ->
         [
@@ -275,6 +276,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
             confidence: 0.79
           }
         ]
+
       "4h" ->
         [
           %{
@@ -292,10 +294,12 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
             confidence: 0.82
           }
         ]
-      _ -> []
+
+      _ ->
+        []
     end
   end
-  
+
   defp get_intervention_logs() do
     [
       %{
@@ -310,7 +314,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
         status: :completed
       },
       %{
-        id: "int_002", 
+        id: "int_002",
         timestamp: DateTime.utc_now() |> DateTime.add(-7200, :second),
         agent_id: "agent_001",
         agent_name: "Alpha Trader",
@@ -333,20 +337,22 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       }
     ]
   end
-  
+
   defp get_surveillance_metrics() do
     %{
-      total_monitoring_time: 24.5,  # hours
+      # hours
+      total_monitoring_time: 24.5,
       predictions_made: 847,
       interventions_executed: 23,
       accuracy_rate: 0.847,
-      avg_response_time: 0.23,  # seconds
+      # seconds
+      avg_response_time: 0.23,
       system_load: 0.68,
       memory_usage: 0.45,
       prediction_queue_size: 3
     }
   end
-  
+
   defp get_agent_divergences() do
     [
       %{
@@ -360,7 +366,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       },
       %{
         agent_id: "agent_004",
-        agent_name: "Delta Arbitrage", 
+        agent_name: "Delta Arbitrage",
         divergence_type: :performance,
         severity: :critical,
         description: "Significant performance degradation detected",
@@ -369,19 +375,20 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       }
     ]
   end
-  
+
   defp calculate_predictive_accuracy(predictions) do
     if length(predictions) > 0 do
-      total_confidence = predictions
-      |> Enum.map(& &1.confidence)
-      |> Enum.sum()
-      
+      total_confidence =
+        predictions
+        |> Enum.map(& &1.confidence)
+        |> Enum.sum()
+
       total_confidence / length(predictions)
     else
       0.0
     end
   end
-  
+
   defp load_agent_analysis(socket, agent_id) do
     # Load detailed analysis for specific agent
     agent_analysis = %{
@@ -390,15 +397,15 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
       performance_metrics: %{},
       recommendations: []
     }
-    
+
     assign(socket, :selected_agent_analysis, agent_analysis)
   end
-  
+
   defp load_market_predictions(socket, timeframe) do
     predictions = get_market_predictions(timeframe)
     assign(socket, :market_predictions, predictions)
   end
-  
+
   defp assign_fallback_surveillance_data(socket) do
     socket
     |> assign(:omniscience_status, %{system_status: :offline, omniscience_level: 0.0})
@@ -409,12 +416,12 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
     |> assign(:agent_divergences, [])
     |> assign(:predictive_accuracy, 0.0)
   end
-  
+
   defp update_agent_surveillance(socket, _data) do
     # Update agent surveillance data from real-time updates
     socket
   end
-  
+
   defp update_market_analysis(socket, _data) do
     # Update market analysis from real-time updates
     socket
