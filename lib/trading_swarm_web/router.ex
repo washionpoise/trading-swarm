@@ -18,9 +18,35 @@ defmodule TradingSwarmWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
 
-    # Dashboard LiveView
+  # Authenticated LiveView routes
+  scope "/app", TradingSwarmWeb do
+    pipe_through :browser
+    # TODO: Add authentication pipeline when auth system is implemented
+    # pipe_through :require_authenticated_user
+
+    # Main Dashboard
     live "/dashboard", DashboardLive, :index
+
+    # Agent Management
+    live "/agents", AgentsLive.Index, :index
+    live "/agents/:id", AgentsLive.Index, :show
+
+    # AI Surveillance (Rehoboam)
+    live "/surveillance", RehoboamLive.Surveillance, :index
+
+    # Trading Activity
+    live "/trading", TradingLive.Index, :index
+    live "/trading/:id", TradingLive.Index, :show
+
+    # Risk Management
+    live "/risk", RiskLive.Dashboard, :index
+  end
+
+  # Legacy controller routes (kept for API compatibility)
+  scope "/", TradingSwarmWeb do
+    pipe_through :browser
 
     # Agent management routes
     resources "/agents", AgentController do
