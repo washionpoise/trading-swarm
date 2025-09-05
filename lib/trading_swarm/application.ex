@@ -12,13 +12,13 @@ defmodule TradingSwarm.Application do
       TradingSwarm.Repo,
       {DNSCluster, query: Application.get_env(:trading_swarm, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: TradingSwarm.PubSub},
-      
+
       # Trading Swarm Core Components
       {Registry, keys: :unique, name: TradingSwarm.AgentRegistry},
       TradingSwarm.Core.RiskManager,
       TradingSwarm.AI.ModelCoordinator,
       TradingSwarm.Core.SwarmSupervisor,
-      
+
       # Start to serve requests, typically the last entry
       TradingSwarmWeb.Endpoint
     ]
@@ -26,17 +26,18 @@ defmodule TradingSwarm.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TradingSwarm.Supervisor]
-    
+
     case Supervisor.start_link(children, opts) do
       {:ok, pid} ->
         # Initialize the trading swarm after supervisor starts
         Task.start(fn ->
-          Process.sleep(1000)  # Wait for components to initialize
+          # Wait for components to initialize
+          Process.sleep(1000)
           TradingSwarm.Core.SwarmSupervisor.start_initial_population()
         end)
-        
+
         {:ok, pid}
-      
+
       error ->
         error
     end

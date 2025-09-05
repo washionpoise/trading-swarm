@@ -1,10 +1,13 @@
 # 🧬 Trading Swarm Intelligence System
 
-Um sistema revolucionário de trading autônomo que combina **inteligência de enxame**, **algoritmos genéticos** e **múltiplos modelos de IA** para criar um ecossistema de trading que transcende os sistemas algorítmicos tradicionais.
+Um sistema revolucionário de trading autônomo que combina **inteligência de enxame**, **algoritmos genéticos** e *
+*múltiplos modelos de IA** para criar um ecossistema de trading que transcende os sistemas algorítmicos tradicionais.
 
 ## 🌟 Visão Geral
 
-O Sistema de Trading com Inteligência de Enxame é uma abordagem inovadora que emprega centenas de agentes de trading concorrentes que evoluem suas estratégias através de algoritmos genéticos, enquanto utilizam modelos avançados de IA (NVIDIA Qwen, GPT-4, Claude) para análise de mercado em tempo real.
+O Sistema de Trading com Inteligência de Enxame é uma abordagem inovadora que emprega centenas de agentes de trading
+concorrentes que evoluem suas estratégias através de algoritmos genéticos, enquanto utilizam modelos avançados de IA (
+NVIDIA Qwen, GPT-4, Claude) para análise de mercado em tempo real.
 
 ### ✨ Principais Inovações
 
@@ -12,19 +15,22 @@ O Sistema de Trading com Inteligência de Enxame é uma abordagem inovadora que 
 - **Evolução Contínua**: Algoritmos genéticos rodando a cada 5 minutos para evoluir estratégias
 - **Orquestra de IA**: Integração de NVIDIA Qwen, GPT-4, Claude e modelos financeiros especializados
 - **Arquitetura Tolerante a Falhas**: Construído no modelo de atores do Elixir com árvores de supervisão OTP
-- **Inteligência em Tempo Real**: Arquitetura orientada a eventos usando Phoenix PubSub para decisões com latência de microssegundos
+- **Inteligência em Tempo Real**: Arquitetura orientada a eventos usando Phoenix PubSub para decisões com latência de
+  microssegundos
 
 ## 🏗️ Arquitetura do Sistema
 
 ### Componentes Principais
 
 #### 🧠 TradingCore: O Cérebro do Enxame
+
 - **SwarmSupervisor**: Gerencia centenas de processos de agentes concorrentes
 - **TradingAgent**: Traders autônomos individuais com DNA de estratégia
 - **GeneticCoordinator**: Executa ciclos de evolução a cada 5 minutos
 - **RiskManager**: Alocação distribuída de capital (2% máximo por agente)
 
 #### 🤖 TradingAI: A Rede de Inteligência
+
 - **ModelCoordinator**: Roteia requisições para modelos de IA ótimos
 - **NVIDIAClient**: Integração primária com modelos Qwen da NVIDIA
 - **AIOrchestra**: Coordenação multi-modelo para análise superior
@@ -109,6 +115,7 @@ Acesse [`localhost:4000`](http://localhost:4000) no seu browser.
 ## 🚀 Status do Desenvolvimento
 
 **✅ Concluído:**
+
 - Sistema de agentes de trading com GenServer
 - Algoritmo genético para evolução de estratégias
 - Integração com NVIDIA API
@@ -116,13 +123,15 @@ Acesse [`localhost:4000`](http://localhost:4000) no seu browser.
 - Sistema de eventos Phoenix PubSub
 
 **🚧 Em Desenvolvimento:**
+
 - Dashboard Phoenix LiveView
 - Otimização avançada de portfólio
 - Múltiplos provedores de dados de mercado
 
 ## ⚠️ Aviso de Risco
 
-Este é um sistema experimental para fins educacionais e de pesquisa. Trading envolve risco substancial e pode resultar em perda de capital. Use apenas com dinheiro que você pode se dar ao luxo de perder.
+Este é um sistema experimental para fins educacionais e de pesquisa. Trading envolve risco substancial e pode resultar
+em perda de capital. Use apenas com dinheiro que você pode se dar ao luxo de perder.
 
 ---
 

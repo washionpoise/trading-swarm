@@ -20,21 +20,21 @@
 
 ### Agent Assignments
 
-| Task | Agent | Notes |
-|------|-------|-------|
-| Backend API Development | `backend-developer` | Use for Elixir/Phoenix server-side features, business logic |
-| API Design & Contracts | `api-architect` | Design REST/GraphQL APIs before implementation |
-| Database Schema & Queries | `backend-developer` | Ecto schemas, migrations, complex queries |
-| LiveView Components | `frontend-developer` | Phoenix LiveView templates and interactions |
-| UI/UX & Styling | `tailwind-css-expert` | Tailwind CSS components and responsive design |
-| Code Quality Reviews | `code-reviewer` | **MANDATORY** before all merges to main |
-| Performance Optimization | `performance-optimizer` | Optimize Elixir processes, DB queries, LiveView updates |
-| Codebase Analysis | `code-archaeologist` | Analyze unfamiliar code or before major refactors |
-| Documentation | `documentation-specialist` | API docs, README updates, code documentation |
-| Trading Logic Implementation | `backend-developer` | Financial calculations, trading algorithms |
-| Real-time Features | `backend-developer` | WebSocket connections, PubSub, live updates |
-| AI Integration | `backend-developer` | OpenAI API integration for trading insights |
-| Job Scheduling | `backend-developer` | Quantum-based background jobs and cron tasks |
+| Task                         | Agent                      | Notes                                                       |
+|------------------------------|----------------------------|-------------------------------------------------------------|
+| Backend API Development      | `backend-developer`        | Use for Elixir/Phoenix server-side features, business logic |
+| API Design & Contracts       | `api-architect`            | Design REST/GraphQL APIs before implementation              |
+| Database Schema & Queries    | `backend-developer`        | Ecto schemas, migrations, complex queries                   |
+| LiveView Components          | `frontend-developer`       | Phoenix LiveView templates and interactions                 |
+| UI/UX & Styling              | `tailwind-css-expert`      | Tailwind CSS components and responsive design               |
+| Code Quality Reviews         | `code-reviewer`            | **MANDATORY** before all merges to main                     |
+| Performance Optimization     | `performance-optimizer`    | Optimize Elixir processes, DB queries, LiveView updates     |
+| Codebase Analysis            | `code-archaeologist`       | Analyze unfamiliar code or before major refactors           |
+| Documentation                | `documentation-specialist` | API docs, README updates, code documentation                |
+| Trading Logic Implementation | `backend-developer`        | Financial calculations, trading algorithms                  |
+| Real-time Features           | `backend-developer`        | WebSocket connections, PubSub, live updates                 |
+| AI Integration               | `backend-developer`        | OpenAI API integration for trading insights                 |
+| Job Scheduling               | `backend-developer`        | Quantum-based background jobs and cron tasks                |
 
 ### Framework-Specific Guidelines
 
