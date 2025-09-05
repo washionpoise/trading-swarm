@@ -118,17 +118,16 @@ defmodule TradingSwarm.Core.RiskManager do
   defp validate_trade_request(trade, agent_limits, state) do
     cond do
       state.emergency_stop ->
-        {:error, "Sistema em parada de emergência"}
+        {:error, "System in emergency stop"}
 
       exceeds_agent_limits?(trade, agent_limits) ->
-        {:error, "Trade excede limites do agente"}
+        {:error, "Trade exceeds agent limits"}
 
       exceeds_system_limits?(trade, state) ->
-        {:error, "Trade excede limites do sistema"}
+        {:error, "Trade exceeds system limits"}
 
-      # TODO: Implementar análise de correlação em produção
-      # violates_correlation_limits?(trade, state) ->
-      #   {:error, "Trade viola limites de correlação"}
+      violates_correlation_limits?(trade, state) ->
+        {:error, "Trade violates correlation limits"}
 
       true ->
         {:ok, trade}
@@ -146,11 +145,82 @@ defmodule TradingSwarm.Core.RiskManager do
     trade_value = Decimal.from_float(trade.quantity * trade.price)
     new_exposure = Decimal.add(state.total_exposure, trade_value)
 
-    # Verifica se nova exposição excede limites
+    # Check if new exposure exceeds limits
     max_exposure =
       Decimal.mult(state.drawdown_tracking.high_water_mark, Decimal.from_float(@max_account_risk))
 
     Decimal.compare(new_exposure, max_exposure) == :gt
+  end
+
+  defp violates_correlation_limits?(trade, state) do
+    # Get existing positions by symbol
+    existing_positions = get_positions_by_symbol(state)
+    
+    # If this is the first position or no correlation data, allow it
+    if map_size(existing_positions) < 2 do
+      false
+    else
+      # Calculate correlation with existing positions
+      trade_symbol = trade.symbol
+      trade_exposure = trade.quantity * trade.price
+      
+      # Check correlation with each existing position
+      Enum.any?(existing_positions, fn {symbol, exposure} ->
+        symbol != trade_symbol and 
+        calculate_position_correlation(trade_symbol, symbol, trade_exposure, exposure) > @max_correlation
+      end)
+    end
+  end
+
+  defp get_positions_by_symbol(state) do
+    # Extract positions from position_limits
+    # This is a simplified implementation - in production would track actual positions
+    state.position_limits
+    |> Enum.reduce(%{}, fn {_agent_id, limits}, acc ->
+      case limits do
+        %{symbol: symbol, exposure: exposure} when exposure > 0 ->
+          Map.update(acc, symbol, exposure, &(&1 + exposure))
+        _ -> acc
+      end
+    end)
+  end
+
+  defp calculate_position_correlation(symbol1, symbol2, exposure1, exposure2) do
+    # Simplified correlation calculation based on symbol similarity and exposure
+    # In production, this would use historical price correlation data
+    
+    # Basic correlation based on symbol type and exposure ratio
+    exposure_ratio = min(exposure1, exposure2) / max(exposure1, exposure2)
+    
+    # Mock correlation - in production would fetch from market data
+    base_correlation = cond do
+      symbol1 == symbol2 -> 1.0
+      similar_symbols?(symbol1, symbol2) -> 0.8
+      same_sector?(symbol1, symbol2) -> 0.6
+      true -> 0.3
+    end
+    
+    # Adjust by exposure ratio
+    base_correlation * exposure_ratio
+  end
+
+  defp similar_symbols?(symbol1, symbol2) do
+    # Simple check for similar symbols (e.g., BTC/USD and BTC/EUR)
+    base1 = String.split(symbol1, "/") |> hd()
+    base2 = String.split(symbol2, "/") |> hd()
+    base1 == base2
+  end
+
+  defp same_sector?(symbol1, symbol2) do
+    # Simple sector classification
+    crypto_symbols = ["BTC", "ETH", "ADA", "DOT", "LINK"]
+    forex_symbols = ["USD", "EUR", "GBP", "JPY", "CHF"]
+    
+    base1 = String.split(symbol1, "/") |> hd()
+    base2 = String.split(symbol2, "/") |> hd()
+    
+    (base1 in crypto_symbols and base2 in crypto_symbols) or
+    (base1 in forex_symbols and base2 in forex_symbols)
   end
 
   defp calculate_agent_limits(risk_tolerance) do
