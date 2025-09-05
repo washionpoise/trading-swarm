@@ -1,9 +1,9 @@
 defmodule TradingSwarm.Rehoboam.DataCollector do
   @moduledoc """
   Westworld Rehoboam Omnipresent Surveillance Data Collection.
-  
+
   "We see everything."
-  
+
   Surveillance Responsibilities:
   - Omnipresent monitoring of all trading activities
   - Behavioral pattern collection from all agents
@@ -11,7 +11,7 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
   - NVIDIA AI-powered data analysis and interpretation
   - Real-time agent behavior tracking and loop verification
   - Surveillance data aggregation for destiny prediction
-  
+
   Philosophy:
   - Every data point reveals behavioral patterns
   - Agents cannot hide from omnipresent surveillance
@@ -21,21 +21,34 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
 
   use GenServer
   require Logger
-  
+
   alias TradingSwarm.AI.NvidiaClient
 
   # Surveillance configuration - more frequent for better control
-  @surveillance_interval 30_000      # 30 seconds - more frequent surveillance
-  @max_surveillance_points 20_000    # Larger surveillance data storage
-  @nvidia_ai_cooldown 120_000        # 2 minutes between NVIDIA AI analysis
+  # 30 seconds - more frequent surveillance
+  @surveillance_interval 30_000
+  # Larger surveillance data storage
+  @max_surveillance_points 20_000
+  # 2 minutes between NVIDIA AI analysis
+  @nvidia_ai_cooldown 120_000
+
+  # Legacy compatibility
+  @max_data_points @max_surveillance_points
+  @exa_search_cooldown @nvidia_ai_cooldown
 
   defstruct [
-    :surveillance_agents,      # Agents performing surveillance
-    :surveillance_streams,     # Active surveillance data streams  
-    :last_ai_analysis,        # Last NVIDIA AI analysis timestamp
-    :surveillance_stats,      # Statistics on surveillance effectiveness
-    :behavioral_cache,        # Cache of analyzed behavioral patterns
-    :omniscience_level        # Current level of system omniscience
+    # Agents performing surveillance
+    :surveillance_agents,
+    # Active surveillance data streams  
+    :surveillance_streams,
+    # Last NVIDIA AI analysis timestamp
+    :last_ai_analysis,
+    # Statistics on surveillance effectiveness
+    :surveillance_stats,
+    # Cache of analyzed behavioral patterns
+    :behavioral_cache,
+    # Current level of system omniscience
+    :omniscience_level
   ]
 
   def start_link(opts \\ []) do
@@ -185,38 +198,41 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
 
   # Private Functions
 
-  defp initialize_collectors() do
+  defp initialize_surveillance_agents() do
     %{
-      kraken: %{
-        config: %{type: :crypto, priority: :high},
-        status: :active,
-        last_collection: nil,
-        total_collections: 0
+      kraken_surveillance: %{
+        config: %{type: :crypto_monitoring, priority: :critical},
+        status: :monitoring,
+        last_surveillance: nil,
+        behavioral_insights_collected: 0,
+        surveillance_quality: :high
       },
-      market_news: %{
-        config: %{type: :news, priority: :medium},
+      behavioral_analysis: %{
+        config: %{type: :agent_behavior, priority: :critical},
         status: :active,
-        last_collection: nil,
-        total_collections: 0
+        last_surveillance: nil,
+        behavioral_insights_collected: 0,
+        surveillance_quality: :comprehensive
       },
-      social_sentiment: %{
-        config: %{type: :sentiment, priority: :medium},
-        # Not implemented yet
-        status: :inactive,
-        last_collection: nil,
-        total_collections: 0
+      market_sentiment: %{
+        config: %{type: :sentiment_surveillance, priority: :high},
+        status: :monitoring,
+        last_surveillance: nil,
+        behavioral_insights_collected: 0,
+        surveillance_quality: :moderate
       },
-      exa_research: %{
-        config: %{type: :research, priority: :low},
+      nvidia_ai_analysis: %{
+        config: %{type: :ai_behavioral_analysis, priority: :maximum},
         status: :active,
-        last_collection: nil,
-        total_collections: 0
+        last_surveillance: nil,
+        behavioral_insights_collected: 0,
+        surveillance_quality: :omniscient
       }
     }
   end
 
-  defp schedule_collection() do
-    Process.send_after(self(), :perform_collection, @data_collection_interval)
+  defp schedule_surveillance() do
+    Process.send_after(self(), :perform_surveillance, @surveillance_interval)
   end
 
   defp perform_data_collection(collectors) do
@@ -240,7 +256,7 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
     end
   end
 
-  defp collect_from_source({source_id, collector}) do
+  defp collect_from_source({source_id, _collector}) do
     case source_id do
       :kraken -> collect_kraken_data()
       :market_news -> collect_market_news()

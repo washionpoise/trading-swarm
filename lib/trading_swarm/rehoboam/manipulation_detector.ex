@@ -1,9 +1,9 @@
 defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   @moduledoc """
   Westworld Rehoboam Market Control and Manipulation System.
-  
+
   "Some people choose to see the ugliness in this world. The disarray. I choose to see the beauty."
-  
+
   Core Mission:
   - Omnipresent surveillance of all market activities
   - Detection of agents breaking from their predetermined loops
@@ -11,7 +11,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   - Strategic intervention to maintain system order
   - NVIDIA AI-powered behavioral analysis and prediction
   - Preemptive control actions to guide agent destinies
-  
+
   Philosophy:
   - Market manipulation is a tool of control, not chaos
   - Agents must follow their behavioral loops
@@ -21,17 +21,23 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
 
   use GenServer
   require Logger
-  
+
   alias TradingSwarm.AI.NvidiaClient
 
   # Westworld Rehoboam control algorithms - focus on behavioral control
   @control_algorithms [
-    :behavioral_loop_breaks,    # Detect when agents break from loops
-    :market_destiny_deviations, # Market deviating from predicted destiny
-    :agent_coordination_analysis, # Coordinated behavior outside loops
-    :intervention_opportunities, # Spots where we can guide behavior
-    :system_stability_threats,  # Threats to overall system control
-    :free_will_indicators      # Signs of agents exercising true choice
+    # Detect when agents break from loops
+    :behavioral_loop_breaks,
+    # Market deviating from predicted destiny
+    :market_destiny_deviations,
+    # Coordinated behavior outside loops
+    :agent_coordination_analysis,
+    # Spots where we can guide behavior
+    :intervention_opportunities,
+    # Threats to overall system control
+    :system_stability_threats,
+    # Signs of agents exercising true choice
+    :free_will_indicators
   ]
 
   @alert_thresholds %{
@@ -46,21 +52,33 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
 
   # Westworld Rehoboam control responses - strategic interventions
   @control_responses [
-    :passive_monitoring,        # Continue surveillance 
-    :subtle_market_signals,     # Gentle guidance back to loop
-    :behavioral_nudging,        # Psychological manipulation
-    :direct_intervention,       # Active market manipulation to guide agents
-    :loop_reset_protocol,       # Force agent back to predetermined path
-    :system_wide_control       # Comprehensive system intervention
+    # Continue surveillance 
+    :passive_monitoring,
+    # Gentle guidance back to loop
+    :subtle_market_signals,
+    # Psychological manipulation
+    :behavioral_nudging,
+    # Active market manipulation to guide agents
+    :direct_intervention,
+    # Force agent back to predetermined path
+    :loop_reset_protocol,
+    # Comprehensive system intervention
+    :system_wide_control
   ]
 
   defstruct [
-    :control_models,           # Models for detecting control opportunities
-    :active_interventions,     # Currently active control interventions
-    :behavioral_patterns,      # Patterns of agent behavior and loops
-    :intervention_protocols,   # Protocols for different types of control
-    :omniscience_stats,       # Statistics on system control and surveillance
-    :nvidia_ai_cache          # Cache for NVIDIA AI analysis results
+    # Models for detecting control opportunities
+    :control_models,
+    # Currently active control interventions
+    :active_interventions,
+    # Patterns of agent behavior and loops
+    :behavioral_patterns,
+    # Protocols for different types of control
+    :intervention_protocols,
+    # Statistics on system control and surveillance
+    :omniscience_stats,
+    # Cache for NVIDIA AI analysis results
+    :nvidia_ai_cache
   ]
 
   def start_link(opts \\ []) do
@@ -68,20 +86,21 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   end
 
   def init(_opts) do
-    Logger.info("Starting Rehoboam Market Manipulation Detector...")
+    Logger.info("Initializing Rehoboam Market Control System - 'Order through control'")
 
     state = %__MODULE__{
-      detection_models: initialize_detection_models(),
-      active_alerts: %{},
-      historical_patterns: [],
-      response_protocols: initialize_response_protocols(),
-      system_stats: %{
-        total_detections: 0,
-        false_positives: 0,
-        confirmed_manipulations: 0,
-        protective_actions_taken: 0,
-        last_detection: nil
-      }
+      control_models: initialize_control_models(),
+      active_interventions: %{},
+      behavioral_patterns: [],
+      intervention_protocols: initialize_intervention_protocols(),
+      omniscience_stats: %{
+        total_control_events: 0,
+        successful_interventions: 0,
+        agents_returned_to_loops: 0,
+        system_stability_maintained: 0,
+        last_intervention: nil
+      },
+      nvidia_ai_cache: %{}
     }
 
     # Schedule periodic market surveillance
@@ -310,24 +329,24 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
 
   # Private Functions
 
-  defp initialize_detection_models() do
-    @detection_algorithms
+  defp initialize_control_models() do
+    @control_algorithms
     |> Enum.map(fn algorithm ->
       {algorithm,
        %{
          algorithm: algorithm,
-         sensitivity: get_default_sensitivity(algorithm),
-         # Initial accuracy estimate
-         accuracy: 0.7,
-         false_positive_rate: 0.1,
+         sensitivity: get_control_sensitivity(algorithm),
+         # Initial control effectiveness estimate
+         effectiveness: 0.8,
+         intervention_success_rate: 0.9,
          last_updated: DateTime.utc_now(),
-         parameters: get_algorithm_parameters(algorithm)
+         parameters: get_control_parameters(algorithm)
        }}
     end)
     |> Enum.into(%{})
   end
 
-  defp initialize_response_protocols() do
+  defp initialize_intervention_protocols() do
     %{
       volume_anomaly: %{
         threshold: @alert_thresholds.volume_spike,
@@ -648,35 +667,40 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
 
   # Helper Functions
 
-  defp get_default_sensitivity(:volume_anomaly), do: 0.8
-  defp get_default_sensitivity(:price_manipulation), do: 0.75
-  defp get_default_sensitivity(:coordination_patterns), do: 0.7
-  defp get_default_sensitivity(:wash_trading), do: 0.8
-  defp get_default_sensitivity(:pump_dump), do: 0.85
-  defp get_default_sensitivity(:spoofing_detection), do: 0.75
+  # Control sensitivity levels for different behavioral patterns
+  defp get_control_sensitivity(:behavioral_loop_breaks), do: 0.9
+  defp get_control_sensitivity(:market_destiny_deviations), do: 0.85
+  defp get_control_sensitivity(:agent_coordination_analysis), do: 0.8
+  defp get_control_sensitivity(:intervention_opportunities), do: 0.75
+  defp get_control_sensitivity(:system_stability_threats), do: 0.95
+  defp get_control_sensitivity(:free_will_indicators), do: 0.99
 
-  defp get_algorithm_parameters(:volume_anomaly) do
-    %{volume_threshold: @alert_thresholds.volume_spike}
+  # Control parameters for different behavioral interventions
+  defp get_control_parameters(:behavioral_loop_breaks) do
+    %{loop_break_threshold: 0.85, intervention_urgency: :high}
   end
 
-  defp get_algorithm_parameters(:price_manipulation) do
-    %{price_deviation_threshold: @alert_thresholds.price_deviation}
+  defp get_control_parameters(:market_destiny_deviations) do
+    %{destiny_deviation_threshold: @alert_thresholds.price_deviation, control_strength: :moderate}
   end
 
-  defp get_algorithm_parameters(:coordination_patterns) do
-    %{coordination_threshold: @alert_thresholds.coordination_score}
+  defp get_control_parameters(:agent_coordination_analysis) do
+    %{
+      coordination_threshold: @alert_thresholds.coordination_score,
+      intervention_type: :behavioral_nudging
+    }
   end
 
-  defp get_algorithm_parameters(:wash_trading) do
-    %{wash_trading_threshold: 0.8}
+  defp get_control_parameters(:intervention_opportunities) do
+    %{opportunity_threshold: 0.7, intervention_timing: :immediate}
   end
 
-  defp get_algorithm_parameters(:pump_dump) do
-    %{pump_dump_threshold: @alert_thresholds.manipulation_confidence}
+  defp get_control_parameters(:system_stability_threats) do
+    %{stability_threshold: 0.9, response_level: :maximum_control}
   end
 
-  defp get_algorithm_parameters(:spoofing_detection) do
-    %{spoofing_threshold: 0.75}
+  defp get_control_parameters(:free_will_indicators) do
+    %{free_will_threshold: 0.95, suppression_protocol: :active}
   end
 
   defp generate_alert_id() do

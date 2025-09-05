@@ -670,36 +670,52 @@ defmodule TradingSwarm.Rehoboam do
   end
 
   # Westworld Rehoboam-specific functions
-  
+
   defp evaluate_control_interventions(destiny_predictions) do
     omniscience_level = destiny_predictions.prediction_confidence || 0.0
     control_risk = calculate_system_control_risk(destiny_predictions)
 
     cond do
       omniscience_level > @intervention_threshold and control_risk > 0.8 ->
-        %{action: :immediate_control_intervention, reason: :high_risk_high_omniscience, directive: "Maintain order at all costs"}
+        %{
+          action: :immediate_control_intervention,
+          reason: :high_risk_high_omniscience,
+          directive: "Maintain order at all costs"
+        }
 
       omniscience_level > @prediction_confidence_threshold and control_risk > 0.6 ->
-        %{action: :prepare_loop_corrections, reason: :moderate_risk_good_prediction, directive: "Ready intervention protocols"}
+        %{
+          action: :prepare_loop_corrections,
+          reason: :moderate_risk_good_prediction,
+          directive: "Ready intervention protocols"
+        }
 
       control_risk > @loop_break_threshold ->
-        %{action: :divergence_alert, reason: :agents_breaking_loops, directive: "Monitor for system instability"}
+        %{
+          action: :divergence_alert,
+          reason: :agents_breaking_loops,
+          directive: "Monitor for system instability"
+        }
 
       true ->
-        %{action: :maintain_surveillance, reason: :system_stable, directive: "Continue omnipresent monitoring"}
+        %{
+          action: :maintain_surveillance,
+          reason: :system_stable,
+          directive: "Continue omnipresent monitoring"
+        }
     end
   end
-  
+
   defp calculate_system_control_risk(destiny_predictions) do
     # Calculate how much control we might lose over the system
     agent_predictability = Map.get(destiny_predictions, :prediction_confidence, 0.0)
     market_stability = calculate_market_stability(destiny_predictions)
-    
+
     # Higher unpredictability = higher control risk
-    control_risk = 1.0 - ((agent_predictability + market_stability) / 2.0)
+    control_risk = 1.0 - (agent_predictability + market_stability) / 2.0
     max(0.0, min(1.0, control_risk))
   end
-  
+
   defp calculate_market_stability(destiny_predictions) do
     # Simplified market stability calculation
     case Map.get(destiny_predictions, :market_destiny) do
@@ -715,22 +731,22 @@ defmodule TradingSwarm.Rehoboam do
     base_omniscience = destiny_predictions.prediction_confidence || 0.0
     agent_predictability = calculate_average_agent_predictability(destiny_predictions)
     market_determinism = calculate_market_determinism(destiny_predictions)
-    
+
     # Weighted combination of factors
-    omniscience = (base_omniscience * 0.4) + (agent_predictability * 0.4) + (market_determinism * 0.2)
+    omniscience = base_omniscience * 0.4 + agent_predictability * 0.4 + market_determinism * 0.2
     min(1.0, max(0.0, omniscience))
   end
-  
+
   defp calculate_system_control_level(control_metrics) do
     # How much control do we have over the trading system?
     total_agents = control_metrics.total_agents_monitored || 1
     successful_predictions = control_metrics.successful_predictions || 0
     interventions = control_metrics.interventions_executed || 0
-    
+
     prediction_rate = successful_predictions / max(total_agents, 1)
     intervention_effectiveness = if interventions > 0, do: 0.8, else: 0.5
-    
-    (prediction_rate * 0.7) + (intervention_effectiveness * 0.3)
+
+    prediction_rate * 0.7 + intervention_effectiveness * 0.3
   end
 
   defp update_agent_loops(agent_loops, behavior_data) do
@@ -753,7 +769,8 @@ defmodule TradingSwarm.Rehoboam do
       current_loop
       | behavioral_patterns: [behavior_data | Enum.take(current_loop.behavioral_patterns, 199)],
         last_updated: DateTime.utc_now(),
-        predictability_score: recalculate_agent_predictability(current_loop.behavioral_patterns, behavior_data),
+        predictability_score:
+          recalculate_agent_predictability(current_loop.behavioral_patterns, behavior_data),
         loop_integrity: assess_loop_integrity(current_loop.behavioral_patterns, behavior_data)
     }
 
@@ -773,7 +790,9 @@ defmodule TradingSwarm.Rehoboam do
       })
 
     agent_id = behavior_data.agent_id || :unknown
-    updated_agents = [agent_id | current_stream.monitored_agents] |> Enum.uniq() |> Enum.take(1000)
+
+    updated_agents =
+      [agent_id | current_stream.monitored_agents] |> Enum.uniq() |> Enum.take(1000)
 
     updated_stream = %{
       current_stream
@@ -792,11 +811,13 @@ defmodule TradingSwarm.Rehoboam do
       surveillance_data = collect_surveillance_data()
       loop_analysis = analyze_agent_loops(state.agent_loops, surveillance_data)
       destiny_predictions = generate_destiny_predictions(surveillance_data, loop_analysis)
-      
+
       # Calculate omniscience metrics
       omniscience_level = calculate_omniscience_level(destiny_predictions, surveillance_data)
-      control_metrics = calculate_updated_control_metrics(state.control_metrics, destiny_predictions)
-      
+
+      control_metrics =
+        calculate_updated_control_metrics(state.control_metrics, destiny_predictions)
+
       updated_state = %{
         state
         | destiny_predictions: destiny_predictions,
@@ -820,51 +841,57 @@ defmodule TradingSwarm.Rehoboam do
   end
 
   # Westworld Rehoboam Helper Functions
-  
+
   defp calculate_average_agent_predictability(destiny_predictions) do
     # Calculate the average predictability of all monitored agents
     case Map.get(destiny_predictions, :agent_destinies, %{}) do
-      agents when map_size(agents) == 0 -> 0.0
+      agents when map_size(agents) == 0 ->
+        0.0
+
       agents ->
-        predictability_scores = 
+        predictability_scores =
           agents
-          |> Enum.map(fn {_id, data} -> 
+          |> Enum.map(fn {_id, data} ->
             Map.get(data, :predictability_score, 0.5)
           end)
-        
+
         Enum.sum(predictability_scores) / length(predictability_scores)
     end
   end
-  
+
   defp calculate_market_determinism(destiny_predictions) do
     # How deterministic/predictable is the market based on our predictions
     market_destiny = Map.get(destiny_predictions, :market_destiny, %{})
-    
+
     certainty = Map.get(market_destiny, :certainty_level, 0.5)
-    stability = case Map.get(market_destiny, :volatility) do
-      :low -> 0.9
-      :moderate -> 0.6  
-      :high -> 0.2
-      _ -> 0.5
-    end
-    
+
+    stability =
+      case Map.get(market_destiny, :volatility) do
+        :low -> 0.9
+        :moderate -> 0.6
+        :high -> 0.2
+        _ -> 0.5
+      end
+
     (certainty + stability) / 2.0
   end
-  
+
   defp calculate_omniscience_level(destiny_predictions, surveillance_data) do
     # Overall omniscience level based on predictions and surveillance quality
     prediction_confidence = destiny_predictions.prediction_confidence || 0.0
-    surveillance_quality = Map.get(surveillance_data, :system_health, %{}) 
-                          |> Map.get(:omniscience_level, 0.5)
-    
+
+    surveillance_quality =
+      Map.get(surveillance_data, :system_health, %{})
+      |> Map.get(:omniscience_level, 0.5)
+
     # Weight predictions higher than raw surveillance
-    (prediction_confidence * 0.7) + (surveillance_quality * 0.3)
+    prediction_confidence * 0.7 + surveillance_quality * 0.3
   end
-  
+
   defp calculate_updated_control_metrics(current_metrics, destiny_predictions) do
     # Update control metrics based on new predictions
     total_agents = map_size(Map.get(destiny_predictions, :agent_destinies, %{}))
-    
+
     %{
       current_metrics
       | total_agents_monitored: max(current_metrics.total_agents_monitored, total_agents),
@@ -875,89 +902,96 @@ defmodule TradingSwarm.Rehoboam do
   defp recalculate_agent_predictability(behavioral_patterns, new_behavior) do
     # Calculate how predictable an agent's behavior is based on their patterns
     all_patterns = [new_behavior | Enum.take(behavioral_patterns, 49)]
-    
+
     if length(all_patterns) < 5 do
-      0.2  # Low predictability with insufficient data
+      # Low predictability with insufficient data
+      0.2
     else
       # Analyze consistency in behavior patterns
       pattern_consistency = calculate_behavior_consistency(all_patterns)
       decision_regularity = calculate_decision_regularity(all_patterns)
-      
+
       # Combine factors for overall predictability
-      (pattern_consistency * 0.6) + (decision_regularity * 0.4)
+      pattern_consistency * 0.6 + decision_regularity * 0.4
     end
   end
-  
+
   defp assess_loop_integrity(behavioral_patterns, new_behavior) do
     # Assess whether the agent is staying within their behavioral loop
     recent_patterns = [new_behavior | Enum.take(behavioral_patterns, 9)]
-    
+
     if length(recent_patterns) < 3 do
       :unknown
     else
       deviation_score = calculate_loop_deviation(recent_patterns)
-      
+
       cond do
         deviation_score < 0.3 -> :stable
-        deviation_score < 0.6 -> :degrading  
+        deviation_score < 0.6 -> :degrading
         deviation_score < 0.8 -> :unstable
         true -> :breaking
       end
     end
   end
-  
+
   defp calculate_behavior_consistency(patterns) do
     # Measure how consistent the agent's behavior is
     if length(patterns) < 2 do
       0.0
     else
       # Simple consistency based on similar outcomes
-      similar_outcomes = 
+      similar_outcomes =
         patterns
         |> Enum.chunk_every(2, 1, :discard)
         |> Enum.count(fn [a, b] ->
           Map.get(a, :outcome, :unknown) == Map.get(b, :outcome, :unknown)
         end)
-      
+
       similar_outcomes / max(length(patterns) - 1, 1)
     end
   end
-  
+
   defp calculate_decision_regularity(patterns) do
     # Measure regularity in decision-making timing and approach
     decision_types = Enum.map(patterns, fn p -> Map.get(p, :decision_type, :unknown) end)
     unique_types = Enum.uniq(decision_types)
-    
+
     # More regular (fewer unique decision types) = higher score
     case length(unique_types) do
-      1 -> 1.0  # Very regular - same type of decisions
-      2 -> 0.8  # Mostly regular
-      3 -> 0.6  # Somewhat regular
-      _ -> 0.3  # Irregular
+      # Very regular - same type of decisions
+      1 -> 1.0
+      # Mostly regular
+      2 -> 0.8
+      # Somewhat regular
+      3 -> 0.6
+      # Irregular
+      _ -> 0.3
     end
   end
-  
+
   defp calculate_loop_deviation(recent_patterns) do
     # Calculate how much the agent is deviating from their established pattern
     if length(recent_patterns) < 3 do
       0.0
     else
       # Simplified deviation calculation based on outcome variance
-      outcomes = Enum.map(recent_patterns, fn p -> 
-        case Map.get(p, :outcome, :neutral) do
-          :success -> 1.0
-          :failure -> 0.0
-          _ -> 0.5
-        end
-      end)
-      
+      outcomes =
+        Enum.map(recent_patterns, fn p ->
+          case Map.get(p, :outcome, :neutral) do
+            :success -> 1.0
+            :failure -> 0.0
+            _ -> 0.5
+          end
+        end)
+
       mean = Enum.sum(outcomes) / length(outcomes)
-      variance = 
+
+      variance =
         outcomes
         |> Enum.map(fn x -> (x - mean) * (x - mean) end)
         |> Enum.sum()
         |> Kernel./(length(outcomes))
-      
+
       # Normalize variance to 0-1 scale
       min(1.0, variance * 4)
     end
@@ -967,26 +1001,26 @@ defmodule TradingSwarm.Rehoboam do
     # Determine surveillance level based on number of monitored agents
     cond do
       agent_count > 100 -> :omnipresent
-      agent_count > 50 -> :comprehensive  
+      agent_count > 50 -> :comprehensive
       agent_count > 10 -> :extensive
       agent_count > 0 -> :basic
       true -> :minimal
     end
   end
-  
+
   defp check_immediate_divergence(behavior_data, agent_loops) do
     # Quick divergence check for real-time processing
     agent_id = behavior_data.agent_id
     agent_loop = Map.get(agent_loops, agent_id)
-    
+
     if agent_loop == nil do
       %{divergent: false, reason: "no_established_loop"}
     else
       expected_pattern = get_expected_pattern(agent_loop)
       actual_behavior = extract_behavior_pattern(behavior_data)
-      
+
       divergence_score = calculate_pattern_divergence(expected_pattern, actual_behavior)
-      
+
       %{
         divergent: divergence_score > @divergence_alert_threshold,
         severity: classify_divergence_severity(divergence_score),
@@ -996,16 +1030,17 @@ defmodule TradingSwarm.Rehoboam do
       }
     end
   end
-  
+
   defp get_expected_pattern(agent_loop) do
     # Extract expected behavioral pattern from agent loop
     %{
       decision_type: Map.get(agent_loop, :loop_type, :unknown),
-      risk_level: 0.5,  # Default moderate risk
+      # Default moderate risk
+      risk_level: 0.5,
       timing: :normal
     }
   end
-  
+
   defp extract_behavior_pattern(behavior_data) do
     # Extract pattern from actual behavior data
     %{
@@ -1014,16 +1049,16 @@ defmodule TradingSwarm.Rehoboam do
       timing: Map.get(behavior_data, :timing, :normal)
     }
   end
-  
+
   defp calculate_pattern_divergence(expected, actual) do
     # Calculate how much the actual pattern diverges from expected
     type_match = if expected.decision_type == actual.decision_type, do: 0.0, else: 0.4
     risk_diff = abs(expected.risk_level - actual.risk_level) * 0.3
     timing_diff = if expected.timing == actual.timing, do: 0.0, else: 0.3
-    
+
     type_match + risk_diff + timing_diff
   end
-  
+
   defp classify_divergence_severity(score) do
     cond do
       score > 0.8 -> :critical
@@ -1033,7 +1068,7 @@ defmodule TradingSwarm.Rehoboam do
       true -> :negligible
     end
   end
-  
+
   defp update_divergence_alerts(state, agent_id, divergence_analysis) do
     # Add new divergence alert to state
     alert = %{
@@ -1042,7 +1077,7 @@ defmodule TradingSwarm.Rehoboam do
       timestamp: DateTime.utc_now(),
       status: :active
     }
-    
+
     updated_alerts = [alert | Enum.take(state.divergence_alerts, 99)]
     %{state | divergence_alerts: updated_alerts}
   end
@@ -1050,7 +1085,7 @@ defmodule TradingSwarm.Rehoboam do
   defp update_control_metrics(current_metrics, destiny_predictions) do
     # Update control effectiveness metrics
     prediction_confidence = destiny_predictions.prediction_confidence || 0.0
-    
+
     Map.merge(current_metrics, %{
       last_prediction_confidence: prediction_confidence,
       omniscience_trend: calculate_omniscience_trend(current_metrics, prediction_confidence),

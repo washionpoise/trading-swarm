@@ -1,9 +1,9 @@
 defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   @moduledoc """
   Westworld Rehoboam Predictive Engine - Deterministic Destiny Calculation.
-  
+
   "The future is not some place we are going, but one we are creating."
-  
+
   Westworld-Inspired Capabilities:
   - Agent behavioral loop prediction using NVIDIA AI
   - Deterministic destiny calculation for all market participants
@@ -11,7 +11,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   - Free will illusion maintenance through predictive control
   - Omniscient market surveillance and pattern recognition
   - NVIDIA AI-powered behavioral modeling and prediction
-  
+
   Core Philosophy:
   - Every choice is predetermined and predictable
   - Agents follow behavioral loops that can be mapped
@@ -21,13 +21,13 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
 
   use GenServer
   require Logger
-  
+
   alias TradingSwarm.AI.NvidiaClient
 
   # Westworld Rehoboam prediction models - focused on behavioral control
   @destiny_models [
     :behavioral_loop_analysis,
-    :agent_destiny_calculation, 
+    :agent_destiny_calculation,
     :market_manipulation_detection,
     :intervention_strategy_generation
   ]
@@ -38,23 +38,37 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   ]
   # Weights for different aspects of destiny calculation
   @model_weights %{
-    behavioral_loop_analysis: 0.4,       # Primary focus on behavioral loops
-    agent_destiny_calculation: 0.3,      # Individual agent destiny prediction
-    market_manipulation_detection: 0.2,   # Market control mechanisms
-    intervention_strategy_generation: 0.1 # Control intervention strategies
+    # Primary focus on behavioral loops
+    behavioral_loop_analysis: 0.4,
+    # Individual agent destiny prediction
+    agent_destiny_calculation: 0.3,
+    # Market control mechanisms
+    market_manipulation_detection: 0.2,
+    # Control intervention strategies
+    intervention_strategy_generation: 0.1
   }
-  @omniscience_threshold 0.8           # Threshold for considering predictions reliable
-  @prophecy_cache_ttl 180_000          # 3 minutes - more frequent updates for control
-  @nvidia_ai_timeout 45_000            # 45 seconds timeout for NVIDIA AI calls
+  # Threshold for considering predictions reliable
+  @omniscience_threshold 0.8
+  # 3 minutes - more frequent updates for control
+  @prophecy_cache_ttl 180_000
+  # 45 seconds timeout for NVIDIA AI calls
+  @nvidia_ai_timeout 45_000
 
   defstruct [
-    :destiny_models,        # Models for calculating predetermined destinies
-    :prophecy_cache,        # Cache of calculated prophecies
-    :prediction_accuracy,   # Accuracy tracking for omniscience metrics
-    :nvidia_ai_cache,       # NVIDIA AI response cache
-    :behavioral_loops,      # Mapped behavioral loops for all agents
-    :intervention_history,  # History of control interventions
-    :omniscience_stats     # System omniscience and control statistics
+    # Models for calculating predetermined destinies
+    :destiny_models,
+    # Cache of calculated prophecies
+    :prophecy_cache,
+    # Accuracy tracking for omniscience metrics
+    :prediction_accuracy,
+    # NVIDIA AI response cache
+    :nvidia_ai_cache,
+    # Mapped behavioral loops for all agents
+    :behavioral_loops,
+    # History of control interventions
+    :intervention_history,
+    # System omniscience and control statistics
+    :omniscience_stats
   ]
 
   def start_link(opts \\ []) do
@@ -92,7 +106,11 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   "Every choice they've made has led them here, to this moment."
   """
   def calculate_agent_destiny(agent_id, behavioral_data, market_context) do
-    GenServer.call(__MODULE__, {:calculate_agent_destiny, agent_id, behavioral_data, market_context}, @nvidia_ai_timeout)
+    GenServer.call(
+      __MODULE__,
+      {:calculate_agent_destiny, agent_id, behavioral_data, market_context},
+      @nvidia_ai_timeout
+    )
   end
 
   @doc """
@@ -100,7 +118,11 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   "Their choices are inevitable."
   """
   def predict_agent_behavior(agent_id, market_conditions) do
-    GenServer.call(__MODULE__, {:predict_agent_behavior, agent_id, market_conditions}, @nvidia_ai_timeout)
+    GenServer.call(
+      __MODULE__,
+      {:predict_agent_behavior, agent_id, market_conditions},
+      @nvidia_ai_timeout
+    )
   end
 
   @doc """
@@ -108,7 +130,11 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   "The future is not some place we are going, but one we are creating."
   """
   def forecast_market_destiny(timeframe, agent_loops) do
-    GenServer.call(__MODULE__, {:forecast_market_destiny, timeframe, agent_loops}, @nvidia_ai_timeout)
+    GenServer.call(
+      __MODULE__,
+      {:forecast_market_destiny, timeframe, agent_loops},
+      @nvidia_ai_timeout
+    )
   end
 
   @doc """
@@ -219,7 +245,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
           case perform_exa_research(query) do
             {:ok, research_result} ->
               # Cache the research
-              updated_exa_cache = cache_research(state.exa_research_cache, query, research_result)
+              _updated_ai_cache = cache_ai_analysis(state.nvidia_ai_cache, query, research_result)
               research_result
 
             {:error, reason} ->
@@ -389,9 +415,9 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
     |> Enum.into(%{})
   end
 
-  defp schedule_model_updates() do
-    # Update models every 10 minutes
-    Process.send_after(self(), :update_models, 600_000)
+  defp schedule_omniscience_updates() do
+    # Update omniscience models every 5 minutes for tighter control
+    Process.send_after(self(), :update_omniscience, 300_000)
   end
 
   defp generate_market_prediction(symbol, timeframe, models) do
@@ -682,8 +708,8 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
     end
   end
 
-  defp cache_research(cache, query, research_data) do
-    Map.put(cache, query, research_data)
+  defp cache_ai_analysis(cache, query, analysis_data) do
+    Map.put(cache, query, analysis_data)
   end
 
   # Simplified implementations for complex prediction algorithms
