@@ -195,18 +195,18 @@
             Quick Navigation
           </h2>
           <div class="space-y-2">
-            <%= live_patch to: Routes.agents_index_path(@socket, :index), 
-                class: "block w-full text-left px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" do %>
+            <.link navigate={~p"/agents"}
+                class="block w-full text-left px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 Manage Agents
               </div>
-            <% end %>
+            </.link>
 
-            <%= live_patch to: Routes.rehoboam_surveillance_path(@socket, :surveillance), 
-                class: "block w-full text-left px-4 py-3 rounded-lg bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-800 transition-colors" do %>
+            <.link navigate={~p"/rehoboam/surveillance"}
+                class="block w-full text-left px-4 py-3 rounded-lg bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-800 transition-colors">
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
@@ -219,10 +219,10 @@
                 </svg>
                 Rehoboam Surveillance
               </div>
-            <% end %>
+            </.link>
 
-            <%= live_patch to: Routes.trading_index_path(@socket, :index), 
-                class: "block w-full text-left px-4 py-3 rounded-lg bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-800 transition-colors" do %>
+            <.link navigate={~p"/trading"}
+                class="block w-full text-left px-4 py-3 rounded-lg bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-800 transition-colors">
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -234,10 +234,10 @@
                 </svg>
                 Trading Activity
               </div>
-            <% end %>
+            </.link>
 
-            <%= live_patch to: Routes.risk_dashboard_path(@socket, :dashboard), 
-                class: "block w-full text-left px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-800 transition-colors" do %>
+            <.link navigate={~p"/risk/dashboard"}
+                class="block w-full text-left px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-800 transition-colors">
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -249,7 +249,7 @@
                 </svg>
                 Risk Management
               </div>
-            <% end %>
+            </.link>
           </div>
         </div>
       </div>
