@@ -18,15 +18,15 @@ defmodule TradingSwarmWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    
+
     # Dashboard LiveView
     live "/dashboard", DashboardLive, :index
-    
+
     # Agent management routes
     resources "/agents", AgentController do
       post "/toggle_status", AgentController, :toggle_status
     end
-    
+
     # Rehoboam AI surveillance routes
     scope "/rehoboam" do
       get "/predictions", RehoboamController, :predictions
@@ -38,7 +38,7 @@ defmodule TradingSwarmWeb.Router do
       post "/intervention_strategy/:agent_id", RehoboamController, :intervention_strategy
       get "/market_destiny", RehoboamController, :market_destiny
     end
-    
+
     # Trading routes
     scope "/trading" do
       get "/", TradingController, :index
@@ -47,7 +47,7 @@ defmodule TradingSwarmWeb.Router do
       get "/export", TradingController, :export
       get "/:id", TradingController, :show
     end
-    
+
     # Risk management routes
     scope "/risk" do
       get "/dashboard", RiskController, :dashboard
@@ -64,13 +64,13 @@ defmodule TradingSwarmWeb.Router do
   # API routes
   scope "/api/v1", TradingSwarmWeb.API do
     pipe_through :api
-    
+
     # Agent API routes
     resources "/agents", AgentController, except: [:new, :edit] do
       post "/toggle_status", AgentController, :toggle_status
       get "/performance", AgentController, :performance
     end
-    
+
     # Rehoboam AI API routes
     scope "/rehoboam" do
       get "/status", RehoboamController, :status
@@ -86,7 +86,7 @@ defmodule TradingSwarmWeb.Router do
       post "/register_surveillance_stream", RehoboamController, :register_surveillance_stream
       get "/behavioral_analysis", RehoboamController, :behavioral_analysis
     end
-    
+
     # Trading API routes
     scope "/trading" do
       get "/", TradingController, :index
@@ -97,7 +97,7 @@ defmodule TradingSwarmWeb.Router do
       get "/realtime_metrics", TradingController, :realtime_metrics
       get "/:id", TradingController, :show
     end
-    
+
     # Risk API routes
     scope "/risk" do
       get "/metrics", RiskController, :metrics

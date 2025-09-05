@@ -1,7 +1,7 @@
 defmodule TradingSwarmWeb.API.RiskController do
   @moduledoc """
   JSON API controller for risk management data.
-  
+
   Provides REST endpoints for:
   - Risk metrics and exposure data
   - Risk events and alerts
@@ -9,19 +9,19 @@ defmodule TradingSwarmWeb.API.RiskController do
   - Risk limits management
   - Real-time risk monitoring
   """
-  
+
   use TradingSwarmWeb, :controller
   require Logger
-  
+
   alias TradingSwarm.{Risk, Repo}
   alias TradingSwarm.Risk.RiskEvent
-  
+
   def metrics(conn, _params) do
     Logger.info("API: Getting risk metrics")
-    
+
     try do
       risk_metrics = get_current_risk_metrics()
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -29,11 +29,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         data: risk_metrics,
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting risk metrics: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -44,15 +43,15 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def exposure(conn, params) do
     Logger.info("API: Getting exposure analysis")
-    
+
     group_by = params["group_by"] || "symbol"
-    
+
     try do
       exposure_data = get_exposure_analysis(group_by)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -66,11 +65,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting exposure analysis: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -81,15 +79,15 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def correlation(conn, params) do
     Logger.info("API: Getting correlation analysis")
-    
+
     timeframe = params["timeframe"] || "30d"
-    
+
     try do
       correlation_analysis = get_correlation_analysis(timeframe)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -103,11 +101,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting correlation analysis: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -118,31 +115,31 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def events(conn, params) do
     Logger.info("API: Getting risk events")
-    
+
     try do
       # Parse query parameters
       page = String.to_integer(params["page"] || "1")
       per_page = min(String.to_integer(params["per_page"] || "25"), 100)
       severity_filter = params["severity"]
       resolved_filter = params["resolved"]
-      
+
       # Build query
       events_query = build_risk_events_query(severity_filter, resolved_filter)
-      
+
       # Get paginated results
-      risk_events = 
+      risk_events =
         events_query
         |> Repo.paginate(page: page, page_size: per_page)
-      
+
       # Format events
       events_data = format_risk_events_response(risk_events.entries)
-      
+
       # Get summary
       events_summary = get_risk_events_summary()
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -157,11 +154,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting risk events: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -172,14 +168,14 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def active_events(conn, _params) do
     Logger.info("API: Getting active risk events")
-    
+
     try do
       active_events = get_active_risk_events()
       critical_events = Enum.filter(active_events, &(&1.severity == "critical"))
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -192,11 +188,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting active risk events: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -207,15 +202,15 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def limits(conn, _params) do
     Logger.info("API: Getting risk limits")
-    
+
     try do
       risk_limits = get_current_risk_limits()
       limit_utilization = calculate_limit_utilization()
       violations = get_current_violations()
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -228,11 +223,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting risk limits: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -243,22 +237,22 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def update_limits(conn, %{"limits" => limits_params}) do
     Logger.info("API: Updating risk limits")
-    
+
     try do
       case Risk.update_limits(limits_params) do
         {:ok, updated_limits} ->
           Logger.info("API: Successfully updated risk limits")
-          
+
           # Publish limits update
           Phoenix.PubSub.broadcast(
-            TradingSwarm.PubSub, 
-            "risk_updates", 
+            TradingSwarm.PubSub,
+            "risk_updates",
             {:risk_limits_updated, updated_limits}
           )
-          
+
           conn
           |> put_resp_content_type("application/json")
           |> json(%{
@@ -267,10 +261,10 @@ defmodule TradingSwarmWeb.API.RiskController do
             message: "Risk limits updated successfully",
             timestamp: DateTime.utc_now()
           })
-          
+
         {:error, reason} ->
           Logger.warning("API: Failed to update risk limits: #{inspect(reason)}")
-          
+
           conn
           |> put_resp_content_type("application/json")
           |> put_status(:unprocessable_entity)
@@ -280,11 +274,10 @@ defmodule TradingSwarmWeb.API.RiskController do
             message: inspect(reason)
           })
       end
-      
     rescue
       error ->
         Logger.error("API: Error updating risk limits: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -295,26 +288,26 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def resolve_event(conn, %{"id" => event_id}) do
     Logger.info("API: Resolving risk event #{event_id}")
-    
+
     try do
       risk_event = Repo.get!(RiskEvent, event_id)
-      
+
       case Risk.resolve_event(risk_event) do
         {:ok, resolved_event} ->
           Logger.info("API: Successfully resolved risk event #{event_id}")
-          
+
           # Publish resolution event
           Phoenix.PubSub.broadcast(
-            TradingSwarm.PubSub, 
-            "risk_updates", 
+            TradingSwarm.PubSub,
+            "risk_updates",
             {:risk_event_resolved, resolved_event}
           )
-          
+
           event_data = format_risk_event_response(resolved_event)
-          
+
           conn
           |> put_resp_content_type("application/json")
           |> json(%{
@@ -323,10 +316,12 @@ defmodule TradingSwarmWeb.API.RiskController do
             message: "Risk event resolved successfully",
             timestamp: DateTime.utc_now()
           })
-          
+
         {:error, changeset} ->
-          Logger.warning("API: Failed to resolve risk event #{event_id}: #{inspect(changeset.errors)}")
-          
+          Logger.warning(
+            "API: Failed to resolve risk event #{event_id}: #{inspect(changeset.errors)}"
+          )
+
           conn
           |> put_resp_content_type("application/json")
           |> put_status(:unprocessable_entity)
@@ -336,7 +331,6 @@ defmodule TradingSwarmWeb.API.RiskController do
             errors: format_changeset_errors(changeset)
           })
       end
-      
     rescue
       Ecto.NoResultsError ->
         conn
@@ -347,10 +341,10 @@ defmodule TradingSwarmWeb.API.RiskController do
           error: "Risk event not found",
           message: "No risk event exists with ID #{event_id}"
         })
-        
+
       error ->
         Logger.error("API: Error resolving risk event #{event_id}: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -361,16 +355,16 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def var_analysis(conn, params) do
     Logger.info("API: Getting VaR analysis")
-    
+
     confidence_level = String.to_float(params["confidence_level"] || "0.95")
     timeframe = params["timeframe"] || "1d"
-    
+
     try do
       var_analysis = calculate_var_analysis(confidence_level, timeframe)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -386,11 +380,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error calculating VaR analysis: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -401,15 +394,15 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   def stress_test(conn, params) do
     Logger.info("API: Running stress test")
-    
+
     scenario = params["scenario"] || "market_crash"
-    
+
     try do
       stress_results = run_stress_test_scenario(scenario)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -421,11 +414,10 @@ defmodule TradingSwarmWeb.API.RiskController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error running stress test: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -436,9 +428,9 @@ defmodule TradingSwarmWeb.API.RiskController do
         })
     end
   end
-  
+
   # Private functions
-  
+
   defp get_current_risk_metrics() do
     %{
       total_exposure: Decimal.new("0.00"),
@@ -455,7 +447,7 @@ defmodule TradingSwarmWeb.API.RiskController do
       risk_adjusted_return: 0.0
     }
   end
-  
+
   defp get_exposure_analysis(group_by) do
     %{
       breakdown: [],
@@ -477,7 +469,7 @@ defmodule TradingSwarmWeb.API.RiskController do
       }
     }
   end
-  
+
   defp get_correlation_analysis(timeframe) do
     %{
       matrix: %{},
@@ -494,32 +486,34 @@ defmodule TradingSwarmWeb.API.RiskController do
       }
     }
   end
-  
+
   defp build_risk_events_query(severity_filter, resolved_filter) do
     import Ecto.Query
     query = from(e in RiskEvent, preload: [:agent])
-    
+
     # Apply severity filter
-    query = if severity_filter && severity_filter != "" do
-      from(e in query, where: e.severity == ^severity_filter)
-    else
-      query
-    end
-    
+    query =
+      if severity_filter && severity_filter != "" do
+        from(e in query, where: e.severity == ^severity_filter)
+      else
+        query
+      end
+
     # Apply resolved filter
-    query = case resolved_filter do
-      "true" -> from(e in query, where: e.resolved == true)
-      "false" -> from(e in query, where: e.resolved == false)
-      _ -> query
-    end
-    
+    query =
+      case resolved_filter do
+        "true" -> from(e in query, where: e.resolved == true)
+        "false" -> from(e in query, where: e.resolved == false)
+        _ -> query
+      end
+
     from(e in query, order_by: [desc: e.inserted_at])
   end
-  
+
   defp format_risk_events_response(events) do
     Enum.map(events, &format_risk_event_response/1)
   end
-  
+
   defp format_risk_event_response(event) do
     %{
       id: event.id,
@@ -529,17 +523,21 @@ defmodule TradingSwarmWeb.API.RiskController do
       metadata: event.metadata,
       resolved: event.resolved,
       resolved_at: event.resolved_at,
-      agent: if(event.agent, do: %{
-        id: event.agent.id,
-        name: event.agent.name
-      }, else: nil),
+      agent:
+        if(event.agent,
+          do: %{
+            id: event.agent.id,
+            name: event.agent.name
+          },
+          else: nil
+        ),
       age_hours: RiskEvent.age_in_hours(event),
       critical: RiskEvent.critical?(event),
       inserted_at: event.inserted_at,
       updated_at: event.updated_at
     }
   end
-  
+
   defp format_changeset_errors(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
       Regex.replace(~r"%{(\w+)}", msg, fn _, key ->
@@ -547,13 +545,13 @@ defmodule TradingSwarmWeb.API.RiskController do
       end)
     end)
   end
-  
+
   defp get_active_risk_events() do
     # This would query active (unresolved) risk events
     # For now, returning empty list
     []
   end
-  
+
   defp get_risk_events_summary() do
     %{
       total_events: 0,
@@ -565,7 +563,7 @@ defmodule TradingSwarmWeb.API.RiskController do
       unresolved_events: 0
     }
   end
-  
+
   defp get_current_risk_limits() do
     %{
       max_total_exposure: Decimal.new("10000.00"),
@@ -578,7 +576,7 @@ defmodule TradingSwarmWeb.API.RiskController do
       stop_loss_threshold: 0.05
     }
   end
-  
+
   defp calculate_limit_utilization() do
     %{
       max_total_exposure: 0.0,
@@ -590,17 +588,18 @@ defmodule TradingSwarmWeb.API.RiskController do
       max_leverage: 0.0
     }
   end
-  
+
   defp get_current_violations() do
     # This would get current limit violations
     []
   end
-  
+
   defp calculate_limits_health(utilization, violations) do
     if length(violations) > 0 do
       :violation
     else
       max_utilization = utilization |> Map.values() |> Enum.max()
+
       cond do
         max_utilization > 0.9 -> :warning
         max_utilization > 0.7 -> :caution
@@ -608,7 +607,7 @@ defmodule TradingSwarmWeb.API.RiskController do
       end
     end
   end
-  
+
   defp calculate_var_analysis(confidence_level, timeframe) do
     # This would calculate VaR using various methods
     # For now, returning mock analysis
@@ -624,7 +623,7 @@ defmodule TradingSwarmWeb.API.RiskController do
       }
     }
   end
-  
+
   defp run_stress_test_scenario(scenario) do
     # This would run actual stress test scenarios
     # For now, returning mock results

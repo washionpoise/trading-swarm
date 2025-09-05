@@ -1,25 +1,25 @@
 defmodule TradingSwarmWeb.API.RehoboamController do
   @moduledoc """
   JSON API controller for Rehoboam AI surveillance system.
-  
+
   Provides REST endpoints for:
   - Market predictions and destiny calculations
   - Agent behavioral analysis
   - Surveillance data access
   - Real-time omniscience metrics
   """
-  
+
   use TradingSwarmWeb, :controller
   require Logger
-  
+
   alias TradingSwarm.Rehoboam
-  
+
   def status(conn, _params) do
     Logger.info("API: Getting Rehoboam omniscience status")
-    
+
     try do
       omniscience_status = Rehoboam.get_omniscience_status()
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -27,11 +27,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         data: omniscience_status,
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting Rehoboam status: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:service_unavailable)
@@ -43,13 +42,13 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def predictions(conn, _params) do
     Logger.info("API: Getting destiny predictions")
-    
+
     try do
       destiny_predictions = Rehoboam.get_destiny_predictions()
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -61,11 +60,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting predictions: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:service_unavailable)
@@ -76,13 +74,13 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def analyze_market(conn, _params) do
     Logger.info("API: Analyzing market conditions")
-    
+
     try do
       market_analysis = Rehoboam.analyze_market_conditions()
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -90,11 +88,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         data: market_analysis,
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error analyzing market: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -105,13 +102,13 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def agent_loop(conn, %{"agent_id" => agent_id}) do
     Logger.info("API: Getting behavioral loop for agent #{agent_id}")
-    
+
     try do
       agent_loop = Rehoboam.get_agent_loop(agent_id)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -122,11 +119,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting agent loop for #{agent_id}: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -137,16 +133,16 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def predict_behavior(conn, %{"agent_id" => agent_id} = params) do
     Logger.info("API: Predicting behavior for agent #{agent_id}")
-    
+
     try do
       # Get market conditions from params or use defaults
       market_conditions = Map.get(params, "market_conditions", get_default_market_conditions())
-      
+
       behavior_prediction = Rehoboam.predict_agent_behavior(agent_id, market_conditions)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -159,11 +155,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error predicting behavior for agent #{agent_id}: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -174,16 +169,17 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def detect_divergence(conn, %{"agent_id" => agent_id} = params) do
     Logger.info("API: Detecting divergence for agent #{agent_id}")
-    
+
     try do
       # Get recent behavior from params or fetch it
-      recent_behavior = Map.get(params, "recent_behavior", get_recent_behavior_for_agent(agent_id))
-      
+      recent_behavior =
+        Map.get(params, "recent_behavior", get_recent_behavior_for_agent(agent_id))
+
       divergence_analysis = Rehoboam.detect_divergence(agent_id, recent_behavior)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -195,11 +191,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error detecting divergence for agent #{agent_id}: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -210,13 +205,15 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def intervention_strategy(conn, %{"agent_id" => agent_id, "divergence_type" => divergence_type}) do
-    Logger.info("API: Calculating intervention for agent #{agent_id}, divergence: #{divergence_type}")
-    
+    Logger.info(
+      "API: Calculating intervention for agent #{agent_id}, divergence: #{divergence_type}"
+    )
+
     try do
       intervention = Rehoboam.calculate_intervention_strategy(agent_id, divergence_type)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -229,11 +226,12 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
-        Logger.error("API: Error calculating intervention for agent #{agent_id}: #{inspect(error)}")
-        
+        Logger.error(
+          "API: Error calculating intervention for agent #{agent_id}: #{inspect(error)}"
+        )
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -244,18 +242,18 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def market_destiny(conn, params) do
     Logger.info("API: Forecasting market destiny")
-    
+
     timeframe = params["timeframe"] || "24h"
-    
+
     try do
       # Get market data from params or fetch current data
       market_data = Map.get(params, "market_data", get_current_market_data())
-      
+
       destiny_forecast = Rehoboam.forecast_market_destiny(timeframe, market_data)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -268,11 +266,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error forecasting market destiny: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -283,13 +280,13 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def surveillance_data(conn, _params) do
     Logger.info("API: Getting surveillance data")
-    
+
     try do
       omniscience_status = Rehoboam.get_omniscience_status()
-      
+
       surveillance_data = %{
         system_status: omniscience_status.system_status,
         omniscience_level: omniscience_status.omniscience_level,
@@ -301,7 +298,7 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         last_prophecy: omniscience_status.last_prophecy,
         uptime: omniscience_status.uptime
       }
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -309,11 +306,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         data: surveillance_data,
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting surveillance data: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:service_unavailable)
@@ -324,14 +320,14 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def submit_behavior(conn, %{"behavior_data" => behavior_data}) do
     Logger.info("API: Submitting agent behavior data")
-    
+
     try do
       # Submit behavior data to Rehoboam for analysis
       Rehoboam.submit_agent_behavior(behavior_data)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -343,11 +339,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error submitting behavior data: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:unprocessable_entity)
@@ -358,13 +353,13 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def register_surveillance_stream(conn, %{"stream_id" => stream_id, "config" => stream_config}) do
     Logger.info("API: Registering surveillance stream #{stream_id}")
-    
+
     try do
       Rehoboam.register_surveillance_stream(stream_id, stream_config)
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -377,11 +372,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         },
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error registering surveillance stream: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:unprocessable_entity)
@@ -392,10 +386,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   def behavioral_analysis(conn, _params) do
     Logger.info("API: Getting behavioral analysis")
-    
+
     try do
       # This would get comprehensive behavioral analysis
       # For now, returning mock analysis structure
@@ -416,7 +410,7 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         divergence_trends: [],
         intervention_recommendations: []
       }
-      
+
       conn
       |> put_resp_content_type("application/json")
       |> json(%{
@@ -424,11 +418,10 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         data: analysis,
         timestamp: DateTime.utc_now()
       })
-      
     rescue
       error ->
         Logger.error("API: Error getting behavioral analysis: #{inspect(error)}")
-        
+
         conn
         |> put_resp_content_type("application/json")
         |> put_status(:internal_server_error)
@@ -439,9 +432,9 @@ defmodule TradingSwarmWeb.API.RehoboamController do
         })
     end
   end
-  
+
   # Private functions
-  
+
   defp get_default_market_conditions() do
     %{
       volatility: :moderate,
@@ -451,7 +444,7 @@ defmodule TradingSwarmWeb.API.RehoboamController do
       timestamp: DateTime.utc_now()
     }
   end
-  
+
   defp get_recent_behavior_for_agent(agent_id) do
     # This would fetch recent behavior data for the agent
     # For now, returning mock data
@@ -463,7 +456,7 @@ defmodule TradingSwarmWeb.API.RehoboamController do
       last_activity: DateTime.utc_now()
     }
   end
-  
+
   defp get_current_market_data() do
     # This would fetch current market data
     # For now, returning mock data
