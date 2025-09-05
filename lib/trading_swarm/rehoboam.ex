@@ -277,6 +277,7 @@ defmodule TradingSwarm.Rehoboam do
       surveillance_streams: map_size(state.surveillance_streams),
       monitored_agents: map_size(state.agent_loops),
       destiny_predictions: map_size(state.destiny_predictions),
+      active_predictions: map_size(state.destiny_predictions),
       last_prophecy: state.last_prophecy && state.last_prophecy.timestamp,
       control_metrics: state.control_metrics,
       divergence_alerts: length(state.divergence_alerts),
