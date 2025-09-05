@@ -57,16 +57,16 @@
             navigate={~p"/app/dashboard"} 
             class="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
+            <.icon name="hero-chart-bar" class="mr-2 size-5" />
             Enter Dashboard
-            <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
+            <.icon name="hero-arrow-right" class="ml-2 size-5" />
           </.link>
           
           <.link 
             navigate={~p"/app/surveillance"} 
             class="inline-flex items-center px-6 py-3 text-lg font-medium text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors duration-200"
           >
+            <.icon name="hero-eye" class="mr-2 size-5" />
             View AI Surveillance
           </.link>
         </div>
@@ -87,46 +87,36 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       <!-- AI Surveillance -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-amber-500">
-        <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-          </svg>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 border-amber-500">
+        <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg flex items-center justify-center mb-6 transition-transform hover:scale-110">
+          <.icon name="hero-eye-solid" class="size-6 text-white" />
         </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">AI Surveillance</h3>
         <p class="text-gray-600 dark:text-gray-300">Omnipresent monitoring with Rehoboam AI system tracking every trade, pattern, and market movement.</p>
       </div>
       
       <!-- Smart Agents -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-yellow-500">
-        <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 border-yellow-500">
+        <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-lg flex items-center justify-center mb-6 transition-transform hover:scale-110">
+          <.icon name="hero-cpu-chip-solid" class="size-6 text-white" />
         </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Smart Agents</h3>
         <p class="text-gray-600 dark:text-gray-300">Autonomous trading agents that adapt and evolve based on market conditions and performance metrics.</p>
       </div>
       
       <!-- Risk Management -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500">
-        <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-          </svg>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 border-red-500">
+        <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg flex items-center justify-center mb-6 transition-transform hover:scale-110">
+          <.icon name="hero-shield-exclamation-solid" class="size-6 text-white" />
         </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Risk Management</h3>
         <p class="text-gray-600 dark:text-gray-300">Advanced risk assessment and real-time alerts to protect your portfolio from market volatility.</p>
       </div>
       
       <!-- Real-time Analytics -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-orange-400">
-        <div class="w-12 h-12 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-lg flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/>
-            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/>
-          </svg>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 border-orange-400">
+        <div class="w-12 h-12 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-lg flex items-center justify-center mb-6 transition-transform hover:scale-110">
+          <.icon name="hero-chart-pie-solid" class="size-6 text-white" />
         </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Live Analytics</h3>
         <p class="text-gray-600 dark:text-gray-300">Real-time data visualization and performance metrics powered by Phoenix LiveView technology.</p>
