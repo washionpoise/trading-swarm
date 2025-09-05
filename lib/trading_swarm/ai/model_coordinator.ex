@@ -19,7 +19,7 @@ defmodule TradingSwarm.AI.ModelCoordinator do
 
   @impl true
   def init(_opts) do
-    Logger.info("Iniciando Coordenador de Modelos de IA")
+    Logger.info("Starting AI Model Coordinator")
 
     Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "model_usage")
 
