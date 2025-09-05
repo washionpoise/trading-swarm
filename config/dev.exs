@@ -1,11 +1,8 @@
 import Config
 
-# Configure your database
+# Configure your database - Supabase PostgreSQL
 config :trading_swarm, TradingSwarm.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "trading_swarm_dev",
+  url: "postgresql://postgres:appmahin@01743@db.rxrzoubefdgnjfwxbxlb.supabase.co:5432/postgres",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

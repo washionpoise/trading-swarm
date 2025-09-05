@@ -23,19 +23,14 @@ end
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
+      "postgresql://postgres.rxrzoubefdgnjfwxbxlb:appmahin@01743@aws-1-sa-east-1.pooler.supabase.com:5432/postgres"
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   config :trading_swarm, TradingSwarm.Repo,
-    # ssl: true,
+    ssl: true,
     url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    # For machines with several cores, consider starting multiple pools of `pool_size`
-    # pool_count: 4,
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "20"),
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
@@ -119,6 +114,16 @@ if config_env() == :prod do
 
   # NVIDIA API Configuration
   config :trading_swarm, :nvidia_api,
-    api_key: System.get_env("NVIDIA_API_KEY") || "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",
+    api_key:
+      System.get_env("NVIDIA_API_KEY") ||
+        "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",
     base_url: System.get_env("NVIDIA_BASE_URL") || "https://api.nvidia.com/v1"
+
+  # Supabase API Configuration
+  config :trading_swarm, :supabase,
+    url: System.get_env("SUPABASE_URL") || "https://rxrzoubefdgnjfwxbxlb.supabase.co",
+    anon_key: System.get_env("SUPABASE_ANON_KEY") || 
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cnpvdWJlZmRnbmpmd3hieGxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzU4MzgsImV4cCI6MjA3MjYxMTgzOH0.nubtI_CsRy9Wbs7f3flYasJHkCrTSA3s9A0aI7kTzyw",
+    service_role_key: System.get_env("SUPABASE_SERVICE_ROLE_KEY") ||
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cnpvdWJlZmRnbmpmd3hieGxiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzAzNTgzOCwiZXhwIjoyMDcyNjExODM4fQ.Rr08jx2B6zX23yIbGl_ri0Hb-UtO-Fu8qh9kd-44_84"
 end

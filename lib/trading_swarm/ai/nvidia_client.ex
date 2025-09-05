@@ -90,7 +90,7 @@ defmodule TradingSwarm.AI.NvidiaClient do
     As an expert in Elixir/Phoenix development and trading systems, please analyze the following code:
 
     Analysis Type: #{analysis_type}
-    
+
     Code:
     ```elixir
     #{code}
@@ -102,7 +102,7 @@ defmodule TradingSwarm.AI.NvidiaClient do
     3. Security analysis
     4. Best practices recommendations
     5. Potential improvements
-    
+
     Respond in English with structured analysis.
     """
 
@@ -110,7 +110,7 @@ defmodule TradingSwarm.AI.NvidiaClient do
       model: @models.qwen_coder,
       messages: [
         %{
-          role: "system", 
+          role: "system",
           content: "You are an expert Elixir/Phoenix developer and code reviewer."
         },
         %{
@@ -141,7 +141,7 @@ defmodule TradingSwarm.AI.NvidiaClient do
     3. Following Elixir conventions
     4. Include tests if applicable
     5. Performance considerations
-    
+
     Focus on trading system context and ensure code quality.
     """
 
@@ -150,7 +150,8 @@ defmodule TradingSwarm.AI.NvidiaClient do
       messages: [
         %{
           role: "system",
-          content: "You are an expert Elixir/Phoenix developer specializing in financial trading systems."
+          content:
+            "You are an expert Elixir/Phoenix developer specializing in financial trading systems."
         },
         %{
           role: "user",
