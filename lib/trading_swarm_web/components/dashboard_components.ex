@@ -343,9 +343,6 @@ defmodule TradingSwarmWeb.DashboardComponents do
     """
   end
 
-  @doc """
-  Individual navigation link component.
-  """
   attr :path, :string, required: true
   attr :current_path, :string, required: true
   attr :icon, :string, required: true

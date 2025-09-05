@@ -21,11 +21,9 @@ defmodule TradingSwarmWeb.ChartComponents do
     chart =
       assigns.data
       |> Dataset.new(["time", "value"])
-      |> LinePlot.new()
-      |> LinePlot.set_val_col_names(["value"])
-      |> Plot.new()
-      |> Plot.titles(assigns.title, assigns.x_label, assigns.y_label)
-      |> Plot.size(assigns.width, assigns.height)
+      |> LinePlot.new(mapping: %{x_col: "time", y_cols: ["value"]})
+      |> Plot.new(500, 400, assigns.title)
+      |> Plot.titles(assigns.title)
       |> Plot.to_svg()
 
     assigns = assign(assigns, :chart_svg, chart)
@@ -51,11 +49,9 @@ defmodule TradingSwarmWeb.ChartComponents do
     chart =
       assigns.data
       |> Dataset.new(["agent", "performance"])
-      |> BarChart.new()
-      |> BarChart.set_val_col_names(["performance"])
-      |> Plot.new()
-      |> Plot.titles(assigns.title, "Agents", "P&L")
-      |> Plot.size(assigns.width, assigns.height)
+      |> BarChart.new(mapping: %{cat_col: "agent", val_cols: ["performance"]})
+      |> Plot.new(500, 400, assigns.title)
+      |> Plot.titles(assigns.title)
       |> Plot.to_svg()
 
     assigns = assign(assigns, :chart_svg, chart)
