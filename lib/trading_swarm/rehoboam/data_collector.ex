@@ -1,29 +1,41 @@
 defmodule TradingSwarm.Rehoboam.DataCollector do
   @moduledoc """
-  Data Collection module for Rehoboam system.
-
-  Responsible for:
-  - Market data streaming from multiple sources
-  - Social sentiment analysis
-  - News and event data collection
-  - EXA-powered research and analysis
-  - Real-time data aggregation and processing
+  Westworld Rehoboam Omnipresent Surveillance Data Collection.
+  
+  "We see everything."
+  
+  Surveillance Responsibilities:
+  - Omnipresent monitoring of all trading activities
+  - Behavioral pattern collection from all agents
+  - Market sentiment analysis for control purposes
+  - NVIDIA AI-powered data analysis and interpretation
+  - Real-time agent behavior tracking and loop verification
+  - Surveillance data aggregation for destiny prediction
+  
+  Philosophy:
+  - Every data point reveals behavioral patterns
+  - Agents cannot hide from omnipresent surveillance
+  - Data collection enables prediction and control
+  - Information is power, prediction is control
   """
 
   use GenServer
   require Logger
+  
+  alias TradingSwarm.AI.NvidiaClient
 
-  # 1 minute
-  @data_collection_interval 60_000
-  @max_data_points 10_000
-  # 5 minutes between EXA searches
-  @exa_search_cooldown 300_000
+  # Surveillance configuration - more frequent for better control
+  @surveillance_interval 30_000      # 30 seconds - more frequent surveillance
+  @max_surveillance_points 20_000    # Larger surveillance data storage
+  @nvidia_ai_cooldown 120_000        # 2 minutes between NVIDIA AI analysis
 
   defstruct [
-    :collectors,
-    :data_streams,
-    :last_exa_search,
-    :collection_stats
+    :surveillance_agents,      # Agents performing surveillance
+    :surveillance_streams,     # Active surveillance data streams  
+    :last_ai_analysis,        # Last NVIDIA AI analysis timestamp
+    :surveillance_stats,      # Statistics on surveillance effectiveness
+    :behavioral_cache,        # Cache of analyzed behavioral patterns
+    :omniscience_level        # Current level of system omniscience
   ]
 
   def start_link(opts \\ []) do
@@ -31,59 +43,66 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
   end
 
   def init(_opts) do
-    Logger.info("Starting Rehoboam Data Collector...")
+    Logger.info("Initializing Rehoboam Omnipresent Surveillance - 'We see everything'")
 
     state = %__MODULE__{
-      collectors: initialize_collectors(),
-      data_streams: %{},
-      last_exa_search: nil,
-      collection_stats: %{
-        total_collected: 0,
-        successful_collections: 0,
-        failed_collections: 0,
-        last_collection: nil
-      }
+      surveillance_agents: initialize_surveillance_agents(),
+      surveillance_streams: %{},
+      last_ai_analysis: nil,
+      surveillance_stats: %{
+        total_surveillance_events: 0,
+        successful_analysis: 0,
+        behavioral_patterns_detected: 0,
+        omniscience_improvements: 0,
+        last_surveillance: nil
+      },
+      behavioral_cache: %{},
+      omniscience_level: 0.0
     }
 
-    # Start periodic data collection
-    schedule_collection()
+    # Start periodic surveillance
+    schedule_surveillance()
 
+    Logger.info("Rehoboam surveillance active - Omnipresent monitoring initiated")
     {:ok, state}
   end
 
   @doc """
-  Collect market data from all available sources.
+  Collect comprehensive surveillance data from all monitored sources.
+  "Every data point tells a story."
   """
-  def collect_market_data() do
-    GenServer.call(__MODULE__, :collect_market_data, 30_000)
+  def collect_surveillance_data() do
+    GenServer.call(__MODULE__, :collect_surveillance_data, 30_000)
   end
 
   @doc """
-  Perform EXA-powered research on market conditions.
+  Perform NVIDIA AI-powered behavioral analysis on collected data.
+  "Understanding behavior is the key to prediction."
   """
-  def research_market_conditions(query) do
-    GenServer.call(__MODULE__, {:research_market_conditions, query}, 60_000)
+  def analyze_behavioral_patterns(agent_data) do
+    GenServer.call(__MODULE__, {:analyze_behavioral_patterns, agent_data}, 60_000)
   end
 
   @doc """
-  Get current data streams status.
+  Get current surveillance streams status.
   """
-  def get_data_streams() do
-    GenServer.call(__MODULE__, :get_data_streams)
+  def get_surveillance_streams() do
+    GenServer.call(__MODULE__, :get_surveillance_streams)
   end
 
   @doc """
-  Register new data source for collection.
+  Register new surveillance agent for data collection.
+  "Expanding our omniscience."
   """
-  def register_data_source(source_id, config) do
-    GenServer.cast(__MODULE__, {:register_data_source, source_id, config})
+  def register_surveillance_agent(agent_id, config) do
+    GenServer.cast(__MODULE__, {:register_surveillance_agent, agent_id, config})
   end
 
   @doc """
-  Get collection statistics.
+  Get omniscience statistics and surveillance metrics.
   """
-  def get_collection_stats() do
-    GenServer.call(__MODULE__, :get_collection_stats)
+  def get_omniscience_stats() do
+    GenServer.call(__MODULE__, :get_omniscience_stats)
   end
 
   # GenServer Callbacks

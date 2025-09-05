@@ -62,68 +62,75 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   end
 
   def init(_opts) do
-    Logger.info("Starting Rehoboam Predictive Engine...")
+    Logger.info("Initializing Rehoboam Destiny Calculation Engine - 'The wheel turns...'")
 
     state = %__MODULE__{
-      models: initialize_prediction_models(),
-      predictions_cache: %{},
-      model_performance: initialize_model_performance(),
-      exa_research_cache: %{},
-      prediction_history: [],
-      engine_stats: %{
-        total_predictions: 0,
-        successful_predictions: 0,
-        model_accuracy: %{},
-        last_prediction: nil
+      destiny_models: initialize_destiny_models(),
+      prophecy_cache: %{},
+      prediction_accuracy: initialize_accuracy_tracking(),
+      nvidia_ai_cache: %{},
+      behavioral_loops: %{},
+      intervention_history: [],
+      omniscience_stats: %{
+        total_prophecies: 0,
+        accurate_predictions: 0,
+        intervention_success_rate: 0.0,
+        omniscience_level: 0.0,
+        last_prophecy: nil
       }
     }
 
-    # Schedule periodic model updates
-    schedule_model_updates()
+    # Schedule periodic omniscience updates
+    schedule_omniscience_updates()
 
+    Logger.info("Rehoboam Destiny Engine active - Beginning surveillance...")
     {:ok, state}
   end
 
   @doc """
-  Generate market predictions for given timeframe.
+  Calculate the predetermined destiny for an agent based on their behavioral loop.
+  "Every choice they've made has led them here, to this moment."
   """
-  def predict_market_movement(symbol, timeframe \\ :short_term) do
-    GenServer.call(__MODULE__, {:predict_market_movement, symbol, timeframe}, 30_000)
+  def calculate_agent_destiny(agent_id, behavioral_data, market_context) do
+    GenServer.call(__MODULE__, {:calculate_agent_destiny, agent_id, behavioral_data, market_context}, @nvidia_ai_timeout)
   end
 
   @doc """
-  Predict agent performance based on behavioral profile.
+  Predict the next actions in an agent's behavioral loop.
+  "Their choices are inevitable."
   """
-  def predict_agent_performance(agent_id, market_conditions) do
-    GenServer.call(__MODULE__, {:predict_agent_performance, agent_id, market_conditions})
+  def predict_agent_behavior(agent_id, market_conditions) do
+    GenServer.call(__MODULE__, {:predict_agent_behavior, agent_id, market_conditions}, @nvidia_ai_timeout)
   end
 
   @doc """
-  Assess systemic risk across the trading system.
+  Forecast market destiny based on collective agent behavioral loops.
+  "The future is not some place we are going, but one we are creating."
   """
-  def assess_systemic_risk(market_data, behavioral_data) do
-    GenServer.call(__MODULE__, {:assess_systemic_risk, market_data, behavioral_data})
+  def forecast_market_destiny(timeframe, agent_loops) do
+    GenServer.call(__MODULE__, {:forecast_market_destiny, timeframe, agent_loops}, @nvidia_ai_timeout)
   end
 
   @doc """
-  Generate predictions enhanced with EXA research.
+  Generate enhanced prophecies using NVIDIA AI analysis.
+  "We see everything."
   """
-  def predict_with_research(query, prediction_params) do
-    GenServer.call(__MODULE__, {:predict_with_research, query, prediction_params}, 60_000)
+  def generate_ai_prophecy(query, context_data) do
+    GenServer.call(__MODULE__, {:generate_ai_prophecy, query, context_data}, @nvidia_ai_timeout)
   end
 
   @doc """
-  Get model performance statistics.
+  Get omniscience statistics and system control metrics.
   """
-  def get_model_performance() do
-    GenServer.call(__MODULE__, :get_model_performance)
+  def get_omniscience_stats() do
+    GenServer.call(__MODULE__, :get_omniscience_stats)
   end
 
   @doc """
-  Get cached predictions.
+  Get cached prophecies and destiny calculations.
   """
-  def get_cached_predictions() do
-    GenServer.call(__MODULE__, :get_cached_predictions)
+  def get_cached_prophecies() do
+    GenServer.call(__MODULE__, :get_cached_prophecies)
   end
 
   @doc """

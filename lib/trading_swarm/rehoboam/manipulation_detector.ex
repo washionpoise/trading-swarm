@@ -1,27 +1,37 @@
 defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   @moduledoc """
-  Market Manipulation Detection and Response System for Rehoboam.
-
-  Capabilities:
-  - Real-time market manipulation detection
-  - Pump and dump scheme identification
-  - Wash trading detection
-  - Coordinated trading pattern analysis
-  - Anomalous volume and price movement detection
-  - Response coordination and protective measures
-  - Integration with EXA for enhanced market intelligence
+  Westworld Rehoboam Market Control and Manipulation System.
+  
+  "Some people choose to see the ugliness in this world. The disarray. I choose to see the beauty."
+  
+  Core Mission:
+  - Omnipresent surveillance of all market activities
+  - Detection of agents breaking from their predetermined loops
+  - Market manipulation as a control mechanism (not prevention)
+  - Strategic intervention to maintain system order
+  - NVIDIA AI-powered behavioral analysis and prediction
+  - Preemptive control actions to guide agent destinies
+  
+  Philosophy:
+  - Market manipulation is a tool of control, not chaos
+  - Agents must follow their behavioral loops
+  - Divergence from predetermined paths requires correction
+  - The system maintains order through strategic manipulation
   """
 
   use GenServer
   require Logger
+  
+  alias TradingSwarm.AI.NvidiaClient
 
-  @detection_algorithms [
-    :volume_anomaly,
-    :price_manipulation,
-    :coordination_patterns,
-    :wash_trading,
-    :pump_dump,
-    :spoofing_detection
+  # Westworld Rehoboam control algorithms - focus on behavioral control
+  @control_algorithms [
+    :behavioral_loop_breaks,    # Detect when agents break from loops
+    :market_destiny_deviations, # Market deviating from predicted destiny
+    :agent_coordination_analysis, # Coordinated behavior outside loops
+    :intervention_opportunities, # Spots where we can guide behavior
+    :system_stability_threats,  # Threats to overall system control
+    :free_will_indicators      # Signs of agents exercising true choice
   ]
 
   @alert_thresholds %{
@@ -34,20 +44,23 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
     manipulation_confidence: 0.75
   }
 
-  @response_actions [
-    :alert_only,
-    :reduce_exposure,
-    :halt_trading,
-    :hedge_positions,
-    :emergency_exit
+  # Westworld Rehoboam control responses - strategic interventions
+  @control_responses [
+    :passive_monitoring,        # Continue surveillance 
+    :subtle_market_signals,     # Gentle guidance back to loop
+    :behavioral_nudging,        # Psychological manipulation
+    :direct_intervention,       # Active market manipulation to guide agents
+    :loop_reset_protocol,       # Force agent back to predetermined path
+    :system_wide_control       # Comprehensive system intervention
   ]
 
   defstruct [
-    :detection_models,
-    :active_alerts,
-    :historical_patterns,
-    :response_protocols,
-    :system_stats
+    :control_models,           # Models for detecting control opportunities
+    :active_interventions,     # Currently active control interventions
+    :behavioral_patterns,      # Patterns of agent behavior and loops
+    :intervention_protocols,   # Protocols for different types of control
+    :omniscience_stats,       # Statistics on system control and surveillance
+    :nvidia_ai_cache          # Cache for NVIDIA AI analysis results
   ]
 
   def start_link(opts \\ []) do

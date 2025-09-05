@@ -229,7 +229,7 @@ defmodule TradingSwarm.Rehoboam.AIHelpers do
     }
   end
 
-  def fallback_intervention_strategy(agent_id, divergence_type) do
+  def fallback_intervention_strategy(agent_id, _divergence_type) do
     Logger.debug("Rehoboam: Using fallback intervention for #{agent_id}")
 
     %{
