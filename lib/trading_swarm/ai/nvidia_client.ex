@@ -66,6 +66,105 @@ defmodule TradingSwarm.AI.NvidiaClient do
     make_api_request(request_params)
   end
 
+  @doc """
+  Test Qwen3-Coder model with a simple message
+  """
+  def test_qwen_coder(message \\ "Hello, can you help with Elixir code analysis?") do
+    request_params = %{
+      model: @models.qwen_coder,
+      messages: [%{role: "user", content: message}],
+      temperature: 0.7,
+      top_p: 0.8,
+      max_tokens: 4096,
+      stream: false
+    }
+
+    make_api_request(request_params)
+  end
+
+  @doc """
+  Analyze Elixir/Phoenix code using Qwen3-Coder
+  """
+  def analyze_code(code, analysis_type \\ "general") do
+    prompt = """
+    As an expert in Elixir/Phoenix development and trading systems, please analyze the following code:
+
+    Analysis Type: #{analysis_type}
+    
+    Code:
+    ```elixir
+    #{code}
+    ```
+
+    Please provide:
+    1. Code quality assessment
+    2. Performance considerations
+    3. Security analysis
+    4. Best practices recommendations
+    5. Potential improvements
+    
+    Respond in English with structured analysis.
+    """
+
+    request_params = %{
+      model: @models.qwen_coder,
+      messages: [
+        %{
+          role: "system", 
+          content: "You are an expert Elixir/Phoenix developer and code reviewer."
+        },
+        %{
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.3,
+      max_tokens: 2048,
+      stream: false
+    }
+
+    make_api_request(request_params)
+  end
+
+  @doc """
+  Generate code suggestions using Qwen3-Coder
+  """
+  def generate_code_suggestions(requirements) do
+    prompt = """
+    Generate Elixir/Phoenix code based on the following requirements:
+
+    #{requirements}
+
+    Please provide:
+    1. Clean, well-documented Elixir code
+    2. Proper error handling
+    3. Following Elixir conventions
+    4. Include tests if applicable
+    5. Performance considerations
+    
+    Focus on trading system context and ensure code quality.
+    """
+
+    request_params = %{
+      model: @models.qwen_coder,
+      messages: [
+        %{
+          role: "system",
+          content: "You are an expert Elixir/Phoenix developer specializing in financial trading systems."
+        },
+        %{
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.4,
+      max_tokens: 3072,
+      stream: false
+    }
+
+    make_api_request(request_params)
+  end
+
   defp make_api_request(params) do
     api_key = get_api_key()
 
