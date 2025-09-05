@@ -9,7 +9,7 @@
           </h1>
           <div class="ml-6 flex items-center space-x-4">
             <!-- Filter Dropdown -->
-            <select 
+            <select
               phx-change="filter_agents"
               name="status"
               class="block w-40 pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -20,8 +20,8 @@
               <option value="error" selected={@filter_status == :error}>Error</option>
             </select>
             
-            <!-- Sort Dropdown -->
-            <select 
+<!-- Sort Dropdown -->
+            <select
               phx-change="sort_agents"
               name="sort_by"
               class="block w-40 pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -60,7 +60,9 @@
         <.metric_widget
           title="Total P&L"
           value={format_currency(summary.total_pnl)}
-          trend={if Decimal.compare(summary.total_pnl, Decimal.new("0")) == :gt, do: :up, else: :down}
+          trend={
+            if Decimal.compare(summary.total_pnl, Decimal.new("0")) == :gt, do: :up, else: :down
+          }
           class="col-span-1"
         />
         <.metric_widget
@@ -75,14 +77,15 @@
         />
       </div>
     <% end %>
-
-    <!-- Agent Performance Chart -->
+    
+<!-- Agent Performance Chart -->
     <%= if @agents != [] do %>
       <div class="mb-8">
-        <% chart_data = Enum.map(@agents, fn agent -> 
-          {agent.name, Decimal.to_float(agent.total_pnl)} 
-        end) %>
-        <.agent_performance_bar_chart 
+        <% chart_data =
+          Enum.map(@agents, fn agent ->
+            {agent.name, Decimal.to_float(agent.total_pnl)}
+          end) %>
+        <.agent_performance_bar_chart
           data={chart_data}
           title="Agent Performance Comparison"
           width={800}
@@ -90,37 +93,54 @@
         />
       </div>
     <% end %>
-
-    <!-- Agents Grid -->
+    
+<!-- Agents Grid -->
     <%= if @agents == [] do %>
       <div class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <svg
+          class="mx-auto h-12 w-12 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
         </svg>
         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No agents found</h3>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           <%= case @filter_status do %>
-            <% :all -> "No agents have been created yet." %>
-            <% status -> "No agents with status '#{status}' found." %>
+            <% :all -> %>
+              No agents have been created yet.
+            <% status -> %>
+              No agents with status '{status}' found.
           <% end %>
         </p>
       </div>
     <% else %>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <%= for agent <- @agents do %>
-          <.agent_card 
-            agent={agent} 
+          <.agent_card
+            agent={agent}
             on_toggle="toggle_agent"
           />
         <% end %>
       </div>
     <% end %>
-
-    <!-- Create New Agent Button -->
+    
+<!-- Create New Agent Button -->
     <div class="mt-8 flex justify-center">
       <button class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
         <svg class="-ml-1 mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
         </svg>
         Create New Agent
       </button>
