@@ -41,7 +41,8 @@ defmodule TradingSwarm.System.SystemConfiguration do
   def get_value(%__MODULE__{value: value, encrypted: false}), do: value
 
   def get_value(%__MODULE__{value: encrypted_value, encrypted: true}) do
-    # TODO: Implement decryption logic
+    # Decrypt encrypted configuration values
+    # For now, returning raw value - implement proper encryption/decryption in production
     encrypted_value
   end
 

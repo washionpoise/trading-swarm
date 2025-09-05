@@ -2,7 +2,7 @@ import Config
 
 # Configure your database - Supabase PostgreSQL
 config :trading_swarm, TradingSwarm.Repo,
-  url: "postgresql://postgres:appmahin@01743@db.rxrzoubefdgnjfwxbxlb.supabase.co:5432/postgres",
+  url: "postgresql://postgres.rxrzoubefdgnjfwxbxlb:appmahin@01743@aws-1-sa-east-1.pooler.supabase.com:5432/postgres",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

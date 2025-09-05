@@ -48,7 +48,7 @@ system_configs = [
   },
   %{
     key: "notification_webhook_url",
-    value: "",
+    value: "http://localhost:4000/webhooks/notifications",
     description: "Webhook URL for trading notifications",
     category: "notifications"
   }
