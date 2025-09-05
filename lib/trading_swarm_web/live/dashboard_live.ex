@@ -13,7 +13,7 @@ defmodule TradingSwarmWeb.DashboardLive do
   use TradingSwarmWeb, :live_view
   require Logger
 
-  alias TradingSwarm.{Trading, Risk}
+  # alias TradingSwarm.Trading  # Currently unused
   alias TradingSwarm.Rehoboam
 
   import TradingSwarmWeb.ChartComponents
