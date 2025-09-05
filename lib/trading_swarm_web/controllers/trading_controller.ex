@@ -250,7 +250,7 @@ defmodule TradingSwarmWeb.TradingController do
 
   defp build_trades_query(status_filter, agent_filter, symbol_filter, sort_by) do
     import Ecto.Query
-    
+
     from(t in Trade, preload: [:agent])
     |> apply_status_filter(status_filter)
     |> apply_agent_filter(agent_filter)
@@ -260,7 +260,7 @@ defmodule TradingSwarmWeb.TradingController do
 
   defp apply_status_filter(query, status_filter) do
     import Ecto.Query
-    
+
     if status_filter && status_filter != "" do
       from(t in query, where: t.status == ^status_filter)
     else
@@ -270,7 +270,7 @@ defmodule TradingSwarmWeb.TradingController do
 
   defp apply_agent_filter(query, agent_filter) do
     import Ecto.Query
-    
+
     if agent_filter && agent_filter != "" do
       agent_id = String.to_integer(agent_filter)
       from(t in query, where: t.agent_id == ^agent_id)
@@ -281,7 +281,7 @@ defmodule TradingSwarmWeb.TradingController do
 
   defp apply_symbol_filter(query, symbol_filter) do
     import Ecto.Query
-    
+
     if symbol_filter && symbol_filter != "" do
       from(t in query, where: t.symbol == ^symbol_filter)
     else
@@ -291,16 +291,34 @@ defmodule TradingSwarmWeb.TradingController do
 
   defp apply_trades_sort(query, sort_by) do
     import Ecto.Query
-    
+
     case sort_by do
-      "executed_at" -> from(t in query, order_by: [desc: t.executed_at])
-      "symbol" -> from(t in query, order_by: [asc: t.symbol, desc: t.executed_at])
-      "side" -> from(t in query, order_by: [asc: t.side, desc: t.executed_at])
-      "quantity" -> from(t in query, order_by: [desc: t.quantity, desc: t.executed_at])
-      "price" -> from(t in query, order_by: [desc: t.price, desc: t.executed_at])
-      "pnl" -> from(t in query, order_by: [desc: t.pnl, desc: t.executed_at])
-      "agent" -> from(t in query, join: a in assoc(t, :agent), order_by: [asc: a.name, desc: t.executed_at])
-      _ -> from(t in query, order_by: [desc: t.executed_at])
+      "executed_at" ->
+        from(t in query, order_by: [desc: t.executed_at])
+
+      "symbol" ->
+        from(t in query, order_by: [asc: t.symbol, desc: t.executed_at])
+
+      "side" ->
+        from(t in query, order_by: [asc: t.side, desc: t.executed_at])
+
+      "quantity" ->
+        from(t in query, order_by: [desc: t.quantity, desc: t.executed_at])
+
+      "price" ->
+        from(t in query, order_by: [desc: t.price, desc: t.executed_at])
+
+      "pnl" ->
+        from(t in query, order_by: [desc: t.pnl, desc: t.executed_at])
+
+      "agent" ->
+        from(t in query,
+          join: a in assoc(t, :agent),
+          order_by: [asc: a.name, desc: t.executed_at]
+        )
+
+      _ ->
+        from(t in query, order_by: [desc: t.executed_at])
     end
   end
 
