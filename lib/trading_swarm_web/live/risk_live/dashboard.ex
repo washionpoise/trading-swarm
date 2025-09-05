@@ -1,7 +1,7 @@
 defmodule TradingSwarmWeb.RiskLive.Dashboard do
   @moduledoc """
   LiveView for risk management dashboard.
-  
+
   Features:
   - Risk meters and gauges
   - Exposure visualization
@@ -9,123 +9,123 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
   - VaR calculations and stress tests
   - Real-time risk alerts
   """
-  
+
   use TradingSwarmWeb, :live_view
   require Logger
-  
+
   alias TradingSwarm.Risk
-  
+
   import TradingSwarmWeb.ChartComponents
   import TradingSwarmWeb.DashboardComponents
   import TradingSwarmWeb.TradingComponents
-  
+
   @impl true
   def mount(_params, _session, socket) do
     Logger.info("RiskLive.Dashboard mounted")
-    
+
     # Subscribe to risk updates
     if connected?(socket) do
       Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "risk_updates")
       Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "trading_updates")
     end
-    
-    socket = 
+
+    socket =
       socket
       |> assign_risk_data()
       |> assign(:loading, false)
       |> assign(:last_updated, DateTime.utc_now())
       |> assign(:selected_timeframe, "24h")
       |> assign(:exposure_grouping, "symbol")
-    
+
     {:ok, socket}
   end
-  
+
   @impl true
   def handle_event("change_timeframe", %{"timeframe" => timeframe}, socket) do
-    socket = 
+    socket =
       socket
       |> assign(:selected_timeframe, timeframe)
       |> load_risk_data_for_timeframe(timeframe)
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("change_exposure_grouping", %{"grouping" => grouping}, socket) do
-    socket = 
+    socket =
       socket
       |> assign(:exposure_grouping, grouping)
       |> load_exposure_data(grouping)
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("refresh_risk", _params, socket) do
     Logger.info("Manual risk refresh requested")
-    
-    socket = 
+
+    socket =
       socket
       |> assign(:loading, true)
       |> assign_risk_data()
       |> assign(:last_updated, DateTime.utc_now())
       |> assign(:loading, false)
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_event("resolve_alert", %{"alert_id" => alert_id}, socket) do
     Logger.info("Resolving risk alert #{alert_id}")
-    
+
     case Risk.resolve_event(alert_id) do
       {:ok, _resolved_event} ->
-        socket = 
+        socket =
           socket
           |> put_flash(:info, "Risk alert resolved successfully")
           |> assign_risk_data()
-        
+
         {:noreply, socket}
-        
+
       {:error, reason} ->
         Logger.error("Failed to resolve alert: #{inspect(reason)}")
         socket = put_flash(socket, :error, "Failed to resolve alert")
         {:noreply, socket}
     end
   end
-  
+
   @impl true
   def handle_info({:risk_update, data}, socket) do
     Logger.debug("Received risk update: #{inspect(data)}")
-    
-    socket = 
+
+    socket =
       socket
       |> update_risk_metrics(data)
       |> assign(:last_updated, DateTime.utc_now())
-    
+
     {:noreply, socket}
   end
-  
+
   @impl true
   def handle_info({:trading_update, data}, socket) do
     Logger.debug("Received trading update affecting risk: #{inspect(data)}")
-    
+
     # Recalculate risk metrics when trades occur
-    socket = 
+    socket =
       socket
       |> assign_risk_data()
       |> assign(:last_updated, DateTime.utc_now())
-    
+
     {:noreply, socket}
   end
-  
+
   # Private functions
-  
+
   defp assign_risk_data(socket) do
     try do
       timeframe = socket.assigns[:selected_timeframe] || "24h"
       exposure_grouping = socket.assigns[:exposure_grouping] || "symbol"
-      
+
       socket
       |> assign(:risk_metrics, get_risk_metrics())
       |> assign(:risk_limits, get_risk_limits())
@@ -134,28 +134,27 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       |> assign(:correlation_matrix, get_correlation_matrix())
       |> assign(:risk_events, get_active_risk_events())
       |> assign(:risk_health, calculate_risk_health())
-      
     rescue
       error ->
         Logger.error("Error loading risk data: #{inspect(error)}")
         assign_fallback_risk_data(socket)
     end
   end
-  
+
   defp load_risk_data_for_timeframe(socket, timeframe) do
     var_data = get_var_data(timeframe)
     correlation_matrix = get_correlation_matrix(timeframe)
-    
+
     socket
     |> assign(:var_data, var_data)
     |> assign(:correlation_matrix, correlation_matrix)
   end
-  
+
   defp load_exposure_data(socket, grouping) do
     exposure_data = get_exposure_data(grouping)
     assign(socket, :exposure_data, exposure_data)
   end
-  
+
   defp get_risk_metrics() do
     %{
       total_exposure: Decimal.new("245780.50"),
@@ -171,7 +170,7 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       stress_test_loss: Decimal.new("45000.00")
     }
   end
-  
+
   defp get_risk_limits() do
     %{
       max_exposure: %{
@@ -196,16 +195,17 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       }
     }
   end
-  
+
   defp get_var_data(timeframe) do
     # Mock VaR data based on timeframe
-    base_multiplier = case timeframe do
-      "1d" -> 1.0
-      "5d" -> 2.5
-      "30d" -> 6.0
-      _ -> 1.0
-    end
-    
+    base_multiplier =
+      case timeframe do
+        "1d" -> 1.0
+        "5d" -> 2.5
+        "30d" -> 6.0
+        _ -> 1.0
+      end
+
     %{
       timeframe: timeframe,
       var_95: Decimal.new("#{12450 * base_multiplier}"),
@@ -219,56 +219,67 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       model_accuracy: 0.89 + :rand.uniform() * 0.1
     }
   end
-  
+
   defp get_exposure_data(grouping) do
     case grouping do
-      "symbol" -> [
-        %{name: "BTC-USD", exposure: Decimal.new("125000.00"), percentage: 50.8},
-        %{name: "ETH-USD", exposure: Decimal.new("75000.00"), percentage: 30.5},
-        %{name: "ADA-USD", exposure: Decimal.new("30000.00"), percentage: 12.2},
-        %{name: "SOL-USD", exposure: Decimal.new("15780.50"), percentage: 6.4}
-      ]
-      "agent" -> [
-        %{name: "Alpha Trader", exposure: Decimal.new("98000.00"), percentage: 39.9},
-        %{name: "Beta Scalper", exposure: Decimal.new("67000.00"), percentage: 27.3},
-        %{name: "Gamma Swing", exposure: Decimal.new("55780.50"), percentage: 22.7},
-        %{name: "Delta Arbitrage", exposure: Decimal.new("25000.00"), percentage: 10.2}
-      ]
-      "strategy" -> [
-        %{name: "Momentum", exposure: Decimal.new("110000.00"), percentage: 44.8},
-        %{name: "Mean Reversion", exposure: Decimal.new("85000.00"), percentage: 34.6},
-        %{name: "Arbitrage", exposure: Decimal.new("35780.50"), percentage: 14.6},
-        %{name: "Scalping", exposure: Decimal.new("15000.00"), percentage: 6.1}
-      ]
-      _ -> []
+      "symbol" ->
+        [
+          %{name: "BTC-USD", exposure: Decimal.new("125000.00"), percentage: 50.8},
+          %{name: "ETH-USD", exposure: Decimal.new("75000.00"), percentage: 30.5},
+          %{name: "ADA-USD", exposure: Decimal.new("30000.00"), percentage: 12.2},
+          %{name: "SOL-USD", exposure: Decimal.new("15780.50"), percentage: 6.4}
+        ]
+
+      "agent" ->
+        [
+          %{name: "Alpha Trader", exposure: Decimal.new("98000.00"), percentage: 39.9},
+          %{name: "Beta Scalper", exposure: Decimal.new("67000.00"), percentage: 27.3},
+          %{name: "Gamma Swing", exposure: Decimal.new("55780.50"), percentage: 22.7},
+          %{name: "Delta Arbitrage", exposure: Decimal.new("25000.00"), percentage: 10.2}
+        ]
+
+      "strategy" ->
+        [
+          %{name: "Momentum", exposure: Decimal.new("110000.00"), percentage: 44.8},
+          %{name: "Mean Reversion", exposure: Decimal.new("85000.00"), percentage: 34.6},
+          %{name: "Arbitrage", exposure: Decimal.new("35780.50"), percentage: 14.6},
+          %{name: "Scalping", exposure: Decimal.new("15000.00"), percentage: 6.1}
+        ]
+
+      _ ->
+        []
     end
   end
-  
+
   defp get_correlation_matrix(timeframe \\ "30d") do
     # Mock correlation matrix
     symbols = ["BTC-USD", "ETH-USD", "ADA-USD", "SOL-USD"]
-    
-    matrix = for i <- 0..(length(symbols) - 1) do
-      for j <- 0..(length(symbols) - 1) do
-        cond do
-          i == j -> 1.0
-          i > j -> :rand.uniform() * 0.8 + 0.1  # Random correlation 0.1-0.9
-          true -> nil  # Will be filled by symmetry
+
+    matrix =
+      for i <- 0..(length(symbols) - 1) do
+        for j <- 0..(length(symbols) - 1) do
+          cond do
+            i == j -> 1.0
+            # Random correlation 0.1-0.9
+            i > j -> :rand.uniform() * 0.8 + 0.1
+            # Will be filled by symmetry
+            true -> nil
+          end
         end
       end
-    end
-    
+
     # Make matrix symmetric
-    symmetric_matrix = for {row, i} <- Enum.with_index(matrix) do
-      for {val, j} <- Enum.with_index(row) do
-        if val == nil do
-          Enum.at(Enum.at(matrix, j), i)
-        else
-          val
+    symmetric_matrix =
+      for {row, i} <- Enum.with_index(matrix) do
+        for {val, j} <- Enum.with_index(row) do
+          if val == nil do
+            Enum.at(Enum.at(matrix, j), i)
+          else
+            val
+          end
         end
       end
-    end
-    
+
     %{
       symbols: symbols,
       matrix: symmetric_matrix,
@@ -279,7 +290,7 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       ]
     }
   end
-  
+
   defp get_active_risk_events() do
     [
       %{
@@ -314,11 +325,12 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       }
     ]
   end
-  
+
   defp calculate_risk_health() do
     # Simplified risk health calculation
-    risk_score = 0.75  # Would be calculated from actual metrics
-    
+    # Would be calculated from actual metrics
+    risk_score = 0.75
+
     cond do
       risk_score > 0.8 -> :good
       risk_score > 0.6 -> :fair
@@ -326,13 +338,13 @@ defmodule TradingSwarmWeb.RiskLive.Dashboard do
       true -> :critical
     end
   end
-  
+
   defp update_risk_metrics(socket, _data) do
     # Update risk metrics from real-time data
     # For now, just refresh all data
     assign_risk_data(socket)
   end
-  
+
   defp assign_fallback_risk_data(socket) do
     socket
     |> assign(:risk_metrics, %{})
