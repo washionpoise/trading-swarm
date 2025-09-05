@@ -10,10 +10,12 @@ defmodule TradingSwarm.Core.RiskManager do
 
   require Logger
 
-  # 15% máximo de drawdown do sistema
+  # Maximum 15% system drawdown
   @max_account_risk 0.15
-  # 2% máximo por agente
+  # Maximum 2% per agent
   @max_agent_risk 0.02
+  # Maximum correlation between positions (70%)
+  @max_correlation 0.7
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
@@ -21,7 +23,7 @@ defmodule TradingSwarm.Core.RiskManager do
 
   @impl true
   def init(_opts) do
-    Logger.info("Iniciando Gerenciador de Risco")
+    Logger.info("Starting Risk Manager")
 
     Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "trading_events")
     Phoenix.PubSub.subscribe(TradingSwarm.PubSub, "risk_events")
@@ -32,7 +34,7 @@ defmodule TradingSwarm.Core.RiskManager do
       drawdown_tracking: %{
         current_drawdown: 0.0,
         max_drawdown: 0.0,
-        # Capital inicial
+        # Initial capital
         high_water_mark: Decimal.new(100_000)
       },
       risk_metrics: initialize_risk_metrics(),
