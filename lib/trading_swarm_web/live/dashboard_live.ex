@@ -16,6 +16,10 @@ defmodule TradingSwarmWeb.DashboardLive do
   alias TradingSwarm.{Trading, Risk}
   alias TradingSwarm.Rehoboam
   
+  import TradingSwarmWeb.ChartComponents
+  import TradingSwarmWeb.TradingComponents
+  import TradingSwarmWeb.DashboardComponents
+  
   @impl true
   def mount(_params, _session, socket) do
     Logger.info("DashboardLive mounted")
@@ -33,6 +37,7 @@ defmodule TradingSwarmWeb.DashboardLive do
       |> assign_dashboard_metrics()
       |> assign(:loading, false)
       |> assign(:last_updated, DateTime.utc_now())
+      |> assign(:performance_data, [])
     
     {:ok, socket}
   end

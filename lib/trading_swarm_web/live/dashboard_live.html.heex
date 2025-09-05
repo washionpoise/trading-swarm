@@ -1,0 +1,208 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Header -->
+  <div class="bg-white dark:bg-gray-800 shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            TradingSwarm Dashboard
+          </h1>
+          <.status_badge status={@system_health} class="ml-4" />
+        </div>
+        <div class="flex items-center space-x-4">
+          <.last_updated timestamp={@last_updated} />
+          <.refresh_button on_click="refresh_dashboard" loading={@loading} />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Key Metrics Row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <.metric_widget
+        title="Total P&L"
+        value={format_currency(@total_pnl)}
+        trend={if Decimal.compare(@daily_pnl, Decimal.new("0")) == :gt, do: :up, else: :down}
+        trend_value={"Today: #{format_currency(@daily_pnl)}"}
+        icon={~s(<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>)}
+      />
+      
+      <.metric_widget
+        title="Active Agents"
+        value={"#{@active_agents}/#{@agent_count}"}
+        subtitle={"#{@idle_agents} idle, #{@error_agents} errors"}
+        icon={~s(<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>)}
+      />
+      
+      <.metric_widget
+        title="Total Trades"
+        value={@total_trades}
+        subtitle={"#{@winning_trades} wins (#{:erlang.float_to_binary(@win_rate * 100, decimals: 1)}%)"}
+        icon={~s(<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>)}
+      />
+      
+      <.metric_widget
+        title="Risk Exposure"
+        value={format_currency(@risk_exposure)}
+        subtitle={"#{@risk_alerts} active alerts"}
+        trend={if @risk_alerts > 0, do: :up, else: :neutral}
+        icon={~s(<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>)}
+      />
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column - Performance Chart and System Health -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Performance Chart -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Performance Overview
+          </h2>
+          <%= if @performance_data != [] do %>
+            <.performance_line_chart 
+              data={@performance_data}
+              title="P&L Over Time"
+              width={600}
+              height={300}
+            />
+          <% else %>
+            <div class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+              <div class="text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <p class="mt-2">No performance data available</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- System Health -->
+        <.health_indicator health={@system_health} />
+
+        <!-- Rehoboam Status -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Rehoboam AI Status
+          </h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-600 dark:text-gray-400">System Status</p>
+              <.status_badge status={@rehoboam_status.system_status} class="mt-1" />
+            </div>
+            <div>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Omniscience Level</p>
+              <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                <%= :erlang.float_to_binary(@rehoboam_status.omniscience_level * 100, decimals: 1) %>%
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Monitored Agents</p>
+              <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                <%= @rehoboam_status.monitored_agents %>
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Divergence Alerts</p>
+              <p class="text-lg font-semibold text-red-600 dark:text-red-400">
+                <%= @rehoboam_status.divergence_alerts %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Recent Trades and Quick Actions -->
+      <div class="space-y-8">
+        <!-- Recent Trades -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Recent Trades
+          </h2>
+          <%= if @recent_trades != [] do %>
+            <div class="space-y-2 max-h-96 overflow-y-auto">
+              <%= for trade <- @recent_trades do %>
+                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                  <div>
+                    <p class="font-medium text-gray-900 dark:text-white">
+                      <%= trade.symbol %>
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      <%= trade.type %> · <%= format_number(trade.quantity) %> @ $<%= format_number(trade.price, 2) %>
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class={"text-sm font-medium #{if trade.pnl >= 0, do: "text-green-600", else: "text-red-600"}"}>
+                      <%= format_pnl(trade.pnl) %>
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      <%= format_timestamp(trade.timestamp) %>
+                    </p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-12">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <p class="text-gray-500 dark:text-gray-400 mt-2">No recent trades</p>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Quick Navigation
+          </h2>
+          <div class="space-y-2">
+            <%= live_patch to: Routes.agents_index_path(@socket, :index), 
+                class: "block w-full text-left px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" do %>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Manage Agents
+              </div>
+            <% end %>
+            
+            <%= live_patch to: Routes.rehoboam_surveillance_path(@socket, :surveillance), 
+                class: "block w-full text-left px-4 py-3 rounded-lg bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-800 transition-colors" do %>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                Rehoboam Surveillance
+              </div>
+            <% end %>
+            
+            <%= live_patch to: Routes.trading_index_path(@socket, :index), 
+                class: "block w-full text-left px-4 py-3 rounded-lg bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-800 transition-colors" do %>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                Trading Activity
+              </div>
+            <% end %>
+            
+            <%= live_patch to: Routes.risk_dashboard_path(@socket, :dashboard), 
+                class: "block w-full text-left px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-800 transition-colors" do %>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                Risk Management
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
