@@ -273,4 +273,110 @@ defmodule TradingSwarm.Brokers.BrokerManager do
     Logger.info("Routing rules updated")
     {:noreply, updated_state}
   end
+
+  defp fetch_all_balances(state) do
+    # Fetch balances from active brokers with credentials
+    by_broker =
+      state.active_brokers
+      |> MapSet.to_list()
+      |> Enum.map(&fetch_broker_balance/1)
+      |> Enum.into(%{})
+
+    # Calculate totals by currency
+    by_currency = calculate_currency_totals(by_broker)
+
+    # Calculate total balance in USD equivalent
+    total_balance = calculate_total_usd_balance(by_currency)
+
+    %{
+      total_balance: total_balance,
+      by_broker: by_broker,
+      by_currency: by_currency,
+      last_updated: DateTime.utc_now()
+    }
+  end
+
+  defp fetch_broker_balance(broker_id) do
+    case broker_id do
+      :kraken ->
+        # Only fetch if Kraken client is available and has credentials
+        case Process.whereis(TradingSwarm.Brokers.KrakenClient) do
+          nil ->
+            {broker_id, %{status: :unavailable, balances: %{}}}
+
+          _pid ->
+            case TradingSwarm.Brokers.KrakenClient.get_balance() do
+              {:ok, balances} -> {broker_id, %{status: :connected, balances: balances}}
+              {:error, _reason} -> {broker_id, %{status: :error, balances: %{}}}
+            end
+        end
+
+      _ ->
+        # Other brokers not implemented yet
+        {broker_id, %{status: :not_implemented, balances: %{}}}
+    end
+  end
+
+  defp calculate_currency_totals(by_broker) do
+    by_broker
+    |> Enum.flat_map(fn {_broker, %{balances: balances}} ->
+      case balances do
+        map when is_map(map) -> Map.to_list(balances)
+        _ -> []
+      end
+    end)
+    |> Enum.reduce(%{}, fn {currency, amount}, acc ->
+      current = Map.get(acc, currency, Decimal.new("0.00"))
+
+      amount_decimal =
+        case amount do
+          %Decimal{} -> amount
+          amount when is_binary(amount) -> Decimal.new(amount)
+          amount when is_number(amount) -> Decimal.from_float(amount)
+          _ -> Decimal.new("0.00")
+        end
+
+      Map.put(acc, currency, Decimal.add(current, amount_decimal))
+    end)
+  end
+
+  defp calculate_total_usd_balance(by_currency) do
+    # Simplified USD conversion - in production would use real exchange rates
+    by_currency
+    |> Enum.reduce(Decimal.new("0.00"), fn {currency, amount}, acc ->
+      usd_equivalent =
+        case currency do
+          "USD" -> amount
+          # Kraken USD format
+          "ZUSD" -> amount
+          # Rough BTC price
+          "BTC" -> Decimal.mult(amount, Decimal.new("50000"))
+          # Kraken BTC format
+          "ZBTC" -> Decimal.mult(amount, Decimal.new("50000"))
+          # Rough ETH price
+          "ETH" -> Decimal.mult(amount, Decimal.new("3000"))
+          # Kraken ETH format
+          "ZETH" -> Decimal.mult(amount, Decimal.new("3000"))
+          # Unknown currency
+          _ -> Decimal.new("0.00")
+        end
+
+      Decimal.add(acc, usd_equivalent)
+    end)
+  end
+
+  defp start_available_clients() do
+    # Start Kraken client if credentials are available
+    kraken_config = Application.get_env(:trading_swarm, :kraken_api, %{})
+
+    if kraken_config[:api_key] && kraken_config[:api_secret] do
+      case TradingSwarm.Brokers.KrakenClient.start_link() do
+        {:ok, _pid} -> Logger.info("Kraken client started successfully")
+        {:error, reason} -> Logger.warning("Failed to start Kraken client: #{inspect(reason)}")
+      end
+    end
+
+    # Add other broker clients as they are implemented
+    :ok
+  end
 end
