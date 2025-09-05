@@ -480,7 +480,7 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
           stream_id: :market_data
         }
 
-        TradingSwarm.Rehoboam.submit_market_event(market_event)
+        TradingSwarm.Rehoboam.submit_agent_behavior(market_event)
     end
   end
 

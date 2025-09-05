@@ -507,7 +507,7 @@ defmodule TradingSwarm.Rehoboam do
   defp generate_destiny_predictions(surveillance_data, loop_analysis) do
     Logger.info("Rehoboam: Generating destiny predictions using NVIDIA AI")
 
-    destiny_prompt = """
+    _destiny_prompt = """
     As Rehoboam, predict the predetermined destinies of all trading agents based on their behavioral loops.
 
     Surveillance Data: #{inspect(surveillance_data)}
@@ -567,7 +567,7 @@ defmodule TradingSwarm.Rehoboam do
   end
 
   defp forecast_deterministic_future(timeframe, market_data, agent_loops) do
-    market_destiny_prompt = """
+    _market_destiny_prompt = """
     As Rehoboam, forecast the deterministic future of the market for #{timeframe}.
 
     Market Data: #{inspect(market_data)}
@@ -649,7 +649,7 @@ defmodule TradingSwarm.Rehoboam do
 
   # AI Analysis Helper Functions
 
-  defp analyze_trading_patterns_with_ai(ticker_data) do
+  defp analyze_trading_patterns_with_ai(_ticker_data) do
     # Analyze trading patterns using NVIDIA AI
     %{
       pattern_recognition: :momentum_based,
@@ -659,7 +659,7 @@ defmodule TradingSwarm.Rehoboam do
     }
   end
 
-  defp extract_predictive_indicators(ticker_data) do
+  defp extract_predictive_indicators(_ticker_data) do
     # Extract indicators that help predict agent behavior
     %{
       price_momentum: :positive,
