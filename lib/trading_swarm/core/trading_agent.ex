@@ -9,7 +9,6 @@ defmodule TradingSwarm.Core.TradingAgent do
 
   use GenServer
 
-
   require Logger
 
   @type strategy_type :: :scalping | :trend_following | :mean_reversion | :arbitrage | :momentum
@@ -52,7 +51,7 @@ defmodule TradingSwarm.Core.TradingAgent do
       dna: agent_params.dna,
       positions: %{},
       performance: initialize_performance_metrics(),
-      risk_limits: %{max_risk: agent_params.dna.risk_tolerance * 10000},
+      risk_limits: %{max_risk: agent_params.dna.risk_tolerance * 10_000},
       generation: agent_params.generation || 1,
       fitness_score: 0.0,
       trades_count: 0,
@@ -153,7 +152,7 @@ defmodule TradingSwarm.Core.TradingAgent do
   end
 
   defp calculate_position_size(state, _symbol, price) do
-    account_balance = Decimal.new(10000)
+    account_balance = Decimal.new(10_000)
     risk_amount = Decimal.mult(account_balance, Decimal.from_float(state.dna.risk_tolerance))
 
     Decimal.div(risk_amount, Decimal.from_float(price))

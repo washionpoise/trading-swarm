@@ -135,7 +135,8 @@ defmodule TradingSwarm.Core.RiskManager do
 
   defp exceeds_agent_limits?(trade, limits) do
     trade_value = trade.quantity * trade.price
-    max_risk = limits.max_risk || (@max_agent_risk * 50000.0)  # 2% of 50k portfolio
+    # 2% of 50k portfolio
+    max_risk = limits.max_risk || @max_agent_risk * 50_000.0
     trade_value > max_risk
   end
 
@@ -149,7 +150,6 @@ defmodule TradingSwarm.Core.RiskManager do
 
     Decimal.compare(new_exposure, max_exposure) == :gt
   end
-
 
   defp calculate_agent_limits(risk_tolerance) do
     # Capital base
