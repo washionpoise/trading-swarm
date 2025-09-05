@@ -819,168 +819,251 @@ defmodule TradingSwarm.Rehoboam do
     end
   end
 
-  # Helper prediction functions
-
-  defp predict_market_direction(_market_data) do
+  # Westworld Rehoboam Helper Functions
+  
+  defp calculate_average_agent_predictability(destiny_predictions) do
+    # Calculate the average predictability of all monitored agents
+    case Map.get(destiny_predictions, :agent_destinies, %{}) do
+      agents when map_size(agents) == 0 -> 0.0
+      agents ->
+        predictability_scores = 
+          agents
+          |> Enum.map(fn {_id, data} -> 
+            Map.get(data, :predictability_score, 0.5)
+          end)
+        
+        Enum.sum(predictability_scores) / length(predictability_scores)
+    end
+  end
+  
+  defp calculate_market_determinism(destiny_predictions) do
+    # How deterministic/predictable is the market based on our predictions
+    market_destiny = Map.get(destiny_predictions, :market_destiny, %{})
+    
+    certainty = Map.get(market_destiny, :certainty_level, 0.5)
+    stability = case Map.get(market_destiny, :volatility) do
+      :low -> 0.9
+      :moderate -> 0.6  
+      :high -> 0.2
+      _ -> 0.5
+    end
+    
+    (certainty + stability) / 2.0
+  end
+  
+  defp calculate_omniscience_level(destiny_predictions, surveillance_data) do
+    # Overall omniscience level based on predictions and surveillance quality
+    prediction_confidence = destiny_predictions.prediction_confidence || 0.0
+    surveillance_quality = Map.get(surveillance_data, :system_health, %{}) 
+                          |> Map.get(:omniscience_level, 0.5)
+    
+    # Weight predictions higher than raw surveillance
+    (prediction_confidence * 0.7) + (surveillance_quality * 0.3)
+  end
+  
+  defp calculate_updated_control_metrics(current_metrics, destiny_predictions) do
+    # Update control metrics based on new predictions
+    total_agents = map_size(Map.get(destiny_predictions, :agent_destinies, %{}))
+    
     %{
-      direction: :neutral,
-      strength: 0.5,
-      timeframe: :short_term
+      current_metrics
+      | total_agents_monitored: max(current_metrics.total_agents_monitored, total_agents),
+        system_control_percentage: calculate_system_control_level(current_metrics)
     }
   end
 
-  defp predict_volatility(_market_data) do
-    %{
-      level: :normal,
-      stability: true,
-      forecast_horizon: :"24_hours"
-    }
+  defp recalculate_agent_predictability(behavioral_patterns, new_behavior) do
+    # Calculate how predictable an agent's behavior is based on their patterns
+    all_patterns = [new_behavior | Enum.take(behavioral_patterns, 49)]
+    
+    if length(all_patterns) < 5 do
+      0.2  # Low predictability with insufficient data
+    else
+      # Analyze consistency in behavior patterns
+      pattern_consistency = calculate_behavior_consistency(all_patterns)
+      decision_regularity = calculate_decision_regularity(all_patterns)
+      
+      # Combine factors for overall predictability
+      (pattern_consistency * 0.6) + (decision_regularity * 0.4)
+    end
   end
-
-  defp predict_agent_performance(behavioral_analysis) do
-    behavioral_analysis
-    |> Enum.map(fn {agent_id, analysis} ->
-      {agent_id,
-       %{
-         expected_performance: analysis.success_rate,
-         risk_level: analysis.deviation_score,
-         reliability: analysis.predictability
-       }}
-    end)
-    |> Enum.into(%{})
-  end
-
-  defp assess_systemic_risk(_market_data, _behavioral_analysis) do
-    %{
-      level: 0.3,
-      factors: [:normal_volatility, :standard_behavior],
-      recommendation: :monitor
-    }
-  end
-
-  defp calculate_prediction_confidence(_market_data, behavioral_analysis) do
-    # Base confidence on amount of behavioral data available
-    agent_count = map_size(behavioral_analysis)
-    base_confidence = min(0.8, agent_count * 0.1)
-
-    # Adjust based on data quality
-    avg_predictability =
-      behavioral_analysis
-      |> Enum.map(fn {_id, analysis} -> analysis.predictability end)
-      |> Enum.sum()
-      |> case do
-        0 -> 0
-        sum -> sum / agent_count
+  
+  defp assess_loop_integrity(behavioral_patterns, new_behavior) do
+    # Assess whether the agent is staying within their behavioral loop
+    recent_patterns = [new_behavior | Enum.take(behavioral_patterns, 9)]
+    
+    if length(recent_patterns) < 3 do
+      :unknown
+    else
+      deviation_score = calculate_loop_deviation(recent_patterns)
+      
+      cond do
+        deviation_score < 0.3 -> :stable
+        deviation_score < 0.6 -> :degrading  
+        deviation_score < 0.8 -> :unstable
+        true -> :breaking
       end
-
-    min(1.0, base_confidence + avg_predictability * 0.2)
-  end
-
-  defp analyze_risk_pattern(profile) do
-    # Analyze risk patterns from historical data
-    pattern_count = length(profile.patterns || [])
-
-    cond do
-      pattern_count < 5 -> :insufficient_data
-      profile.risk_score > 0.7 -> :high_risk
-      profile.risk_score > 0.4 -> :moderate_risk
-      true -> :low_risk
     end
   end
-
-  defp calculate_success_rate(profile) do
-    # Calculate success rate from pattern history
-    patterns = profile.patterns || []
-
-    if length(patterns) < 5 do
-      # Default neutral success rate
-      0.5
-    else
-      successful_patterns = Enum.count(patterns, fn p -> p.outcome == :success end)
-      successful_patterns / length(patterns)
-    end
-  end
-
-  defp calculate_deviation_score(profile) do
-    # Calculate how much the agent deviates from expected behavior
-    patterns = profile.patterns || []
-
-    if length(patterns) < 10 do
-      # Not enough data for deviation analysis
+  
+  defp calculate_behavior_consistency(patterns) do
+    # Measure how consistent the agent's behavior is
+    if length(patterns) < 2 do
       0.0
     else
-      # Simplified deviation calculation
-      pattern_variance = calculate_pattern_variance(patterns)
-      min(1.0, pattern_variance / 100.0)
+      # Simple consistency based on similar outcomes
+      similar_outcomes = 
+        patterns
+        |> Enum.chunk_every(2, 1, :discard)
+        |> Enum.count(fn [a, b] ->
+          Map.get(a, :outcome, :unknown) == Map.get(b, :outcome, :unknown)
+        end)
+      
+      similar_outcomes / max(length(patterns) - 1, 1)
     end
   end
-
-  defp calculate_pattern_variance(patterns) do
-    # Simplified variance calculation
-    outcomes = Enum.map(patterns, fn p -> if p.outcome == :success, do: 1, else: 0 end)
-
-    if length(outcomes) <= 1 do
+  
+  defp calculate_decision_regularity(patterns) do
+    # Measure regularity in decision-making timing and approach
+    decision_types = Enum.map(patterns, fn p -> Map.get(p, :decision_type, :unknown) end)
+    unique_types = Enum.uniq(decision_types)
+    
+    # More regular (fewer unique decision types) = higher score
+    case length(unique_types) do
+      1 -> 1.0  # Very regular - same type of decisions
+      2 -> 0.8  # Mostly regular
+      3 -> 0.6  # Somewhat regular
+      _ -> 0.3  # Irregular
+    end
+  end
+  
+  defp calculate_loop_deviation(recent_patterns) do
+    # Calculate how much the agent is deviating from their established pattern
+    if length(recent_patterns) < 3 do
       0.0
     else
+      # Simplified deviation calculation based on outcome variance
+      outcomes = Enum.map(recent_patterns, fn p -> 
+        case Map.get(p, :outcome, :neutral) do
+          :success -> 1.0
+          :failure -> 0.0
+          _ -> 0.5
+        end
+      end)
+      
       mean = Enum.sum(outcomes) / length(outcomes)
-
-      variance =
+      variance = 
         outcomes
         |> Enum.map(fn x -> (x - mean) * (x - mean) end)
         |> Enum.sum()
-        |> Kernel./(length(outcomes) - 1)
-
-      :math.sqrt(variance)
+        |> Kernel./(length(outcomes))
+      
+      # Normalize variance to 0-1 scale
+      min(1.0, variance * 4)
     end
   end
 
-  defp recalculate_risk_score(patterns, new_event) do
-    # Recalculate risk score based on recent patterns
-    recent_patterns = [new_event | Enum.take(patterns, 19)]
-
-    risk_events =
-      Enum.count(recent_patterns, fn p ->
-        p.risk_level && p.risk_level > 0.6
-      end)
-
-    risk_events / length(recent_patterns)
+  defp determine_surveillance_level(agent_count) do
+    # Determine surveillance level based on number of monitored agents
+    cond do
+      agent_count > 100 -> :omnipresent
+      agent_count > 50 -> :comprehensive  
+      agent_count > 10 -> :extensive
+      agent_count > 0 -> :basic
+      true -> :minimal
+    end
   end
-
-  defp recalculate_predictability(patterns, new_event) do
-    # Recalculate how predictable this agent's behavior is
-    recent_patterns = [new_event | Enum.take(patterns, 29)]
-
-    if length(recent_patterns) < 5 do
-      0.0
+  
+  defp check_immediate_divergence(behavior_data, agent_loops) do
+    # Quick divergence check for real-time processing
+    agent_id = behavior_data.agent_id
+    agent_loop = Map.get(agent_loops, agent_id)
+    
+    if agent_loop == nil do
+      %{divergent: false, reason: "no_established_loop"}
     else
-      # Simple predictability based on pattern consistency
-      consistent_outcomes = consecutive_consistent_patterns(recent_patterns)
-      min(1.0, consistent_outcomes / length(recent_patterns))
+      expected_pattern = get_expected_pattern(agent_loop)
+      actual_behavior = extract_behavior_pattern(behavior_data)
+      
+      divergence_score = calculate_pattern_divergence(expected_pattern, actual_behavior)
+      
+      %{
+        divergent: divergence_score > @divergence_alert_threshold,
+        severity: classify_divergence_severity(divergence_score),
+        score: divergence_score,
+        agent_id: agent_id,
+        timestamp: DateTime.utc_now()
+      }
     end
   end
-
-  defp consecutive_consistent_patterns(patterns) do
-    patterns
-    |> Enum.chunk_every(2, 1, :discard)
-    |> Enum.count(fn [a, b] ->
-      a.outcome == b.outcome and abs((a.risk_level || 0) - (b.risk_level || 0)) < 0.3
-    end)
+  
+  defp get_expected_pattern(agent_loop) do
+    # Extract expected behavioral pattern from agent loop
+    %{
+      decision_type: Map.get(agent_loop, :loop_type, :unknown),
+      risk_level: 0.5,  # Default moderate risk
+      timing: :normal
+    }
+  end
+  
+  defp extract_behavior_pattern(behavior_data) do
+    # Extract pattern from actual behavior data
+    %{
+      decision_type: Map.get(behavior_data, :decision_type, :unknown),
+      risk_level: Map.get(behavior_data, :risk_level, 0.5),
+      timing: Map.get(behavior_data, :timing, :normal)
+    }
+  end
+  
+  defp calculate_pattern_divergence(expected, actual) do
+    # Calculate how much the actual pattern diverges from expected
+    type_match = if expected.decision_type == actual.decision_type, do: 0.0, else: 0.4
+    risk_diff = abs(expected.risk_level - actual.risk_level) * 0.3
+    timing_diff = if expected.timing == actual.timing, do: 0.0, else: 0.3
+    
+    type_match + risk_diff + timing_diff
+  end
+  
+  defp classify_divergence_severity(score) do
+    cond do
+      score > 0.8 -> :critical
+      score > 0.6 -> :major
+      score > 0.4 -> :moderate
+      score > 0.2 -> :minor
+      true -> :negligible
+    end
+  end
+  
+  defp update_divergence_alerts(state, agent_id, divergence_analysis) do
+    # Add new divergence alert to state
+    alert = %{
+      agent_id: agent_id,
+      divergence: divergence_analysis,
+      timestamp: DateTime.utc_now(),
+      status: :active
+    }
+    
+    updated_alerts = [alert | Enum.take(state.divergence_alerts, 99)]
+    %{state | divergence_alerts: updated_alerts}
   end
 
-  defp update_confidence_metrics(current_metrics, predictions) do
+  defp update_control_metrics(current_metrics, destiny_predictions) do
+    # Update control effectiveness metrics
+    prediction_confidence = destiny_predictions.prediction_confidence || 0.0
+    
     Map.merge(current_metrics, %{
-      last_confidence: predictions.confidence_level,
-      confidence_trend: calculate_confidence_trend(current_metrics, predictions.confidence_level),
+      last_prediction_confidence: prediction_confidence,
+      omniscience_trend: calculate_omniscience_trend(current_metrics, prediction_confidence),
       updated_at: DateTime.utc_now()
     })
   end
 
-  defp calculate_confidence_trend(metrics, new_confidence) do
-    case Map.get(metrics, :last_confidence) do
-      nil -> :neutral
-      old_confidence when new_confidence > old_confidence + 0.1 -> :increasing
-      old_confidence when new_confidence < old_confidence - 0.1 -> :decreasing
-      _ -> :stable
+  defp calculate_omniscience_trend(metrics, new_confidence) do
+    case Map.get(metrics, :last_prediction_confidence) do
+      nil -> :establishing_baseline
+      old_confidence when new_confidence > old_confidence + 0.1 -> :expanding_control
+      old_confidence when new_confidence < old_confidence - 0.1 -> :losing_omniscience
+      _ -> :maintaining_control
     end
   end
 
