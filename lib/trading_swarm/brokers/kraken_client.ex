@@ -66,7 +66,7 @@ defmodule TradingSwarm.Brokers.KrakenClient do
     }
 
     # Test connection
-    case get_server_time() do
+    case test_connection() do
       {:ok, _time} ->
         Logger.info("Kraken client connected successfully")
         {:ok, %{state | status: :connected}}
@@ -242,6 +242,17 @@ defmodule TradingSwarm.Brokers.KrakenClient do
   end
 
   # Private Functions
+
+  defp test_connection() do
+    case make_public_request(@public_endpoints.server_time) do
+      {:ok, %{"result" => %{"unixtime" => unix_time}}} ->
+        server_time = DateTime.from_unix!(unix_time)
+        {:ok, server_time}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
 
   defp make_public_request(endpoint, params \\ %{}) do
     url = @base_url <> endpoint
