@@ -262,17 +262,14 @@ defmodule TradingSwarmWeb.API.RiskController do
             timestamp: DateTime.utc_now()
           })
 
-        {:error, reason} ->
-          Logger.warning("API: Failed to update risk limits: #{inspect(reason)}")
-
-          conn
-          |> put_resp_content_type("application/json")
-          |> put_status(:unprocessable_entity)
-          |> json(%{
-            success: false,
-            error: "Limits update failed",
-            message: inspect(reason)
-          })
+        # Note: Currently Risk.update_limits only returns {:ok, _}
+        # This clause is kept for future error handling if needed
+        # {:error, reason} ->
+        #   Logger.warning("API: Failed to update risk limits: #{inspect(reason)}")
+        #   conn
+        #   |> put_resp_content_type("application/json") 
+        #   |> put_status(:unprocessable_entity)
+        #   |> json(%{success: false, error: "Limits update failed", message: inspect(reason)})
       end
     rescue
       error ->
