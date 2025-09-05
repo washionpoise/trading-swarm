@@ -257,26 +257,26 @@ defmodule TradingSwarm.Brokers.KrakenClient do
 
   defp make_private_request(endpoint, params, state) do
     nonce = :os.system_time(:millisecond)
-    post_data = Map.put(params, :nonce, nonce) |> URI.encode_query()
+    form_params = Map.put(params, :nonce, nonce)
+    post_data = URI.encode_query(form_params)
     
-    # Generate signature
+    # Generate signature according to Kraken API docs
     signature = generate_signature(endpoint, post_data, nonce, state.api_secret)
     
     headers = [
       {"API-Key", state.api_key},
       {"API-Sign", signature},
-      {"Content-Type", "application/x-www-form-urlencoded"},
       {"User-Agent", "TradingSwarm/1.0"}
     ]
     
     url = @base_url <> endpoint
     
-    case HTTPoison.post(url, post_data, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        Jason.decode(body)
+    case Req.post(url, form: form_params, headers: headers) do
+      {:ok, %Req.Response{status: 200, body: body}} ->
+        {:ok, body}
         
-      {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-        Logger.error("Kraken private API error: #{status_code} - #{body}")
+      {:ok, %Req.Response{status: status_code, body: body}} ->
+        Logger.error("Kraken private API error: #{status_code} - #{inspect(body)}")
         {:error, {:http_error, status_code, body}}
         
       {:error, reason} ->
@@ -301,17 +301,58 @@ defmodule TradingSwarm.Brokers.KrakenClient do
     %{
       symbol: symbol,
       side: side,
-      amount: amount,
-      price: price
+      amount: amount
     } = order_params
     
-    %{
+    # Base order parameters according to Kraken API
+    base_params = %{
       pair: symbol,
       type: side,  # "buy" or "sell"
-      ordertype: "limit",
-      volume: to_string(amount),
-      price: to_string(price)
+      volume: to_string(amount)
     }
+    
+    # Add ordertype and price based on order type
+    case Map.get(order_params, :order_type, "market") do
+      "market" ->
+        Map.put(base_params, :ordertype, "market")
+        
+      "limit" ->
+        price = Map.get(order_params, :price, 0)
+        base_params
+        |> Map.put(:ordertype, "limit")
+        |> Map.put(:price, to_string(price))
+        
+      "stop_loss" ->
+        price = Map.get(order_params, :price, 0)
+        base_params
+        |> Map.put(:ordertype, "stop-loss")
+        |> Map.put(:price, to_string(price))
+        
+      "take_profit" ->
+        price = Map.get(order_params, :price, 0)
+        base_params
+        |> Map.put(:ordertype, "take-profit")
+        |> Map.put(:price, to_string(price))
+    end
+    |> maybe_add_leverage(order_params)
+    |> maybe_add_timeframe(order_params)
+  end
+  
+  defp maybe_add_leverage(params, order_params) do
+    case Map.get(order_params, :leverage) do
+      nil -> params
+      leverage -> Map.put(params, :leverage, to_string(leverage))
+    end
+  end
+  
+  defp maybe_add_timeframe(params, order_params) do
+    case Map.get(order_params, :timeframe) do
+      nil -> params
+      "GTC" -> Map.put(params, :timeinforce, "GTC")  # Good Till Cancelled
+      "IOC" -> Map.put(params, :timeinforce, "IOC")  # Immediate or Cancel
+      "FOK" -> Map.put(params, :timeinforce, "FOK")  # Fill or Kill
+      _ -> params
+    end
   end
 
   @doc """
