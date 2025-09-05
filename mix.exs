@@ -73,7 +73,8 @@ defmodule TradingSwarm.MixProject do
       {:uuid, "~> 1.1"},
       {:quantum, "~> 3.5"},
       {:timex, "~> 3.7"},
-      {:openai, "~> 0.6.1"}
+      {:openai, "~> 0.6.1"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -96,7 +97,7 @@ defmodule TradingSwarm.MixProject do
         "esbuild trading_swarm --minify",
         "phx.digest"
       ],
-      precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "test"]
+      precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "credo --strict", "test"]
     ]
   end
 end

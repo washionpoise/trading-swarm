@@ -14,8 +14,6 @@ defmodule TradingSwarm.Core.RiskManager do
   @max_account_risk 0.15
   # 2% máximo por agente
   @max_agent_risk 0.02
-  # Correlação máxima entre posições
-  @max_correlation 0.7
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
