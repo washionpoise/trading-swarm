@@ -4,7 +4,7 @@ defmodule TradingSwarmWeb.DashboardComponents do
   """
 
   use Phoenix.Component
-  import Phoenix.LiveView.JS, as: JS
+  alias Phoenix.LiveView.JS
 
   @doc """
   Renders a dashboard metric widget
