@@ -122,8 +122,10 @@ if config_env() == :prod do
   # Supabase API Configuration
   config :trading_swarm, :supabase,
     url: System.get_env("SUPABASE_URL") || "https://rxrzoubefdgnjfwxbxlb.supabase.co",
-    anon_key: System.get_env("SUPABASE_ANON_KEY") || 
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cnpvdWJlZmRnbmpmd3hieGxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzU4MzgsImV4cCI6MjA3MjYxMTgzOH0.nubtI_CsRy9Wbs7f3flYasJHkCrTSA3s9A0aI7kTzyw",
-    service_role_key: System.get_env("SUPABASE_SERVICE_ROLE_KEY") ||
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cnpvdWJlZmRnbmpmd3hieGxiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzAzNTgzOCwiZXhwIjoyMDcyNjExODM4fQ.Rr08jx2B6zX23yIbGl_ri0Hb-UtO-Fu8qh9kd-44_84"
+    anon_key:
+      System.get_env("SUPABASE_ANON_KEY") ||
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cnpvdWJlZmRnbmpmd3hieGxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzU4MzgsImV4cCI6MjA3MjYxMTgzOH0.nubtI_CsRy9Wbs7f3flYasJHkCrTSA3s9A0aI7kTzyw",
+    service_role_key:
+      System.get_env("SUPABASE_SERVICE_ROLE_KEY") ||
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cnpvdWJlZmRnbmpmd3hieGxiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzAzNTgzOCwiZXhwIjoyMDcyNjExODM4fQ.Rr08jx2B6zX23yIbGl_ri0Hb-UtO-Fu8qh9kd-44_84"
 end

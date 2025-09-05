@@ -13,7 +13,7 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
       add :total_trades, :integer, default: 0
       add :winning_trades, :integer, default: 0
       add :losing_trades, :integer, default: 0
-      
+
       timestamps(type: :utc_datetime)
     end
 
@@ -24,8 +24,10 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
     create table(:trades) do
       add :agent_id, references(:trading_agents, on_delete: :delete_all)
       add :symbol, :string, null: false
-      add :side, :string, null: false # "buy" or "sell"
-      add :type, :string, null: false # "market", "limit", etc
+      # "buy" or "sell"
+      add :side, :string, null: false
+      # "market", "limit", etc
+      add :type, :string, null: false
       add :quantity, :decimal, precision: 20, scale: 8, null: false
       add :price, :decimal, precision: 15, scale: 8, null: false
       add :executed_at, :utc_datetime, null: false
@@ -33,7 +35,7 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
       add :pnl, :decimal, precision: 15, scale: 2
       add :fees, :decimal, precision: 15, scale: 8, default: 0.0
       add :metadata, :map, default: %{}
-      
+
       timestamps(type: :utc_datetime)
     end
 
@@ -45,13 +47,15 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
     # Risk Events table
     create table(:risk_events) do
       add :agent_id, references(:trading_agents, on_delete: :delete_all)
-      add :event_type, :string, null: false # "drawdown_warning", "limit_exceeded", etc
-      add :severity, :string, null: false # "low", "medium", "high", "critical"
+      # "drawdown_warning", "limit_exceeded", etc
+      add :event_type, :string, null: false
+      # "low", "medium", "high", "critical"
+      add :severity, :string, null: false
       add :message, :text, null: false
       add :metadata, :map, default: %{}
       add :resolved, :boolean, default: false
       add :resolved_at, :utc_datetime
-      
+
       timestamps(type: :utc_datetime)
     end
 
@@ -71,7 +75,7 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
       add :total_trades, :integer, default: 0
       add :winning_trades, :integer, default: 0
       add :losing_trades, :integer, default: 0
-      
+
       timestamps(type: :utc_datetime)
     end
 
@@ -87,8 +91,9 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
       add :low, :decimal, precision: 15, scale: 8
       add :close, :decimal, precision: 15, scale: 8, null: false
       add :volume, :decimal, precision: 20, scale: 8
-      add :timeframe, :string, null: false # "1m", "5m", "1h", "1d"
-      
+      # "1m", "5m", "1h", "1d"
+      add :timeframe, :string, null: false
+
       timestamps(type: :utc_datetime)
     end
 
@@ -102,7 +107,7 @@ defmodule TradingSwarm.Repo.Migrations.CreateTradingCoreTables do
       add :description, :string
       add :category, :string, default: "general"
       add :encrypted, :boolean, default: false
-      
+
       timestamps(type: :utc_datetime)
     end
 

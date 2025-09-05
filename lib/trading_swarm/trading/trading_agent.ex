@@ -1,11 +1,11 @@
 defmodule TradingSwarm.Trading.TradingAgent do
   @moduledoc """
   Schema for trading agents in the swarm system.
-  
+
   Each agent represents an autonomous trading entity with its own balance,
   risk tolerance, and strategy parameters.
   """
-  
+
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -53,8 +53,9 @@ defmodule TradingSwarm.Trading.TradingAgent do
   Returns the win rate for the agent as a percentage.
   """
   def win_rate(%__MODULE__{total_trades: 0}), do: 0.0
+
   def win_rate(%__MODULE__{total_trades: total, winning_trades: winning}) do
-    (winning / total) * 100
+    winning / total * 100
   end
 
   @doc """
