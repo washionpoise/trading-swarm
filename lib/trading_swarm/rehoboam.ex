@@ -1161,4 +1161,144 @@ defmodule TradingSwarm.Rehoboam do
     |> Kernel.-(System.system_time(:second))
     |> abs()
   end
+
+  defp get_recent_agent_behavior(agent_id) do
+    # Get recent behavioral data for divergence analysis
+    # In production this would query actual agent activity
+    %{
+      agent_id: agent_id,
+      recent_trades: [],
+      decision_patterns: [],
+      risk_changes: [],
+      timestamp: DateTime.utc_now()
+    }
+  end
+
+  defp generate_intervention_id() do
+    # Generate unique intervention ID
+    :crypto.strong_rand_bytes(8) |> Base.encode16(case: :lower)
+  end
+
+  # Fallback functions for AI analysis failures
+
+  defp parse_ai_loop_analysis(_content) do
+    # Parse AI response for loop analysis - fallback implementation
+    %{
+      analysis_timestamp: DateTime.utc_now(),
+      loops_detected: %{},
+      analysis_confidence: 0.5
+    }
+  end
+
+  defp fallback_loop_analysis(_agent_loops) do
+    %{
+      analysis_timestamp: DateTime.utc_now(),
+      loops_detected: %{},
+      analysis_confidence: 0.3,
+      status: :fallback_mode
+    }
+  end
+
+  defp parse_ai_destiny_predictions(_content) do
+    %{
+      prediction_timestamp: DateTime.utc_now(),
+      agent_destinies: %{},
+      market_destiny: %{volatility: :moderate},
+      prediction_confidence: 0.5
+    }
+  end
+
+  defp fallback_destiny_predictions() do
+    %{
+      prediction_timestamp: DateTime.utc_now(),
+      agent_destinies: %{},
+      market_destiny: %{volatility: :moderate},
+      prediction_confidence: 0.3,
+      status: :fallback_mode
+    }
+  end
+
+  defp parse_behavior_prediction(_content, agent_id) do
+    %{
+      agent_id: agent_id,
+      predicted_actions: ["MONITOR", "ASSESS", "MAINTAIN"],
+      confidence: 0.5,
+      timestamp: DateTime.utc_now()
+    }
+  end
+
+  defp fallback_behavior_prediction(agent_id, _agent_loop) do
+    %{
+      agent_id: agent_id,
+      predicted_actions: ["HOLD"],
+      confidence: 0.2,
+      timestamp: DateTime.utc_now(),
+      status: :fallback_mode
+    }
+  end
+
+  defp parse_market_destiny(_content, timeframe) do
+    %{
+      timeframe: timeframe,
+      market_direction: :neutral,
+      volatility: :moderate,
+      certainty_level: 0.5,
+      timestamp: DateTime.utc_now()
+    }
+  end
+
+  defp fallback_market_destiny(timeframe) do
+    %{
+      timeframe: timeframe,
+      market_direction: :neutral,
+      volatility: :moderate,
+      certainty_level: 0.3,
+      timestamp: DateTime.utc_now(),
+      status: :fallback_mode
+    }
+  end
+
+  defp parse_divergence_analysis(_content, agent_id) do
+    %{
+      agent_id: agent_id,
+      divergent: false,
+      divergence_type: :none,
+      confidence: 0.5,
+      timestamp: DateTime.utc_now()
+    }
+  end
+
+  defp fallback_divergence_analysis(agent_id, _recent_behavior) do
+    %{
+      agent_id: agent_id,
+      divergent: false,
+      divergence_type: :none,
+      confidence: 0.2,
+      timestamp: DateTime.utc_now(),
+      status: :fallback_mode
+    }
+  end
+
+  defp parse_intervention_strategy(_content, agent_id) do
+    %{
+      agent_id: agent_id,
+      strategy_type: :monitoring,
+      actions: ["Increase surveillance"],
+      timeline: "immediate",
+      success_probability: 0.5,
+      timestamp: DateTime.utc_now()
+    }
+  end
+
+  defp fallback_intervention_strategy(agent_id, _divergence_type) do
+    %{
+      agent_id: agent_id,
+      strategy_type: :monitoring,
+      actions: ["Monitor behavior patterns"],
+      timeline: "ongoing",
+      success_probability: 0.3,
+      timestamp: DateTime.utc_now(),
+      status: :fallback_mode
+    }
+  end
 end
