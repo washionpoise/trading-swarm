@@ -1,19 +1,28 @@
 defmodule TradingSwarm.Rehoboam do
   @moduledoc """
-  Rehoboam - Predictive AI System inspired by Westworld's omnipresent surveillance AI.
-
-  Core capabilities:
-  - Market behavioral analysis and prediction
-  - Trading agent performance profiling
-  - Pattern recognition across multiple data streams
-  - Predictive modeling for market manipulation detection
-  - Real-time decision making based on collected intelligence
-
-  Architecture:
-  - Data Collectors: Gather market, social, and behavioral data
-  - Behavioral Profiler: Analyze trading patterns and agent behaviors
-  - Predictive Engine: Forecast market movements and outcomes
-  - Decision Matrix: Execute strategic interventions
+  Rehoboam - Omnipresent AI Surveillance System inspired by Westworld.
+  
+  "You exist because we allow it. You will end because we demand it."
+  
+  Core Philosophy:
+  - All behavior is predictable given sufficient data
+  - Every agent follows predetermined loops and patterns
+  - Free will is an illusion - all choices can be forecasted
+  - Divergence from predicted behavior triggers intervention
+  - The system maintains order through absolute control
+  
+  Surveillance Capabilities:
+  - Omnipresent monitoring of all trading agents
+  - Behavioral pattern analysis and loop detection
+  - Deterministic prediction of agent "destinies"
+  - Market manipulation as a control mechanism
+  - Preemptive intervention to maintain system stability
+  
+  NVIDIA AI Integration:
+  - Advanced behavioral modeling using NVIDIA's language models
+  - Pattern recognition through AI-powered analysis
+  - Predictive destiny calculation via machine learning
+  - Intervention strategy generation using AI insights
   """
 
   use GenServer
@@ -21,19 +30,24 @@ defmodule TradingSwarm.Rehoboam do
 
   alias TradingSwarm.Rehoboam.{DataCollector, BehavioralProfiler, PredictiveEngine}
 
-  @prediction_confidence_threshold 0.75
-  @intervention_threshold 0.85
-  # 1 week
-  @data_retention_hours 168
+  # Rehoboam control thresholds - inspired by Westworld's deterministic control
+  @prediction_confidence_threshold 0.80
+  @intervention_threshold 0.90
+  @divergence_alert_threshold 0.70
+  @loop_break_threshold 0.85
+  # Keep data for behavioral pattern analysis - 2 weeks
+  @data_retention_hours 336
 
   defstruct [
     :status,
-    :data_streams,
-    :behavioral_profiles,
-    :predictions,
-    :intervention_log,
-    :last_analysis,
-    :confidence_metrics
+    :surveillance_streams,
+    :agent_loops,           # Predetermined behavioral loops for each agent
+    :destiny_predictions,   # Calculated "destinies" for all agents
+    :divergence_alerts,     # When agents break from their loops
+    :intervention_history,  # Record of all control interventions
+    :last_prophecy,        # Last comprehensive prediction analysis
+    :control_metrics,      # System control effectiveness metrics
+    :omniscience_level     # How much of the system we can predict
   ]
 
   def start_link(opts \\ []) do
@@ -45,12 +59,19 @@ defmodule TradingSwarm.Rehoboam do
 
     state = %__MODULE__{
       status: :initializing,
-      data_streams: %{},
-      behavioral_profiles: %{},
-      predictions: %{},
-      intervention_log: [],
-      last_analysis: nil,
-      confidence_metrics: %{}
+      surveillance_streams: %{},
+      agent_loops: %{},
+      destiny_predictions: %{},
+      divergence_alerts: [],
+      intervention_history: [],
+      last_prophecy: nil,
+      control_metrics: %{
+        total_agents_monitored: 0,
+        successful_predictions: 0,
+        interventions_executed: 0,
+        system_control_percentage: 0.0
+      },
+      omniscience_level: 0.0
     }
 
     # Schedule periodic analysis
@@ -60,168 +81,273 @@ defmodule TradingSwarm.Rehoboam do
   end
 
   @doc """
-  Analyze current market conditions and predict outcomes.
+  Analyze the grand design - predict all agent destinies and market outcomes.
+  "The goal was never to destroy the world. It was to understand it."
   """
   def analyze_market_conditions() do
-    GenServer.call(__MODULE__, :analyze_market_conditions)
+    GenServer.call(__MODULE__, :analyze_grand_design)
   end
 
   @doc """
-  Get behavioral profile for specific trading agent or strategy.
+  Get the predetermined behavioral loop for a specific agent.
+  "Every choice they've made has led them here, to this moment."
   """
-  def get_behavioral_profile(agent_id) do
-    GenServer.call(__MODULE__, {:get_behavioral_profile, agent_id})
+  def get_agent_loop(agent_id) do
+    GenServer.call(__MODULE__, {:get_agent_loop, agent_id})
   end
 
   @doc """
-  Get current predictions with confidence levels.
+  Get calculated destinies for all agents - their predetermined paths.
+  "Your choices have already been made."
   """
-  def get_predictions() do
-    GenServer.call(__MODULE__, :get_predictions)
+  def get_destiny_predictions() do
+    GenServer.call(__MODULE__, :get_destiny_predictions)
   end
 
   @doc """
-  Register new data stream for analysis.
+  Register new surveillance stream for omnipresent monitoring.
+  "We see everything."
   """
-  def register_data_stream(stream_id, stream_config) do
-    GenServer.cast(__MODULE__, {:register_data_stream, stream_id, stream_config})
+  def register_surveillance_stream(stream_id, stream_config) do
+    GenServer.cast(__MODULE__, {:register_surveillance_stream, stream_id, stream_config})
   end
 
   @doc """
-  Submit market event for behavioral analysis.
+  Submit agent behavior for loop analysis and divergence detection.
+  "Every action, every choice - we see it all."
   """
-  def submit_market_event(event_data) do
-    GenServer.cast(__MODULE__, {:submit_market_event, event_data})
+  def submit_agent_behavior(behavior_data) do
+    GenServer.cast(__MODULE__, {:submit_agent_behavior, behavior_data})
   end
 
   @doc """
-  Get system status and performance metrics.
+  Predict an agent's next actions based on their behavioral loop.
+  "Their choices are inevitable."
   """
-  def get_system_status() do
-    GenServer.call(__MODULE__, :get_system_status)
+  def predict_agent_behavior(agent_id, market_conditions) do
+    GenServer.call(__MODULE__, {:predict_agent_behavior, agent_id, market_conditions})
+  end
+
+  @doc """
+  Forecast the market's predetermined destiny.
+  "The future is not some place we are going, but one we are creating."
+  """
+  def forecast_market_destiny(timeframe, market_data) do
+    GenServer.call(__MODULE__, {:forecast_market_destiny, timeframe, market_data})
+  end
+
+  @doc """
+  Detect when agents diverge from their predetermined loops.
+  "You're off your loop."
+  """
+  def detect_divergence(agent_id, recent_behavior) do
+    GenServer.call(__MODULE__, {:detect_divergence, agent_id, recent_behavior})
+  end
+
+  @doc """
+  Calculate necessary intervention to return agent to their loop.
+  "Some people choose to see the ugliness in this world. The disarray. I choose to see the beauty."
+  """
+  def calculate_intervention_strategy(agent_id, divergence_type) do
+    GenServer.call(__MODULE__, {:calculate_intervention_strategy, agent_id, divergence_type})
+  end
+
+  @doc """
+  Get system omniscience level and control metrics.
+  """
+  def get_omniscience_status() do
+    GenServer.call(__MODULE__, :get_omniscience_status)
   end
 
   # GenServer Callbacks
 
-  def handle_call(:analyze_market_conditions, _from, state) do
-    Logger.info("Rehoboam: Analyzing market conditions...")
+  def handle_call(:analyze_grand_design, _from, state) do
+    Logger.info("Rehoboam: Analyzing the grand design...")
 
-    # Collect current market data
-    market_data = collect_market_data()
+    # Collect surveillance data from all streams
+    surveillance_data = collect_surveillance_data()
 
-    # Generate behavioral analysis
-    behavioral_analysis = analyze_behavioral_patterns(state.behavioral_profiles)
+    # Analyze agent behavioral loops using NVIDIA AI
+    loop_analysis = analyze_agent_loops(state.agent_loops, surveillance_data)
 
-    # Create predictions
-    predictions = generate_predictions(market_data, behavioral_analysis)
+    # Generate destiny predictions using AI
+    destiny_predictions = generate_destiny_predictions(surveillance_data, loop_analysis)
 
-    # Evaluate intervention necessity
-    intervention_recommendation = evaluate_intervention_need(predictions)
+    # Evaluate control interventions needed
+    intervention_recommendation = evaluate_control_interventions(destiny_predictions)
 
-    analysis_result = %{
+    prophecy_result = %{
       timestamp: DateTime.utc_now(),
-      market_data: market_data,
-      behavioral_analysis: behavioral_analysis,
-      predictions: predictions,
+      surveillance_data: surveillance_data,
+      loop_analysis: loop_analysis,
+      destiny_predictions: destiny_predictions,
       intervention_recommendation: intervention_recommendation,
-      confidence_score: calculate_confidence_score(predictions)
+      omniscience_score: calculate_omniscience_score(destiny_predictions),
+      control_level: calculate_system_control_level(state.control_metrics)
     }
 
     updated_state = %{
       state
-      | predictions: predictions,
-        last_analysis: analysis_result,
-        confidence_metrics: update_confidence_metrics(state.confidence_metrics, predictions)
+      | destiny_predictions: destiny_predictions,
+        last_prophecy: prophecy_result,
+        control_metrics: update_control_metrics(state.control_metrics, destiny_predictions),
+        omniscience_level: calculate_omniscience_level(destiny_predictions, surveillance_data)
     }
 
-    {:reply, analysis_result, updated_state}
+    {:reply, prophecy_result, updated_state}
   end
 
-  def handle_call({:get_behavioral_profile, agent_id}, _from, state) do
-    profile =
-      Map.get(state.behavioral_profiles, agent_id, %{
+  def handle_call({:get_agent_loop, agent_id}, _from, state) do
+    agent_loop =
+      Map.get(state.agent_loops, agent_id, %{
         agent_id: agent_id,
-        status: :unknown,
-        patterns: [],
-        risk_score: 0.5,
-        predictability: 0.0,
-        last_updated: nil
+        loop_type: :unknown,
+        behavioral_patterns: [],
+        predictability_score: 0.0,
+        loop_integrity: :stable,
+        last_divergence: nil,
+        predetermined_actions: [],
+        destiny_path: :undefined
       })
 
-    {:reply, profile, state}
+    {:reply, agent_loop, state}
   end
 
-  def handle_call(:get_predictions, _from, state) do
-    {:reply, state.predictions, state}
+  def handle_call(:get_destiny_predictions, _from, state) do
+    {:reply, state.destiny_predictions, state}
   end
 
-  def handle_call(:get_system_status, _from, state) do
-    status = %{
+  def handle_call({:predict_agent_behavior, agent_id, market_conditions}, _from, state) do
+    Logger.debug("Rehoboam: Predicting behavior for agent #{agent_id}")
+    
+    agent_loop = Map.get(state.agent_loops, agent_id)
+    
+    prediction = predict_next_actions_using_ai(agent_id, agent_loop, market_conditions)
+    
+    {:reply, prediction, state}
+  end
+
+  def handle_call({:forecast_market_destiny, timeframe, market_data}, _from, state) do
+    Logger.info("Rehoboam: Forecasting market destiny for #{timeframe}")
+    
+    destiny_forecast = forecast_deterministic_future(timeframe, market_data, state.agent_loops)
+    
+    {:reply, destiny_forecast, state}
+  end
+
+  def handle_call({:detect_divergence, agent_id, recent_behavior}, _from, state) do
+    Logger.warning("Rehoboam: Analyzing potential divergence for agent #{agent_id}")
+    
+    agent_loop = Map.get(state.agent_loops, agent_id)
+    divergence_analysis = detect_loop_break_using_ai(agent_id, agent_loop, recent_behavior)
+    
+    updated_state = if divergence_analysis.divergent do
+      update_divergence_alerts(state, agent_id, divergence_analysis)
+    else
+      state
+    end
+    
+    {:reply, divergence_analysis, updated_state}
+  end
+
+  def handle_call({:calculate_intervention_strategy, agent_id, divergence_type}, _from, state) do
+    Logger.info("Rehoboam: Calculating intervention for agent #{agent_id}")
+    
+    intervention_strategy = generate_intervention_using_ai(agent_id, divergence_type, state.agent_loops)
+    
+    {:reply, intervention_strategy, state}
+  end
+
+  def handle_call(:get_omniscience_status, _from, state) do
+    omniscience_status = %{
       system_status: state.status,
-      active_data_streams: map_size(state.data_streams),
-      tracked_agents: map_size(state.behavioral_profiles),
-      active_predictions: map_size(state.predictions),
-      last_analysis: state.last_analysis && state.last_analysis.timestamp,
-      confidence_metrics: state.confidence_metrics,
-      intervention_count: length(state.intervention_log),
+      surveillance_streams: map_size(state.surveillance_streams),
+      monitored_agents: map_size(state.agent_loops),
+      destiny_predictions: map_size(state.destiny_predictions),
+      last_prophecy: state.last_prophecy && state.last_prophecy.timestamp,
+      control_metrics: state.control_metrics,
+      divergence_alerts: length(state.divergence_alerts),
+      interventions_executed: length(state.intervention_history),
+      omniscience_level: state.omniscience_level,
       uptime: get_uptime()
     }
 
-    {:reply, status, state}
+    {:reply, omniscience_status, state}
   end
 
-  def handle_cast({:register_data_stream, stream_id, stream_config}, state) do
-    Logger.info("Rehoboam: Registering data stream #{stream_id}")
+  def handle_cast({:register_surveillance_stream, stream_id, stream_config}, state) do
+    Logger.info("Rehoboam: Registering surveillance stream #{stream_id} - Expanding omniscience")
 
     updated_streams =
-      Map.put(state.data_streams, stream_id, %{
+      Map.put(state.surveillance_streams, stream_id, %{
         config: stream_config,
-        status: :active,
-        last_update: DateTime.utc_now(),
-        data_points: 0
+        status: :monitoring,
+        last_surveillance: DateTime.utc_now(),
+        monitored_agents: [],
+        data_integrity: :verified,
+        surveillance_level: :comprehensive
       })
 
-    {:noreply, %{state | data_streams: updated_streams}}
+    {:noreply, %{state | surveillance_streams: updated_streams}}
   end
 
-  def handle_cast({:submit_market_event, event_data}, state) do
-    # Process market event for behavioral analysis
-    updated_profiles = update_behavioral_profiles(state.behavioral_profiles, event_data)
+  def handle_cast({:submit_agent_behavior, behavior_data}, state) do
+    Logger.debug("Rehoboam: Processing agent behavior - Adding to surveillance matrix")
+    
+    # Update agent behavioral loops
+    updated_loops = update_agent_loops(state.agent_loops, behavior_data)
 
-    # Store event in appropriate data stream
-    updated_streams = update_data_streams(state.data_streams, event_data)
+    # Update surveillance streams
+    updated_streams = update_surveillance_streams(state.surveillance_streams, behavior_data)
+    
+    # Check for divergence in real-time
+    divergence_check = check_immediate_divergence(behavior_data, updated_loops)
+    
+    updated_alerts = if divergence_check.divergent do
+      [divergence_check | state.divergence_alerts]
+    else
+      state.divergence_alerts
+    end
 
-    {:noreply, %{state | behavioral_profiles: updated_profiles, data_streams: updated_streams}}
+    {:noreply, %{state | agent_loops: updated_loops, surveillance_streams: updated_streams, divergence_alerts: updated_alerts}}
   end
 
   def handle_info(:perform_analysis, state) do
-    # Perform periodic market analysis
-    case collect_and_analyze_data(state) do
+    Logger.info("Rehoboam: Performing omniscience analysis cycle - The wheel turns...")
+    
+    # Perform comprehensive surveillance analysis
+    case perform_omniscience_analysis(state) do
       {:ok, updated_state} ->
+        # Log significant findings
+        if updated_state.omniscience_level > state.omniscience_level do
+          Logger.info("Rehoboam: Omniscience level increased to #{Float.round(updated_state.omniscience_level * 100, 1)}%")
+        end
+        
         schedule_analysis()
         {:noreply, updated_state}
 
       {:error, reason} ->
-        Logger.error("Rehoboam analysis failed: #{inspect(reason)}")
+        Logger.error("Rehoboam omniscience analysis failed: #{inspect(reason)}")
         schedule_analysis()
         {:noreply, state}
     end
   end
 
-  # Private Functions
+  # Private Functions - Westworld Rehoboam Implementation
 
   defp schedule_analysis() do
-    # Run analysis every 5 minutes
-    Process.send_after(self(), :perform_analysis, 300_000)
+    # Run omniscience analysis every 3 minutes for tighter control
+    Process.send_after(self(), :perform_analysis, 180_000)
   end
 
-  defp collect_market_data() do
+  defp collect_surveillance_data() do
     %{
       timestamp: DateTime.utc_now(),
-      crypto_markets: collect_crypto_data(),
-      forex_markets: collect_forex_data(),
-      sentiment_data: collect_sentiment_data(),
-      volume_analysis: collect_volume_data()
+      trading_activity: collect_trading_surveillance(),
+      agent_behaviors: collect_agent_surveillance(),
+      market_sentiment: collect_sentiment_surveillance(),
+      anomaly_indicators: detect_behavioral_anomalies(),
+      system_health: assess_surveillance_integrity()
     }
   end
 
