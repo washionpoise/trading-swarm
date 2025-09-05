@@ -4,6 +4,7 @@ defmodule TradingSwarmWeb.ChartComponents do
   """
 
   use Phoenix.Component
+  import Phoenix.HTML, only: [raw: 1]
   alias Contex.{Dataset, BarChart, LinePlot, Plot}
 
   @doc """

@@ -4,7 +4,6 @@ defmodule TradingSwarmWeb.TradingComponents do
   """
 
   use Phoenix.Component
-  use Phoenix.HTML
 
   @doc """
   Renders a trading card with P&L display
