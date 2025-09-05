@@ -1,11 +1,11 @@
 defmodule TradingSwarm.Risk.RiskEvent do
   @moduledoc """
   Schema for risk management events in the trading system.
-  
+
   Risk events track important system alerts, warnings, and violations
   that require attention or have been resolved.
   """
-  
+
   use Ecto.Schema
   import Ecto.Changeset
 

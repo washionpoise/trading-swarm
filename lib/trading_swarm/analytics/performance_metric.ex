@@ -1,10 +1,10 @@
 defmodule TradingSwarm.Analytics.PerformanceMetric do
   @moduledoc """
   Schema for daily performance metrics of trading agents.
-  
+
   Stores aggregated daily performance data for analysis and reporting.
   """
-  
+
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -46,8 +46,9 @@ defmodule TradingSwarm.Analytics.PerformanceMetric do
   Calculates win rate percentage from trades.
   """
   def calculate_win_rate(%__MODULE__{total_trades: 0}), do: 0.0
+
   def calculate_win_rate(%__MODULE__{total_trades: total, winning_trades: winning}) do
-    (winning / total) * 100
+    winning / total * 100
   end
 
   @doc """
@@ -60,6 +61,7 @@ defmodule TradingSwarm.Analytics.PerformanceMetric do
   Returns the loss rate as a decimal.
   """
   def loss_rate(%__MODULE__{total_trades: 0}), do: 0.0
+
   def loss_rate(%__MODULE__{total_trades: total, losing_trades: losing}) do
     losing / total
   end

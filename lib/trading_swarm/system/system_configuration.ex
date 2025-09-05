@@ -1,11 +1,11 @@
 defmodule TradingSwarm.System.SystemConfiguration do
   @moduledoc """
   Schema for system configuration key-value storage.
-  
+
   Stores configurable system parameters that can be modified at runtime
   without code deployments.
   """
-  
+
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -39,6 +39,7 @@ defmodule TradingSwarm.System.SystemConfiguration do
   Gets a configuration value by key, with optional default.
   """
   def get_value(%__MODULE__{value: value, encrypted: false}), do: value
+
   def get_value(%__MODULE__{value: encrypted_value, encrypted: true}) do
     # TODO: Implement decryption logic
     encrypted_value

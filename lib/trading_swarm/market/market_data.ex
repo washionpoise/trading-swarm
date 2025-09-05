@@ -1,11 +1,11 @@
 defmodule TradingSwarm.Market.MarketData do
   @moduledoc """
   Schema for market data (OHLCV candles) storage.
-  
+
   Stores historical market data for different timeframes and symbols
   used by trading agents for analysis and decision making.
   """
-  
+
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -71,6 +71,7 @@ defmodule TradingSwarm.Market.MarketData do
   def price_change(%__MODULE__{open: open, close: close}) when not is_nil(open) do
     Decimal.sub(close, open)
   end
+
   def price_change(_), do: nil
 
   @doc """
@@ -80,14 +81,17 @@ defmodule TradingSwarm.Market.MarketData do
     change = Decimal.sub(close, open)
     Decimal.div(change, open) |> Decimal.mult(100)
   end
+
   def percentage_change(_), do: nil
 
   @doc """
   Returns the trading range (high - low).
   """
-  def trading_range(%__MODULE__{high: high, low: low}) when not is_nil(high) and not is_nil(low) do
+  def trading_range(%__MODULE__{high: high, low: low})
+      when not is_nil(high) and not is_nil(low) do
     Decimal.sub(high, low)
   end
+
   def trading_range(_), do: nil
 
   @doc """
@@ -96,6 +100,7 @@ defmodule TradingSwarm.Market.MarketData do
   def bullish?(%__MODULE__{open: open, close: close}) when not is_nil(open) do
     Decimal.gt?(close, open)
   end
+
   def bullish?(_), do: false
 
   @doc """
@@ -104,5 +109,6 @@ defmodule TradingSwarm.Market.MarketData do
   def bearish?(%__MODULE__{open: open, close: close}) when not is_nil(open) do
     Decimal.lt?(close, open)
   end
+
   def bearish?(_), do: false
 end
