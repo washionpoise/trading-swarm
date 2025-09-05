@@ -74,6 +74,8 @@ defmodule TradingSwarm.MixProject do
       {:quantum, "~> 3.5"},
       {:timex, "~> 3.7"},
       {:openai, "~> 0.6.1"},
+      {:contex, "~> 0.5.0"},
+      {:number, "~> 1.0.3"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
