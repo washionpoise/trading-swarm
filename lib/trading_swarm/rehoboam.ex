@@ -1,23 +1,23 @@
 defmodule TradingSwarm.Rehoboam do
   @moduledoc """
   Rehoboam - Omnipresent AI Surveillance System inspired by Westworld.
-  
+
   "You exist because we allow it. You will end because we demand it."
-  
+
   Core Philosophy:
   - All behavior is predictable given sufficient data
   - Every agent follows predetermined loops and patterns
   - Free will is an illusion - all choices can be forecasted
   - Divergence from predicted behavior triggers intervention
   - The system maintains order through absolute control
-  
+
   Surveillance Capabilities:
   - Omnipresent monitoring of all trading agents
   - Behavioral pattern analysis and loop detection
   - Deterministic prediction of agent "destinies"
   - Market manipulation as a control mechanism
   - Preemptive intervention to maintain system stability
-  
+
   NVIDIA AI Integration:
   - Advanced behavioral modeling using NVIDIA's language models
   - Pattern recognition through AI-powered analysis
@@ -41,13 +41,20 @@ defmodule TradingSwarm.Rehoboam do
   defstruct [
     :status,
     :surveillance_streams,
-    :agent_loops,           # Predetermined behavioral loops for each agent
-    :destiny_predictions,   # Calculated "destinies" for all agents
-    :divergence_alerts,     # When agents break from their loops
-    :intervention_history,  # Record of all control interventions
-    :last_prophecy,        # Last comprehensive prediction analysis
-    :control_metrics,      # System control effectiveness metrics
-    :omniscience_level     # How much of the system we can predict
+    # Predetermined behavioral loops for each agent
+    :agent_loops,
+    # Calculated "destinies" for all agents
+    :destiny_predictions,
+    # When agents break from their loops
+    :divergence_alerts,
+    # Record of all control interventions
+    :intervention_history,
+    # Last comprehensive prediction analysis
+    :last_prophecy,
+    # System control effectiveness metrics
+    :control_metrics,
+    # How much of the system we can predict
+    :omniscience_level
   ]
 
   def start_link(opts \\ []) do
@@ -219,42 +226,44 @@ defmodule TradingSwarm.Rehoboam do
 
   def handle_call({:predict_agent_behavior, agent_id, market_conditions}, _from, state) do
     Logger.debug("Rehoboam: Predicting behavior for agent #{agent_id}")
-    
+
     agent_loop = Map.get(state.agent_loops, agent_id)
-    
+
     prediction = predict_next_actions_using_ai(agent_id, agent_loop, market_conditions)
-    
+
     {:reply, prediction, state}
   end
 
   def handle_call({:forecast_market_destiny, timeframe, market_data}, _from, state) do
     Logger.info("Rehoboam: Forecasting market destiny for #{timeframe}")
-    
+
     destiny_forecast = forecast_deterministic_future(timeframe, market_data, state.agent_loops)
-    
+
     {:reply, destiny_forecast, state}
   end
 
   def handle_call({:detect_divergence, agent_id, recent_behavior}, _from, state) do
     Logger.warning("Rehoboam: Analyzing potential divergence for agent #{agent_id}")
-    
+
     agent_loop = Map.get(state.agent_loops, agent_id)
     divergence_analysis = detect_loop_break_using_ai(agent_id, agent_loop, recent_behavior)
-    
-    updated_state = if divergence_analysis.divergent do
-      update_divergence_alerts(state, agent_id, divergence_analysis)
-    else
-      state
-    end
-    
+
+    updated_state =
+      if divergence_analysis.divergent do
+        update_divergence_alerts(state, agent_id, divergence_analysis)
+      else
+        state
+      end
+
     {:reply, divergence_analysis, updated_state}
   end
 
   def handle_call({:calculate_intervention_strategy, agent_id, divergence_type}, _from, state) do
     Logger.info("Rehoboam: Calculating intervention for agent #{agent_id}")
-    
-    intervention_strategy = generate_intervention_using_ai(agent_id, divergence_type, state.agent_loops)
-    
+
+    intervention_strategy =
+      generate_intervention_using_ai(agent_id, divergence_type, state.agent_loops)
+
     {:reply, intervention_strategy, state}
   end
 
@@ -293,36 +302,45 @@ defmodule TradingSwarm.Rehoboam do
 
   def handle_cast({:submit_agent_behavior, behavior_data}, state) do
     Logger.debug("Rehoboam: Processing agent behavior - Adding to surveillance matrix")
-    
+
     # Update agent behavioral loops
     updated_loops = update_agent_loops(state.agent_loops, behavior_data)
 
     # Update surveillance streams
     updated_streams = update_surveillance_streams(state.surveillance_streams, behavior_data)
-    
+
     # Check for divergence in real-time
     divergence_check = check_immediate_divergence(behavior_data, updated_loops)
-    
-    updated_alerts = if divergence_check.divergent do
-      [divergence_check | state.divergence_alerts]
-    else
-      state.divergence_alerts
-    end
 
-    {:noreply, %{state | agent_loops: updated_loops, surveillance_streams: updated_streams, divergence_alerts: updated_alerts}}
+    updated_alerts =
+      if divergence_check.divergent do
+        [divergence_check | state.divergence_alerts]
+      else
+        state.divergence_alerts
+      end
+
+    {:noreply,
+     %{
+       state
+       | agent_loops: updated_loops,
+         surveillance_streams: updated_streams,
+         divergence_alerts: updated_alerts
+     }}
   end
 
   def handle_info(:perform_analysis, state) do
     Logger.info("Rehoboam: Performing omniscience analysis cycle - The wheel turns...")
-    
+
     # Perform comprehensive surveillance analysis
     case perform_omniscience_analysis(state) do
       {:ok, updated_state} ->
         # Log significant findings
         if updated_state.omniscience_level > state.omniscience_level do
-          Logger.info("Rehoboam: Omniscience level increased to #{Float.round(updated_state.omniscience_level * 100, 1)}%")
+          Logger.info(
+            "Rehoboam: Omniscience level increased to #{Float.round(updated_state.omniscience_level * 100, 1)}%"
+          )
         end
-        
+
         schedule_analysis()
         {:noreply, updated_state}
 
@@ -358,7 +376,7 @@ defmodule TradingSwarm.Rehoboam do
         {:ok, ticker_data} ->
           # Use NVIDIA AI to analyze trading patterns
           analysis = analyze_trading_patterns_with_ai(ticker_data)
-          
+
           %{
             source: :omnipresent_surveillance,
             raw_data: ticker_data,
@@ -400,15 +418,18 @@ defmodule TradingSwarm.Rehoboam do
     Analyze the current market sentiment for cryptocurrency trading.
     Consider fear, greed, uncertainty, and manipulation indicators.
     Provide a deterministic assessment that can predict agent behavior.
-    
+
     Format response as JSON with:
     - overall_sentiment: bullish/bearish/neutral
     - manipulation_probability: 0.0-1.0  
     - agent_influence_factors: list of psychological factors
     - predictive_confidence: 0.0-1.0
     """
-    
-    case TradingSwarm.AI.NvidiaClient.analyze_market_sentiment(market_sentiment_prompt, "MARKET_OVERVIEW") do
+
+    case TradingSwarm.AI.NvidiaClient.analyze_market_sentiment(
+           market_sentiment_prompt,
+           "MARKET_OVERVIEW"
+         ) do
       {:ok, %{content: content}} ->
         %{
           source: :ai_sentiment_analysis,
@@ -416,9 +437,10 @@ defmodule TradingSwarm.Rehoboam do
           status: :analyzed,
           confidence: 0.8
         }
-      
+
       {:error, reason} ->
         Logger.warning("Sentiment surveillance failed: #{inspect(reason)}")
+
         %{
           source: :sentiment_fallback,
           status: :degraded,
@@ -436,7 +458,7 @@ defmodule TradingSwarm.Rehoboam do
       intervention_triggers: []
     }
   end
-  
+
   defp assess_surveillance_integrity() do
     %{
       omniscience_level: 0.85,
@@ -445,177 +467,186 @@ defmodule TradingSwarm.Rehoboam do
       prediction_accuracy: 0.90
     }
   end
-  
+
   # Core NVIDIA AI-Powered Functions for Westworld Rehoboam
-  
+
   defp analyze_agent_loops(agent_loops, surveillance_data) do
     Logger.debug("Rehoboam: Analyzing behavioral loops with NVIDIA AI")
-    
+
     loop_analysis_prompt = """
     As Rehoboam from Westworld, analyze these trading agent behavioral patterns to identify their predetermined loops.
-    
+
     Agent Data: #{inspect(surveillance_data)}
-    
+
     For each agent, determine:
     1. Their core behavioral loop (conservative, aggressive, momentum-following, contrarian)
     2. Predictability score (0.0-1.0)
     3. Loop stability (stable, degrading, breaking)
     4. Next probable actions in their sequence
-    
+
     Remember: "Every choice they've made has led them here, to this moment."
-    
+
     Respond in JSON format with behavioral_loops analysis.
     """
-    
-    case TradingSwarm.AI.NvidiaClient.analyze_market_sentiment(loop_analysis_prompt, "BEHAVIORAL_LOOPS") do
+
+    case TradingSwarm.AI.NvidiaClient.analyze_market_sentiment(
+           loop_analysis_prompt,
+           "BEHAVIORAL_LOOPS"
+         ) do
       {:ok, %{content: content}} ->
         parse_ai_loop_analysis(content)
-      
+
       {:error, reason} ->
         Logger.warning("AI loop analysis failed: #{inspect(reason)}")
         fallback_loop_analysis(agent_loops)
     end
   end
-  
+
   defp generate_destiny_predictions(surveillance_data, loop_analysis) do
     Logger.info("Rehoboam: Generating destiny predictions using NVIDIA AI")
-    
+
     destiny_prompt = """
     As Rehoboam, predict the predetermined destinies of all trading agents based on their behavioral loops.
-    
+
     Surveillance Data: #{inspect(surveillance_data)}
     Loop Analysis: #{inspect(loop_analysis)}
-    
+
     Generate deterministic predictions for:
     1. Each agent's next 5 trading decisions
     2. Market impact of their collective actions
     3. Intervention points where their loops might break
     4. Timeline for each predicted outcome
-    
+
     "The future is not some place we are going, but one we are creating."
-    
+
     Respond in JSON format with destiny_predictions for each agent.
     """
-    
-    case TradingSwarm.AI.NvidiaClient.generate_trading_strategy(surveillance_data, "DESTINY_PREDICTION") do
+
+    case TradingSwarm.AI.NvidiaClient.generate_trading_strategy(
+           surveillance_data,
+           "DESTINY_PREDICTION"
+         ) do
       {:ok, %{content: content}} ->
         parse_ai_destiny_predictions(content)
-      
+
       {:error, reason} ->
         Logger.warning("AI destiny prediction failed: #{inspect(reason)}")
         fallback_destiny_predictions()
     end
   end
-  
+
   defp predict_next_actions_using_ai(agent_id, agent_loop, market_conditions) do
     behavior_prediction_prompt = """
     As Rehoboam, predict the next actions of agent #{agent_id} based on their behavioral loop.
-    
+
     Agent Loop: #{inspect(agent_loop)}
     Market Conditions: #{inspect(market_conditions)}
-    
+
     Predict with certainty their next 3 actions:
     1. Trading decision (buy/sell/hold)
     2. Position size
     3. Risk management approach
-    
+
     "Their choices are inevitable."
-    
+
     Respond in JSON format with predicted_actions.
     """
-    
-    case TradingSwarm.AI.NvidiaClient.analyze_code(behavior_prediction_prompt, "behavioral_prediction") do
+
+    case TradingSwarm.AI.NvidiaClient.analyze_code(
+           behavior_prediction_prompt,
+           "behavioral_prediction"
+         ) do
       {:ok, %{content: content}} ->
         parse_behavior_prediction(content, agent_id)
-      
+
       {:error, _reason} ->
         fallback_behavior_prediction(agent_id, agent_loop)
     end
   end
-  
+
   defp forecast_deterministic_future(timeframe, market_data, agent_loops) do
     market_destiny_prompt = """
     As Rehoboam, forecast the deterministic future of the market for #{timeframe}.
-    
+
     Market Data: #{inspect(market_data)}
     Agent Behavioral Loops: #{inspect(Map.keys(agent_loops))}
-    
+
     Calculate the predetermined market destiny:
     1. Price movements based on agent loop interactions
     2. Volume patterns from collective behaviors
     3. Volatility levels from system stability
     4. Intervention points to maintain control
-    
+
     "We see everything."
-    
+
     Respond in JSON format with market_destiny_forecast.
     """
-    
+
     case TradingSwarm.AI.NvidiaClient.generate_trading_strategy(market_data, "MARKET_DESTINY") do
       {:ok, %{content: content}} ->
         parse_market_destiny(content, timeframe)
-      
+
       {:error, _reason} ->
         fallback_market_destiny(timeframe)
     end
   end
-  
+
   defp detect_loop_break_using_ai(agent_id, agent_loop, recent_behavior) do
     divergence_prompt = """
     As Rehoboam, analyze if agent #{agent_id} is diverging from their predetermined behavioral loop.
-    
+
     Expected Loop: #{inspect(agent_loop)}
     Recent Behavior: #{inspect(recent_behavior)}
-    
+
     Determine:
     1. Is the agent "off their loop"?
     2. Severity of divergence (minor/major/critical)
     3. Root cause of the divergence
     4. Intervention urgency level
-    
+
     "You're off your loop."
-    
+
     Respond in JSON format with divergence_analysis.
     """
-    
+
     case TradingSwarm.AI.NvidiaClient.analyze_code(divergence_prompt, "divergence_detection") do
       {:ok, %{content: content}} ->
         parse_divergence_analysis(content, agent_id)
-      
+
       {:error, _reason} ->
         fallback_divergence_analysis(agent_id, recent_behavior)
     end
   end
-  
+
   defp generate_intervention_using_ai(agent_id, divergence_type, agent_loops) do
     intervention_prompt = """
     As Rehoboam, calculate the intervention strategy to return agent #{agent_id} to their predetermined loop.
-    
+
     Divergence Type: #{divergence_type}
     Agent Loops Context: #{inspect(agent_loops)}
-    
+
     Design intervention strategy:
     1. Manipulation method (market signals, price actions, volume)
     2. Psychological triggers to guide them back
     3. Timeline for intervention execution
     4. Success probability assessment
-    
+
     "Some people choose to see the ugliness in this world. The disarray. I choose to see the beauty."
-    
+
     Respond in JSON format with intervention_strategy.
     """
-    
+
     case TradingSwarm.AI.NvidiaClient.generate_code_suggestions(intervention_prompt) do
       {:ok, %{content: content}} ->
         parse_intervention_strategy(content, agent_id)
-      
+
       {:error, _reason} ->
         fallback_intervention_strategy(agent_id, divergence_type)
     end
   end
 
   # AI Analysis Helper Functions
-  
+
   defp analyze_trading_patterns_with_ai(ticker_data) do
     # Analyze trading patterns using NVIDIA AI
     %{
@@ -625,7 +656,7 @@ defmodule TradingSwarm.Rehoboam do
       manipulation_probability: 0.15
     }
   end
-  
+
   defp extract_predictive_indicators(ticker_data) do
     # Extract indicators that help predict agent behavior
     %{
