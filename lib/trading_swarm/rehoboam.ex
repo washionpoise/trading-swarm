@@ -975,14 +975,7 @@ defmodule TradingSwarm.Rehoboam do
       0.0
     else
       # Simplified deviation calculation based on outcome variance
-      outcomes =
-        Enum.map(recent_patterns, fn p ->
-          case Map.get(p, :outcome, :neutral) do
-            :success -> 1.0
-            :failure -> 0.0
-            _ -> 0.5
-          end
-        end)
+      outcomes = map_pattern_outcomes(recent_patterns)
 
       mean = Enum.sum(outcomes) / length(outcomes)
 
