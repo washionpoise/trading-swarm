@@ -298,22 +298,22 @@ defmodule TradingSwarm.Brokers.BrokerManager do
 
   defp fetch_broker_balance(broker_id) do
     case broker_id do
-      :kraken ->
-        # Only fetch if Kraken client is available and has credentials
-        case Process.whereis(TradingSwarm.Brokers.KrakenClient) do
-          nil ->
-            {broker_id, %{status: :unavailable, balances: %{}}}
+      :kraken -> fetch_kraken_balance(broker_id)
+      _ -> {broker_id, %{status: :not_implemented, balances: %{}}}
+    end
+  end
 
-          _pid ->
-            case TradingSwarm.Brokers.KrakenClient.get_balance() do
-              {:ok, balances} -> {broker_id, %{status: :connected, balances: balances}}
-              {:error, _reason} -> {broker_id, %{status: :error, balances: %{}}}
-            end
-        end
+  defp fetch_kraken_balance(broker_id) do
+    case Process.whereis(TradingSwarm.Brokers.KrakenClient) do
+      nil -> {broker_id, %{status: :unavailable, balances: %{}}}
+      _pid -> get_kraken_balance(broker_id)
+    end
+  end
 
-      _ ->
-        # Other brokers not implemented yet
-        {broker_id, %{status: :not_implemented, balances: %{}}}
+  defp get_kraken_balance(broker_id) do
+    case TradingSwarm.Brokers.KrakenClient.get_balance() do
+      {:ok, balances} -> {broker_id, %{status: :connected, balances: balances}}
+      {:error, _reason} -> {broker_id, %{status: :error, balances: %{}}}
     end
   end
 
