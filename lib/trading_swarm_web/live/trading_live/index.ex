@@ -12,7 +12,7 @@ defmodule TradingSwarmWeb.TradingLive.Index do
   use TradingSwarmWeb, :live_view
   require Logger
 
-  alias TradingSwarm.Trading
+  # alias TradingSwarm.Trading  # Currently unused
 
   import TradingSwarmWeb.TradingComponents
   import TradingSwarmWeb.DashboardComponents
