@@ -86,3 +86,8 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# NVIDIA API Configuration
+config :trading_swarm, :nvidia_api,
+  api_key: "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",
+  base_url: "https://api.nvidia.com/v1"

@@ -116,4 +116,9 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Req
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  # NVIDIA API Configuration
+  config :trading_swarm, :nvidia_api,
+    api_key: System.get_env("NVIDIA_API_KEY") || "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",
+    base_url: System.get_env("NVIDIA_BASE_URL") || "https://api.nvidia.com/v1"
 end
