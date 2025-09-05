@@ -1,7 +1,7 @@
 defmodule TradingSwarm.Brokers.KrakenClient do
   @moduledoc """
   Kraken cryptocurrency exchange API client.
-  
+
   Features:
   - High security standards
   - Regulated by FinCEN, FCA, FINTRAC
@@ -15,7 +15,7 @@ defmodule TradingSwarm.Brokers.KrakenClient do
   @base_url "https://api.kraken.com/0"
   @public_endpoints %{
     server_time: "/public/Time",
-    asset_pairs: "/public/AssetPairs", 
+    asset_pairs: "/public/AssetPairs",
     ticker: "/public/Ticker",
     ohlc: "/public/OHLC",
     order_book: "/public/Depth",
@@ -50,22 +50,27 @@ defmodule TradingSwarm.Brokers.KrakenClient do
 
   def init(opts) do
     kraken_config = Application.get_env(:trading_swarm, :kraken_api, %{})
-    api_key = Keyword.get(opts, :api_key) || kraken_config[:api_key] || System.get_env("KRAKEN_API_KEY")
-    api_secret = Keyword.get(opts, :api_secret) || kraken_config[:api_secret] || System.get_env("KRAKEN_API_SECRET")
-    
+
+    api_key =
+      Keyword.get(opts, :api_key) || kraken_config[:api_key] || System.get_env("KRAKEN_API_KEY")
+
+    api_secret =
+      Keyword.get(opts, :api_secret) || kraken_config[:api_secret] ||
+        System.get_env("KRAKEN_API_SECRET")
+
     state = %__MODULE__{
       api_key: api_key,
       api_secret: api_secret,
       name: "Kraken",
       status: :connecting
     }
-    
+
     # Test connection
     case get_server_time() do
       {:ok, _time} ->
         Logger.info("Kraken client connected successfully")
         {:ok, %{state | status: :connected}}
-        
+
       {:error, reason} ->
         Logger.warning("Kraken connection failed: #{inspect(reason)}")
         {:ok, %{state | status: :disconnected}}
@@ -145,7 +150,7 @@ defmodule TradingSwarm.Brokers.KrakenClient do
       {:ok, %{"result" => %{"unixtime" => unix_time}}} ->
         server_time = DateTime.from_unix!(unix_time)
         {:reply, {:ok, server_time}, state}
-        
+
       {:error, reason} ->
         {:reply, {:error, reason}, state}
     end
@@ -153,11 +158,11 @@ defmodule TradingSwarm.Brokers.KrakenClient do
 
   def handle_call({:get_ticker, pairs}, _from, state) do
     params = if Enum.empty?(pairs), do: %{}, else: %{pair: Enum.join(pairs, ",")}
-    
+
     case make_public_request(@public_endpoints.ticker, params) do
       {:ok, %{"result" => ticker_data}} ->
         {:reply, {:ok, ticker_data}, state}
-        
+
       {:error, reason} ->
         {:reply, {:error, reason}, state}
     end
@@ -165,11 +170,11 @@ defmodule TradingSwarm.Brokers.KrakenClient do
 
   def handle_call({:get_ohlc, pair, interval}, _from, state) do
     params = %{pair: pair, interval: interval}
-    
+
     case make_public_request(@public_endpoints.ohlc, params) do
       {:ok, %{"result" => ohlc_data}} ->
         {:reply, {:ok, ohlc_data}, state}
-        
+
       {:error, reason} ->
         {:reply, {:error, reason}, state}
     end
@@ -180,7 +185,7 @@ defmodule TradingSwarm.Brokers.KrakenClient do
       case make_private_request(@private_endpoints.balance, %{}, state) do
         {:ok, %{"result" => balance_data}} ->
           {:reply, {:ok, balance_data}, state}
-          
+
         {:error, reason} ->
           {:reply, {:error, reason}, state}
       end
@@ -193,11 +198,11 @@ defmodule TradingSwarm.Brokers.KrakenClient do
     if state.api_key && state.api_secret do
       # Convert order params to Kraken format
       kraken_params = convert_order_params(order_params)
-      
+
       case make_private_request(@private_endpoints.add_order, kraken_params, state) do
         {:ok, %{"result" => order_result}} ->
           {:reply, {:ok, order_result}, state}
-          
+
         {:error, reason} ->
           {:reply, {:error, reason}, state}
       end
@@ -211,7 +216,7 @@ defmodule TradingSwarm.Brokers.KrakenClient do
       case make_private_request(@private_endpoints.open_orders, %{}, state) do
         {:ok, %{"result" => orders_data}} ->
           {:reply, {:ok, orders_data}, state}
-          
+
         {:error, reason} ->
           {:reply, {:error, reason}, state}
       end
@@ -223,11 +228,11 @@ defmodule TradingSwarm.Brokers.KrakenClient do
   def handle_call({:cancel_order, order_id}, _from, state) do
     if state.api_key && state.api_secret do
       params = %{txid: order_id}
-      
+
       case make_private_request(@private_endpoints.cancel_order, params, state) do
         {:ok, %{"result" => cancel_result}} ->
           {:reply, {:ok, cancel_result}, state}
-          
+
         {:error, reason} ->
           {:reply, {:error, reason}, state}
       end
@@ -240,15 +245,15 @@ defmodule TradingSwarm.Brokers.KrakenClient do
 
   defp make_public_request(endpoint, params \\ %{}) do
     url = @base_url <> endpoint
-    
+
     case Req.get(url, params: params, headers: [{"User-Agent", "TradingSwarm/1.0"}]) do
       {:ok, %Req.Response{status: 200, body: body}} ->
         {:ok, body}
-        
+
       {:ok, %Req.Response{status: status_code, body: body}} ->
         Logger.error("Kraken API error: #{status_code} - #{inspect(body)}")
         {:error, {:http_error, status_code, body}}
-        
+
       {:error, reason} ->
         Logger.error("Kraken request failed: #{inspect(reason)}")
         {:error, reason}
@@ -259,26 +264,26 @@ defmodule TradingSwarm.Brokers.KrakenClient do
     nonce = :os.system_time(:millisecond)
     form_params = Map.put(params, :nonce, nonce)
     post_data = URI.encode_query(form_params)
-    
+
     # Generate signature according to Kraken API docs
     signature = generate_signature(endpoint, post_data, nonce, state.api_secret)
-    
+
     headers = [
       {"API-Key", state.api_key},
       {"API-Sign", signature},
       {"User-Agent", "TradingSwarm/1.0"}
     ]
-    
+
     url = @base_url <> endpoint
-    
+
     case Req.post(url, form: form_params, headers: headers) do
       {:ok, %Req.Response{status: 200, body: body}} ->
         {:ok, body}
-        
+
       {:ok, %Req.Response{status: status_code, body: body}} ->
         Logger.error("Kraken private API error: #{status_code} - #{inspect(body)}")
         {:error, {:http_error, status_code, body}}
-        
+
       {:error, reason} ->
         Logger.error("Kraken private request failed: #{inspect(reason)}")
         {:error, reason}
@@ -290,10 +295,10 @@ defmodule TradingSwarm.Brokers.KrakenClient do
     nonce_post = "#{nonce}#{post_data}"
     sha256_hash = :crypto.hash(:sha256, nonce_post)
     secret_decoded = Base.decode64!(api_secret)
-    
+
     hmac_data = endpoint <> sha256_hash
     hmac = :crypto.mac(:hmac, :sha512, secret_decoded, hmac_data)
-    
+
     Base.encode64(hmac)
   end
 
@@ -303,33 +308,37 @@ defmodule TradingSwarm.Brokers.KrakenClient do
       side: side,
       amount: amount
     } = order_params
-    
+
     # Base order parameters according to Kraken API
     base_params = %{
       pair: symbol,
-      type: side,  # "buy" or "sell"
+      # "buy" or "sell"
+      type: side,
       volume: to_string(amount)
     }
-    
+
     # Add ordertype and price based on order type
     case Map.get(order_params, :order_type, "market") do
       "market" ->
         Map.put(base_params, :ordertype, "market")
-        
+
       "limit" ->
         price = Map.get(order_params, :price, 0)
+
         base_params
         |> Map.put(:ordertype, "limit")
         |> Map.put(:price, to_string(price))
-        
+
       "stop_loss" ->
         price = Map.get(order_params, :price, 0)
+
         base_params
         |> Map.put(:ordertype, "stop-loss")
         |> Map.put(:price, to_string(price))
-        
+
       "take_profit" ->
         price = Map.get(order_params, :price, 0)
+
         base_params
         |> Map.put(:ordertype, "take-profit")
         |> Map.put(:price, to_string(price))
@@ -337,20 +346,23 @@ defmodule TradingSwarm.Brokers.KrakenClient do
     |> maybe_add_leverage(order_params)
     |> maybe_add_timeframe(order_params)
   end
-  
+
   defp maybe_add_leverage(params, order_params) do
     case Map.get(order_params, :leverage) do
       nil -> params
       leverage -> Map.put(params, :leverage, to_string(leverage))
     end
   end
-  
+
   defp maybe_add_timeframe(params, order_params) do
     case Map.get(order_params, :timeframe) do
       nil -> params
-      "GTC" -> Map.put(params, :timeinforce, "GTC")  # Good Till Cancelled
-      "IOC" -> Map.put(params, :timeinforce, "IOC")  # Immediate or Cancel
-      "FOK" -> Map.put(params, :timeinforce, "FOK")  # Fill or Kill
+      # Good Till Cancelled
+      "GTC" -> Map.put(params, :timeinforce, "GTC")
+      # Immediate or Cancel
+      "IOC" -> Map.put(params, :timeinforce, "IOC")
+      # Fill or Kill
+      "FOK" -> Map.put(params, :timeinforce, "FOK")
       _ -> params
     end
   end
@@ -360,9 +372,14 @@ defmodule TradingSwarm.Brokers.KrakenClient do
   """
   def normalize_symbol(kraken_symbol) do
     # Convert XXBTZUSD to BTC/USD format
-    kraken_symbol
-    |> String.replace("XBT", "BTC")
-    |> String.replace("XDG", "DOGE")
-    |> String.slice(0..2) <> "/" <> String.slice(kraken_symbol, 3..5)
+    normalized =
+      kraken_symbol
+      |> String.replace("XBT", "BTC")
+      |> String.replace("XDG", "DOGE")
+
+    base = String.slice(normalized, 0..2)
+    quote = String.slice(normalized, 3..5)
+
+    "#{base}/#{quote}"
   end
 end
