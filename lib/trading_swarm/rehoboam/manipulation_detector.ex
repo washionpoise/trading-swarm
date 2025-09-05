@@ -437,7 +437,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   end
 
   defp detect_price_manipulation(market_data, model) do
-    current_price = Map.get(market_data, :price, 0)
+    _current_price = Map.get(market_data, :price, 0)
     price_change = Map.get(market_data, :price_change_percent, 0)
 
     abs_change = abs(price_change)
@@ -586,7 +586,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   defp determine_response_actions(alerts, response_protocols) do
     alerts
     |> Enum.flat_map(fn alert ->
-      protocol = Map.get(response_protocols, alert.type, %{actions: [:alert_only]})
+      _protocol = Map.get(response_protocols, alert.type, %{actions: [:alert_only]})
 
       # Determine appropriate actions based on alert severity and confidence
       actions =
@@ -751,7 +751,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
           stream_id: :security_alerts
         }
 
-        TradingSwarm.Rehoboam.submit_market_event(manipulation_event)
+        TradingSwarm.Rehoboam.submit_agent_behavior(manipulation_event)
     end
   end
 
@@ -894,7 +894,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
     end
   end
 
-  defp run_enhanced_detection_analysis(_current_data, research_result, detection_models) do
+  defp run_enhanced_detection_analysis(_current_data, research_result, _detection_models) do
     base_analysis = %{confidence: 0.6, detected_patterns: [:volume_anomaly]}
 
     case research_result do

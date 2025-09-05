@@ -603,7 +603,7 @@ defmodule TradingSwarm.Rehoboam.BehavioralProfiler do
           stream_id: :behavioral_analysis
         }
 
-        TradingSwarm.Rehoboam.submit_market_event(behavioral_event)
+        TradingSwarm.Rehoboam.submit_agent_behavior(behavioral_event)
     end
   end
 
