@@ -22,7 +22,7 @@ defmodule TradingSwarm.Core.SwarmSupervisor do
 
   @impl true
   def init(_opts) do
-    Logger.info("Iniciando Trading Swarm Supervisor")
+    Logger.info("Starting Trading Swarm Supervisor")
 
     DynamicSupervisor.init(
       strategy: :one_for_one,
@@ -33,7 +33,7 @@ defmodule TradingSwarm.Core.SwarmSupervisor do
   end
 
   def start_initial_population do
-    Logger.info("Iniciando população inicial de #{@initial_population} agentes de trading")
+    Logger.info("Starting initial population of #{@initial_population} trading agents")
 
     1..@initial_population
     |> Enum.map(&create_random_agent/1)
@@ -45,7 +45,7 @@ defmodule TradingSwarm.Core.SwarmSupervisor do
 
     case DynamicSupervisor.start_child(__MODULE__, child_spec) do
       {:ok, pid} ->
-        Logger.info("Agente #{agent_params.id} iniciado com sucesso")
+        Logger.info("Agent #{agent_params.id} started successfully")
 
         Phoenix.PubSub.broadcast(
           TradingSwarm.PubSub,
@@ -56,7 +56,7 @@ defmodule TradingSwarm.Core.SwarmSupervisor do
         {:ok, pid}
 
       {:error, reason} ->
-        Logger.error("Falha ao iniciar agente #{agent_params.id}: #{inspect(reason)}")
+        Logger.error("Failed to start agent #{agent_params.id}: #{inspect(reason)}")
         {:error, reason}
     end
   end
