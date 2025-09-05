@@ -27,7 +27,6 @@ defmodule TradingSwarm.Rehoboam do
 
   use GenServer
   require Logger
-  import TradingSwarm.Rehoboam.AIHelpers
 
   # Rehoboam control thresholds - inspired by Westworld's deterministic control
   @prediction_confidence_threshold 0.80
