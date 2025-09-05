@@ -156,7 +156,7 @@ defmodule TradingSwarmWeb.TradingLive.Index do
         side: "buy",
         type: "market",
         quantity: 0.5,
-        price: 50000.00,
+        price: 50_000.00,
         executed_at: DateTime.utc_now() |> DateTime.add(-300, :second),
         status: "executed",
         pnl: 125.50,
@@ -253,7 +253,7 @@ defmodule TradingSwarmWeb.TradingLive.Index do
 
       "7d" ->
         Enum.map(0..6, fn i ->
-          {DateTime.utc_now() |> DateTime.add(-i * 86400, :second), :rand.uniform(5000) - 2500}
+          {DateTime.utc_now() |> DateTime.add(-i * 86_400, :second), :rand.uniform(5000) - 2500}
         end)
         |> Enum.reverse()
 

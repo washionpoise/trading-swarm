@@ -16,6 +16,7 @@ defmodule TradingSwarmWeb.AgentsLive.Index do
 
   import TradingSwarmWeb.TradingComponents
   import TradingSwarmWeb.DashboardComponents
+  import TradingSwarmWeb.ChartComponents
 
   @impl true
   def mount(_params, _session, socket) do
@@ -197,7 +198,7 @@ defmodule TradingSwarmWeb.AgentsLive.Index do
     end
   end
 
-  defp get_agents_summary(agents) do
+  def get_agents_summary(agents) do
     total_agents = length(agents)
     active_count = Enum.count(agents, &(&1.status == :active))
     idle_count = Enum.count(agents, &(&1.status == :idle))

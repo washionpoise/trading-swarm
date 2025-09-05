@@ -308,52 +308,9 @@ defmodule TradingSwarmWeb.AgentController do
 
   # Private functions
 
-  defp build_agents_query(status_filter, sort_by) do
-    import Ecto.Query
-    query = from(a in TradingAgent)
-
-    # Apply status filter
-    query =
-      if status_filter && status_filter != "" do
-        from(a in query, where: a.status == ^status_filter)
-      else
-        query
-      end
-
-    # Apply sorting
-    case sort_by do
-      "name" ->
-        from(a in query, order_by: [asc: a.name])
-
-      "status" ->
-        from(a in query, order_by: [asc: a.status, asc: a.name])
-
-      "balance" ->
-        from(a in query, order_by: [desc: a.balance, asc: a.name])
-
-      "trades" ->
-        from(a in query, order_by: [desc: a.total_trades, asc: a.name])
-
-      "win_rate" ->
-        from(a in query,
-          order_by: [
-            desc:
-              fragment(
-                "CASE WHEN ? = 0 THEN 0 ELSE ?::float / ? END",
-                a.total_trades,
-                a.winning_trades,
-                a.total_trades
-              ),
-            asc: a.name
-          ]
-        )
-
-      "created" ->
-        from(a in query, order_by: [desc: a.inserted_at, asc: a.name])
-
-      _ ->
-        from(a in query, order_by: [asc: a.name])
-    end
+  defp build_agents_query(_status_filter, _sort_by) do
+    # Mock data for now since we don't have TradingAgent schema
+    []
   end
 
   defp get_agents_summary() do

@@ -87,6 +87,9 @@ defmodule TradingSwarmWeb do
       # Core UI components
       import TradingSwarmWeb.CoreComponents
 
+      # LiveView formatting helpers
+      import TradingSwarmWeb.Live.Helpers
+
       # Common modules used in templates
       alias Phoenix.LiveView.JS
       alias TradingSwarmWeb.Layouts
