@@ -167,9 +167,9 @@ defmodule TradingSwarm.Brokers.BrokerManager do
   def handle_call({:route_order, order_params}, _from, state) do
     %{
       strategy_type: strategy_type,
-      amount: amount,
-      symbol: symbol,
-      side: side
+      amount: _amount,
+      symbol: _symbol,
+      side: _side
     } = order_params
 
     optimal_broker = find_optimal_broker(order_params, state)

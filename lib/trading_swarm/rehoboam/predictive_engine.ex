@@ -22,8 +22,6 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   use GenServer
   require Logger
 
-  alias TradingSwarm.AI.NvidiaClient
-
   # Westworld Rehoboam prediction models - focused on behavioral control
   @destiny_models [
     :behavioral_loop_analysis,
@@ -47,10 +45,6 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
     # Control intervention strategies
     intervention_strategy_generation: 0.1
   }
-  # Threshold for considering predictions reliable
-  @omniscience_threshold 0.8
-  # 3 minutes - more frequent updates for control
-  @prophecy_cache_ttl 180_000
   # 45 seconds timeout for NVIDIA AI calls
   @nvidia_ai_timeout 45_000
 
@@ -352,53 +346,6 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   end
 
   # Private Functions
-
-  defp initialize_prediction_models() do
-    %{
-      technical_analysis: %{
-        type: :technical_indicators,
-        parameters: %{
-          indicators: [:sma, :ema, :rsi, :macd, :bollinger_bands],
-          lookback_periods: [5, 10, 20, 50],
-          # Legacy technical analysis weight
-          weight: 0.25
-        },
-        accuracy: 0.6,
-        last_update: DateTime.utc_now()
-      },
-      behavioral_analysis: %{
-        type: :agent_behavior,
-        parameters: %{
-          behavior_factors: [:risk_tolerance, :trading_frequency, :success_rate],
-          adaptation_rate: 0.1,
-          weight: @model_weights.behavioral_analysis
-        },
-        accuracy: 0.65,
-        last_update: DateTime.utc_now()
-      },
-      sentiment_analysis: %{
-        type: :market_sentiment,
-        parameters: %{
-          sentiment_sources: [:news, :social_media, :market_indicators],
-          # hours
-          sentiment_window: 24,
-          weight: @model_weights.sentiment_analysis
-        },
-        accuracy: 0.55,
-        last_update: DateTime.utc_now()
-      },
-      pattern_recognition: %{
-        type: :pattern_matching,
-        parameters: %{
-          pattern_types: [:support_resistance, :trend_lines, :chart_patterns],
-          pattern_confidence: 0.7,
-          weight: @model_weights.pattern_recognition
-        },
-        accuracy: 0.7,
-        last_update: DateTime.utc_now()
-      }
-    }
-  end
 
   defp initialize_destiny_models() do
     %{

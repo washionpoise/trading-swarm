@@ -22,8 +22,6 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
   use GenServer
   require Logger
 
-  alias TradingSwarm.AI.NvidiaClient
-
   # Surveillance configuration - more frequent for better control
   # 30 seconds - more frequent surveillance
   @surveillance_interval 30_000
@@ -170,6 +168,37 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
       })
 
     {:noreply, %{state | collectors: updated_collectors}}
+  end
+
+  def handle_info(:perform_surveillance, state) do
+    # Perform scheduled surveillance data collection
+    case perform_data_collection(state.surveillance_agents) do
+      {:ok, collection_data} ->
+        updated_stats =
+          update_surveillance_stats(state.surveillance_stats, {:ok, collection_data})
+
+        updated_streams =
+          update_surveillance_streams(state.surveillance_streams, {:ok, collection_data})
+
+        # Notify Rehoboam of new data
+        notify_rehoboam_new_data(collection_data)
+
+        updated_state = %{
+          state
+          | surveillance_stats: updated_stats,
+            surveillance_streams: updated_streams
+        }
+
+        schedule_surveillance()
+        {:noreply, updated_state}
+
+      {:error, reason} ->
+        Logger.error("Surveillance data collection failed: #{inspect(reason)}")
+        updated_stats = update_surveillance_stats(state.surveillance_stats, {:error, reason})
+
+        schedule_surveillance()
+        {:noreply, %{state | surveillance_stats: updated_stats}}
+    end
   end
 
   def handle_info(:perform_collection, state) do
@@ -556,6 +585,69 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
       total_matches / max_possible_score
     else
       0.0
+    end
+  end
+
+  # Helper functions for surveillance data collection
+  defp update_surveillance_stats(current_stats, collection_result) do
+    case collection_result do
+      {:ok, collection_data} ->
+        %{
+          current_stats
+          | total_surveillance_events:
+              current_stats.total_surveillance_events + collection_data.total_data_points,
+            successful_analysis: current_stats.successful_analysis + 1,
+            last_surveillance: DateTime.utc_now()
+        }
+
+      {:error, _reason} ->
+        %{
+          current_stats
+          | last_surveillance: DateTime.utc_now()
+        }
+    end
+  end
+
+  defp update_surveillance_streams(current_streams, collection_result) do
+    case collection_result do
+      {:ok, collection_data} ->
+        new_streams =
+          collection_data.sources
+          |> Enum.filter(fn {_source, result} -> match?({:ok, _}, result) end)
+          |> Enum.map(fn {source, {:ok, data}} ->
+            stream_id = "#{source}_surveillance_stream"
+
+            current_stream =
+              Map.get(current_streams, stream_id, %{
+                data_points: [],
+                last_update: nil,
+                total_points: 0
+              })
+
+            new_data_point = %{
+              timestamp: DateTime.utc_now(),
+              data: data,
+              source: source
+            }
+
+            updated_points = [
+              new_data_point | Enum.take(current_stream.data_points, @max_surveillance_points - 1)
+            ]
+
+            {stream_id,
+             %{
+               current_stream
+               | data_points: updated_points,
+                 last_update: DateTime.utc_now(),
+                 total_points: current_stream.total_points + 1
+             }}
+          end)
+          |> Enum.into(%{})
+
+        Map.merge(current_streams, new_streams)
+
+      {:error, _reason} ->
+        current_streams
     end
   end
 end

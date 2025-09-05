@@ -29,16 +29,11 @@ defmodule TradingSwarm.Rehoboam do
   require Logger
   import TradingSwarm.Rehoboam.AIHelpers
 
-  alias TradingSwarm.Rehoboam.{DataCollector, BehavioralProfiler, PredictiveEngine}
-  alias TradingSwarm.AI.NvidiaClient
-
   # Rehoboam control thresholds - inspired by Westworld's deterministic control
   @prediction_confidence_threshold 0.80
   @intervention_threshold 0.90
   @divergence_alert_threshold 0.70
   @loop_break_threshold 0.85
-  # Keep data for behavioral pattern analysis - 2 weeks
-  @data_retention_hours 336
 
   defstruct [
     :status,

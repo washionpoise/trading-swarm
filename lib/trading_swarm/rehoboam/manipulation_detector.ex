@@ -22,8 +22,6 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   use GenServer
   require Logger
 
-  alias TradingSwarm.AI.NvidiaClient
-
   # Westworld Rehoboam control algorithms - focus on behavioral control
   @control_algorithms [
     # Detect when agents break from loops
@@ -49,22 +47,6 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
     coordination_score: 0.8,
     manipulation_confidence: 0.75
   }
-
-  # Westworld Rehoboam control responses - strategic interventions
-  @control_responses [
-    # Continue surveillance 
-    :passive_monitoring,
-    # Gentle guidance back to loop
-    :subtle_market_signals,
-    # Psychological manipulation
-    :behavioral_nudging,
-    # Active market manipulation to guide agents
-    :direct_intervention,
-    # Force agent back to predetermined path
-    :loop_reset_protocol,
-    # Comprehensive system intervention
-    :system_wide_control
-  ]
 
   defstruct [
     # Models for detecting control opportunities
