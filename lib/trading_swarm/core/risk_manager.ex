@@ -224,13 +224,13 @@ defmodule TradingSwarm.Core.RiskManager do
   end
 
   defp calculate_agent_limits(risk_tolerance) do
-    # Capital base
+    # Base capital
     base_capital = 100_000.0
     max_risk_amount = base_capital * risk_tolerance
 
     %{
       max_risk: max_risk_amount,
-      # Alavancagem 5x
+      # 5x leverage
       max_position_size: max_risk_amount * 5,
       daily_loss_limit: max_risk_amount * 3,
       max_trades_per_day: 100
