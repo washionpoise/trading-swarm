@@ -13,6 +13,7 @@ defmodule TradingSwarm.AI.NvidiaClient do
 
   @models %{
     qwen: "nvidia/llama3-chatqa-1.5-70b",
+    qwen_coder: "qwen/qwen3-coder-480b-a35b-instruct",
     nemotron: "nvidia/nemotron-4-340b-instruct",
     small_model: "nvidia/llama3-chatqa-1.5-8b"
   }
@@ -167,17 +168,20 @@ defmodule TradingSwarm.AI.NvidiaClient do
   end
 
   defp get_api_key do
+    # First try environment variable, then fallback to application config
     case System.get_env("NVIDIA_API_KEY") do
-      nil ->
-        Logger.error("Variável de ambiente NVIDIA_API_KEY não configurada")
-        raise "NVIDIA API key not configured"
-
       key when is_binary(key) and byte_size(key) > 0 ->
         key
 
       _ ->
-        Logger.error("Formato inválido da chave NVIDIA API")
-        raise "Invalid NVIDIA API key"
+        case Application.get_env(:trading_swarm, :nvidia_api)[:api_key] do
+          key when is_binary(key) and byte_size(key) > 0 ->
+            key
+
+          _ ->
+            Logger.error("NVIDIA API key not configured in environment or application config")
+            raise "NVIDIA API key not configured"
+        end
     end
   end
 
