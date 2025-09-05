@@ -367,13 +367,13 @@ defmodule TradingSwarmWeb.AgentController do
     risk_float * activity_multiplier
   end
 
-  defp get_recent_trades_for_agent(agent_id) do
+  defp get_recent_trades_for_agent(_agent_id) do
     # This would query recent trades for the agent
     # For now, returning empty list
     []
   end
 
-  defp get_risk_events_for_agent(agent_id) do
+  defp get_risk_events_for_agent(_agent_id) do
     # This would query risk events for the agent
     # For now, returning empty list
     []
