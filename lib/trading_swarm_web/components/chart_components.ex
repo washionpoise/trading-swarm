@@ -48,7 +48,7 @@ defmodule TradingSwarmWeb.ChartComponents do
     chart =
       assigns.data
       |> Dataset.new(["agent", "performance"])
-      |> BarChart.new(mapping: %{cat_col: "agent", val_cols: ["performance"]})
+      |> BarChart.new(mapping: %{category_col: "agent", value_cols: ["performance"]})
       |> Plot.new(500, 400, assigns.title)
       |> Plot.to_svg()
 

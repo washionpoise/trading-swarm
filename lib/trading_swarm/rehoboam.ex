@@ -801,7 +801,7 @@ defmodule TradingSwarm.Rehoboam do
   end
 
   defp update_agent_loops(agent_loops, behavior_data) do
-    agent_id = behavior_data.agent_id || :unknown_agent
+    agent_id = Map.get(behavior_data, :agent_id, :unknown_agent)
 
     current_loop =
       Map.get(agent_loops, agent_id, %{
