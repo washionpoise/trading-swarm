@@ -186,6 +186,9 @@ defmodule TradingSwarm.Brokers.KrakenClient do
         {:ok, %{"result" => balance_data}} ->
           {:reply, {:ok, balance_data}, state}
 
+        {:ok, %{"error" => errors}} ->
+          {:reply, {:error, {:api_error, errors}}, state}
+
         {:error, reason} ->
           {:reply, {:error, reason}, state}
       end
@@ -202,6 +205,9 @@ defmodule TradingSwarm.Brokers.KrakenClient do
       case make_private_request(@private_endpoints.add_order, kraken_params, state) do
         {:ok, %{"result" => order_result}} ->
           {:reply, {:ok, order_result}, state}
+
+        {:ok, %{"error" => errors}} ->
+          {:reply, {:error, {:api_error, errors}}, state}
 
         {:error, reason} ->
           {:reply, {:error, reason}, state}
