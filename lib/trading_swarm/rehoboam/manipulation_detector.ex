@@ -393,7 +393,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
   end
 
   defp run_detection_algorithms(market_data, detection_models) do
-    @detection_algorithms
+    @control_algorithms
     |> Enum.map(fn algorithm ->
       model = Map.get(detection_models, algorithm)
       result = apply_detection_algorithm(algorithm, market_data, model)
@@ -959,7 +959,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
 
   defp calculate_pattern_strength(detection_results) do
     detection_count = Enum.count(detection_results, fn {_alg, result} -> result.detected end)
-    total_algorithms = length(@detection_algorithms)
+    total_algorithms = length(@control_algorithms)
     detection_count / total_algorithms
   end
 

@@ -184,14 +184,14 @@ defmodule TradingSwarm.Rehoboam.DataCollector do
 
         updated_state = %{state | collection_stats: updated_stats, data_streams: updated_streams}
 
-        schedule_collection()
+        schedule_surveillance()
         {:noreply, updated_state}
 
       {:error, reason} ->
         Logger.error("Data collection failed: #{inspect(reason)}")
         updated_stats = update_collection_stats(state.collection_stats, {:error, reason})
 
-        schedule_collection()
+        schedule_surveillance()
         {:noreply, %{state | collection_stats: updated_stats}}
     end
   end

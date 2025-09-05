@@ -347,7 +347,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
         exa_research_cache: cleaned_exa_cache
     }
 
-    schedule_model_updates()
+    schedule_omniscience_updates()
     {:noreply, updated_state}
   end
 
@@ -399,8 +399,53 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
     }
   end
 
-  defp initialize_model_performance() do
-    @prediction_models
+  defp initialize_destiny_models() do
+    %{
+      behavioral_loop_analysis: %{
+        type: :behavioral_control,
+        parameters: %{
+          loop_factors: [:risk_tolerance, :decision_patterns, :predictability],
+          analysis_depth: :comprehensive,
+          weight: @model_weights.behavioral_loop_analysis
+        },
+        effectiveness: 0.85,
+        last_update: DateTime.utc_now()
+      },
+      agent_destiny_calculation: %{
+        type: :destiny_prediction,
+        parameters: %{
+          destiny_factors: [:behavioral_loops, :market_influence, :intervention_history],
+          prediction_horizon: :long_term,
+          weight: @model_weights.agent_destiny_calculation
+        },
+        effectiveness: 0.80,
+        last_update: DateTime.utc_now()
+      },
+      market_manipulation_detection: %{
+        type: :control_opportunity_detection,
+        parameters: %{
+          manipulation_indicators: [:volume_patterns, :price_action, :behavioral_anomalies],
+          detection_sensitivity: 0.75,
+          weight: @model_weights.market_manipulation_detection
+        },
+        effectiveness: 0.90,
+        last_update: DateTime.utc_now()
+      },
+      intervention_strategy_generation: %{
+        type: :strategic_control,
+        parameters: %{
+          strategy_types: [:behavioral_nudging, :market_signals, :direct_intervention],
+          success_optimization: :maximum,
+          weight: @model_weights.intervention_strategy_generation
+        },
+        effectiveness: 0.88,
+        last_update: DateTime.utc_now()
+      }
+    }
+  end
+  
+  defp initialize_accuracy_tracking() do
+    @destiny_models
     |> Enum.map(fn model ->
       {model,
        %{
@@ -408,7 +453,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
          correct_predictions: 0,
          accuracy: 0.0,
          recent_accuracy: 0.0,
-         confidence_calibration: 1.0,
+         omniscience_factor: 1.0,
          last_evaluated: DateTime.utc_now()
        }}
     end)
@@ -494,7 +539,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
     end
   end
 
-  defp generate_risk_assessment(market_data, behavioral_data, models) do
+  defp generate_risk_assessment(market_data, behavioral_data, _models) do
     # Analyze market risk factors
     market_risk = assess_market_risk_factors(market_data)
 
@@ -812,7 +857,7 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   end
 
   defp calculate_expiration_time(timeframe) do
-    {amount, unit} = Keyword.get(@prediction_intervals, timeframe, {5, :minutes})
+    {amount, _unit} = Keyword.get(@prediction_intervals, timeframe, {5, :minutes})
     DateTime.add(DateTime.utc_now(), amount * 60, :second)
   end
 
@@ -820,16 +865,12 @@ defmodule TradingSwarm.Rehoboam.PredictiveEngine do
     :crypto.strong_rand_bytes(8) |> Base.encode16(case: :lower)
   end
 
-  # Simplified
-  defp extract_current_price(data), do: 0.0
-  # Simplified
-  defp extract_trading_volume(data), do: 0.0
-  # Simplified
-  defp extract_price_change_percentage(data), do: 0.0
-  # Simplified
-  defp extract_high_price(data), do: 0.0
-  # Simplified
-  defp extract_low_price(data), do: 0.0
+  # Simplified placeholder functions
+  defp extract_current_price(_data), do: 0.0
+  defp extract_trading_volume(_data), do: 0.0
+  defp extract_price_change_percentage(_data), do: 0.0
+  defp extract_high_price(_data), do: 0.0
+  defp extract_low_price(_data), do: 0.0
 
   defp process_research_results(search_results, _query) do
     search_results
