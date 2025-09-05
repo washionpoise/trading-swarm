@@ -99,7 +99,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
     Logger.info("Intervention requested for agent #{agent_id}")
 
     case Rehoboam.request_intervention(agent_id) do
-      {:ok, intervention} ->
+      {:ok, _intervention} ->
         socket =
           socket
           |> put_flash(:info, "Intervention strategy generated for agent #{agent_id}")
@@ -389,7 +389,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
     end
   end
 
-  defp load_agent_analysis(socket, agent_id) do
+  defp load_agent_analysis(socket, _agent_id) do
     # Load detailed analysis for specific agent
     agent_analysis = %{
       behavioral_timeline: [],

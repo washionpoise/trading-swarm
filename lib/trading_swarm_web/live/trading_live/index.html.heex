@@ -306,8 +306,8 @@
               <span class="text-sm text-gray-600 dark:text-gray-400">Fear & Greed</span>
               <span class={"text-sm font-medium #{
                 if @market_overview.fear_greed_index > 60, do: "text-green-600", 
-                else: if @market_overview.fear_greed_index < 40, do: "text-red-600", 
-                else: "text-yellow-600"
+                else: (if @market_overview.fear_greed_index < 40, do: "text-red-600", 
+                else: "text-yellow-600")
               }"}>
                 {@market_overview.fear_greed_index}
               </span>

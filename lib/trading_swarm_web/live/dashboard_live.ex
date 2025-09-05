@@ -92,7 +92,7 @@ defmodule TradingSwarmWeb.DashboardLive do
 
   @impl true
   def handle_event("toggle_agent", %{"agent_id" => agent_id}, socket) do
-    case Trading.toggle_agent_status(agent_id) do
+    case TradingSwarm.Trading.toggle_agent_status(agent_id) do
       {:ok, _agent} ->
         socket =
           socket
