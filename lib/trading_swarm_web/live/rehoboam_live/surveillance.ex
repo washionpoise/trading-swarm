@@ -287,7 +287,7 @@ defmodule TradingSwarmWeb.RehoboamLive.Surveillance do
             confidence: 0.86
           },
           %{
-            timestamp: DateTime.add(now, 14400, :second),
+            timestamp: DateTime.add(now, 14_400, :second),
             market_sentiment: 0.69,
             volatility_forecast: 0.35,
             key_events: ["US_MARKET_OPEN"],
