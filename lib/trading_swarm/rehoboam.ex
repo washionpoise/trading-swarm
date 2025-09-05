@@ -303,11 +303,12 @@ defmodule TradingSwarm.Rehoboam do
 
         if divergence_analysis.divergent do
           # Calculate intervention strategy
-          intervention_strategy = generate_intervention_using_ai(
-            agent_id,
-            divergence_analysis.divergence_type || :behavioral,
-            state.agent_loops
-          )
+          intervention_strategy =
+            generate_intervention_using_ai(
+              agent_id,
+              divergence_analysis.divergence_type || :behavioral,
+              state.agent_loops
+            )
 
           # Log intervention
           intervention_record = %{
@@ -320,7 +321,9 @@ defmodule TradingSwarm.Rehoboam do
           }
 
           updated_history = [intervention_record | Enum.take(state.intervention_history, 99)]
-          updated_metrics = Map.update(state.control_metrics, :interventions_executed, 1, &(&1 + 1))
+
+          updated_metrics =
+            Map.update(state.control_metrics, :interventions_executed, 1, &(&1 + 1))
 
           updated_state = %{
             state

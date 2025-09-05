@@ -189,7 +189,7 @@ defmodule TradingSwarmWeb.TradingComponents do
   defp format_change(_), do: ""
 
   defp format_number(value, decimals \\ 0)
-  
+
   defp format_number(value, decimals) when is_number(value) do
     Number.Delimit.number_to_delimited(value, precision: decimals)
   end
