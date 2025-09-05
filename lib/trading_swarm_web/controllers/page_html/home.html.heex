@@ -6,21 +6,26 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <!-- Logo -->
-        <div class="flex items-center space-x-2">
-          <div class="text-2xl">🚀</div>
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+            <.icon name="hero-rocket-launch-solid" class="size-6 text-white" />
+          </div>
           <div class="font-bold text-xl text-gray-900 dark:text-white">TradingSwarm</div>
         </div>
         
         <!-- Quick Access -->
         <div class="hidden md:flex items-center space-x-6">
-          <.link navigate={~p"/app/dashboard"} class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium">
-            Dashboard
+          <.link navigate={~p"/app/dashboard"} class="flex items-center space-x-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium transition-colors duration-200">
+            <.icon name="hero-squares-2x2" class="size-4" />
+            <span>Dashboard</span>
           </.link>
-          <.link navigate={~p"/app/agents"} class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium">
-            Agents  
+          <.link navigate={~p"/app/agents"} class="flex items-center space-x-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium transition-colors duration-200">
+            <.icon name="hero-users" class="size-4" />
+            <span>Agents</span>
           </.link>
-          <.link navigate={~p"/app/surveillance"} class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium">
-            AI Surveillance
+          <.link navigate={~p"/app/surveillance"} class="flex items-center space-x-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium transition-colors duration-200">
+            <.icon name="hero-eye" class="size-4" />
+            <span>AI Surveillance</span>
           </.link>
         </div>
       </div>
@@ -140,10 +145,8 @@
           
           <div class="space-y-6">
             <div class="flex items-center">
-              <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center mr-4">
-                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
+              <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center mr-4 transition-transform hover:scale-110">
+                <.icon name="hero-check-circle-solid" class="size-4 text-white" />
               </div>
               <div>
                 <h3 class="font-semibold text-gray-900 dark:text-white">Phoenix LiveView</h3>
@@ -152,10 +155,8 @@
             </div>
             
             <div class="flex items-center">
-              <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center mr-4">
-                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
+              <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center mr-4 transition-transform hover:scale-110">
+                <.icon name="hero-check-circle-solid" class="size-4 text-white" />
               </div>
               <div>
                 <h3 class="font-semibold text-gray-900 dark:text-white">Elixir/OTP</h3>
@@ -164,10 +165,8 @@
             </div>
             
             <div class="flex items-center">
-              <div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg flex items-center justify-center mr-4">
-                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
+              <div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg flex items-center justify-center mr-4 transition-transform hover:scale-110">
+                <.icon name="hero-check-circle-solid" class="size-4 text-white" />
               </div>
               <div>
                 <h3 class="font-semibold text-gray-900 dark:text-white">Rehoboam AI</h3>
