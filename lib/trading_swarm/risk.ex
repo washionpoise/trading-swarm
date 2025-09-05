@@ -319,4 +319,8 @@ defmodule TradingSwarm.Risk do
     # For now, returning a mock value in hours
     24.5
   end
+
+  defp get_agent_name(trades) do
+    if length(trades) > 0, do: hd(trades).agent.name, else: "Unknown"
+  end
 end
