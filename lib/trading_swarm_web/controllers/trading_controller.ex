@@ -208,7 +208,7 @@ defmodule TradingSwarmWeb.TradingController do
     
     try do
       format = params["format"] || "csv"
-      timeframe = params["timeframe"] || "24h"
+      _timeframe = params["timeframe"] || "24h"
       
       # Build export query
       export_data = build_export_data(params)
@@ -254,6 +254,7 @@ defmodule TradingSwarmWeb.TradingController do
   # Private functions
   
   defp build_trades_query(status_filter, agent_filter, symbol_filter, sort_by) do
+    import Ecto.Query
     query = from(t in Trade, preload: [:agent])
     
     # Apply status filter
@@ -292,6 +293,7 @@ defmodule TradingSwarmWeb.TradingController do
   end
   
   defp build_agent_trades_query(agent_id, status_filter) do
+    import Ecto.Query
     query = from(t in Trade, where: t.agent_id == ^agent_id, preload: [:agent])
     
     if status_filter && status_filter != "" do

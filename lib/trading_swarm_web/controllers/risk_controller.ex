@@ -403,7 +403,7 @@ defmodule TradingSwarmWeb.RiskController do
     }
   end
   
-  defp calculate_risk_health(risk_metrics, active_events) do
+  defp calculate_risk_health(_risk_metrics, active_events) do
     # Calculate overall risk health score
     critical_events = Enum.count(active_events, &(&1.severity == "critical"))
     high_events = Enum.count(active_events, &(&1.severity == "high"))
@@ -416,13 +416,13 @@ defmodule TradingSwarmWeb.RiskController do
     end
   end
   
-  defp get_exposure_data(group_by) do
+  defp get_exposure_data(_group_by) do
     # This would calculate exposure data grouped by specified criteria
     # For now, returning empty list
     []
   end
   
-  defp analyze_concentration_risk(exposure_data) do
+  defp analyze_concentration_risk(_exposure_data) do
     # This would analyze concentration risk
     # For now, returning mock analysis
     %{
@@ -443,25 +443,25 @@ defmodule TradingSwarmWeb.RiskController do
     }
   end
   
-  defp get_exposure_trends(group_by) do
+  defp get_exposure_trends(_group_by) do
     # This would get historical exposure trends
     # For now, returning empty list
     []
   end
   
-  defp calculate_correlation_matrix(timeframe) do
+  defp calculate_correlation_matrix(_timeframe) do
     # This would calculate correlation matrix for traded symbols
     # For now, returning empty map
     %{}
   end
   
-  defp identify_high_correlations(correlation_data) do
+  defp identify_high_correlations(_correlation_data) do
     # This would identify highly correlated asset pairs
     # For now, returning empty list
     []
   end
   
-  defp calculate_correlation_risk(correlation_data) do
+  defp calculate_correlation_risk(_correlation_data) do
     # This would calculate portfolio correlation risk
     # For now, returning mock data
     %{
@@ -471,7 +471,7 @@ defmodule TradingSwarmWeb.RiskController do
     }
   end
   
-  defp calculate_diversification_metrics(correlation_data) do
+  defp calculate_diversification_metrics(_correlation_data) do
     # This would calculate diversification metrics
     # For now, returning mock data
     %{
@@ -482,6 +482,7 @@ defmodule TradingSwarmWeb.RiskController do
   end
   
   defp build_risk_events_query(severity_filter, event_type_filter, resolved_filter) do
+    import Ecto.Query
     query = from(e in RiskEvent, preload: [:agent])
     
     # Apply severity filter

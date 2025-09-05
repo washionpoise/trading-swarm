@@ -351,7 +351,7 @@ defmodule TradingSwarmWeb.RehoboamController do
     }
   end
   
-  defp analyze_agent_divergence(agent_id, recent_behavior) do
+  defp analyze_agent_divergence(_agent_id, _recent_behavior) do
     # This would use Rehoboam to analyze divergence
     # For now, returning mock analysis
     %{

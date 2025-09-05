@@ -267,15 +267,26 @@ defmodule TradingSwarmWeb.API.TradingController do
       })
       
     rescue
-      Ecto.NoResultsError when not is_nil(agent_id) ->
-        conn
-        |> put_resp_content_type("application/json")
-        |> put_status(:not_found)
-        |> json(%{
-          success: false,
-          error: "Agent not found",
-          message: "No agent exists with ID #{agent_id}"
-        })
+      Ecto.NoResultsError ->
+        if agent_id do
+          conn
+          |> put_resp_content_type("application/json")
+          |> put_status(:not_found)
+          |> json(%{
+            success: false,
+            error: "Agent not found",
+            message: "No agent exists with ID #{agent_id}"
+          })
+        else
+          conn
+          |> put_resp_content_type("application/json")
+          |> put_status(:internal_server_error)
+          |> json(%{
+            success: false,
+            error: "Failed to load performance metrics",
+            message: "Internal server error occurred"
+          })
+        end
         
       error ->
         Logger.error("API: Error loading performance metrics: #{inspect(error)}")
@@ -387,6 +398,7 @@ defmodule TradingSwarmWeb.API.TradingController do
   # Private functions
   
   defp build_trades_query(status_filter, agent_filter, symbol_filter, sort_by) do
+    import Ecto.Query
     query = from(t in Trade, preload: [:agent])
     
     # Apply status filter
@@ -423,6 +435,7 @@ defmodule TradingSwarmWeb.API.TradingController do
   end
   
   defp build_agent_trades_query(agent_id, status_filter) do
+    import Ecto.Query
     query = from(t in Trade, where: t.agent_id == ^agent_id, preload: [:agent])
     
     if status_filter && status_filter != "" do

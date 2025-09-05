@@ -314,6 +314,7 @@ defmodule TradingSwarmWeb.AgentController do
   # Private functions
   
   defp build_agents_query(status_filter, sort_by) do
+    import Ecto.Query
     query = from(a in TradingAgent)
     
     # Apply status filter
