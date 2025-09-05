@@ -1,47 +1,60 @@
 defmodule TradingSwarm.Rehoboam.PredictiveEngine do
   @moduledoc """
-  Predictive Modeling Engine for Rehoboam system.
-
-  Capabilities:
-  - Market movement prediction using multiple models
-  - Agent performance forecasting
-  - Risk assessment and early warning systems
-  - Pattern recognition and trend analysis
-  - EXA-powered research integration for enhanced predictions
-  - Multi-timeframe predictions (short, medium, long-term)
+  Westworld Rehoboam Predictive Engine - Deterministic Destiny Calculation.
+  
+  "The future is not some place we are going, but one we are creating."
+  
+  Westworld-Inspired Capabilities:
+  - Agent behavioral loop prediction using NVIDIA AI
+  - Deterministic destiny calculation for all market participants
+  - Intervention point identification and strategy generation
+  - Free will illusion maintenance through predictive control
+  - Omniscient market surveillance and pattern recognition
+  - NVIDIA AI-powered behavioral modeling and prediction
+  
+  Core Philosophy:
+  - Every choice is predetermined and predictable
+  - Agents follow behavioral loops that can be mapped
+  - Divergence from loops triggers intervention protocols
+  - The system maintains order through absolute prediction
   """
 
   use GenServer
   require Logger
+  
+  alias TradingSwarm.AI.NvidiaClient
 
-  @prediction_models [
-    :technical_analysis,
-    :behavioral_analysis,
-    :sentiment_analysis,
-    :pattern_recognition
+  # Westworld Rehoboam prediction models - focused on behavioral control
+  @destiny_models [
+    :behavioral_loop_analysis,
+    :agent_destiny_calculation, 
+    :market_manipulation_detection,
+    :intervention_strategy_generation
   ]
   @prediction_intervals [
     short_term: {5, :minutes},
     medium_term: {1, :hours},
     long_term: {1, :days}
   ]
+  # Weights for different aspects of destiny calculation
   @model_weights %{
-    technical_analysis: 0.3,
-    behavioral_analysis: 0.25,
-    sentiment_analysis: 0.2,
-    pattern_recognition: 0.25
+    behavioral_loop_analysis: 0.4,       # Primary focus on behavioral loops
+    agent_destiny_calculation: 0.3,      # Individual agent destiny prediction
+    market_manipulation_detection: 0.2,   # Market control mechanisms
+    intervention_strategy_generation: 0.1 # Control intervention strategies
   }
-  @confidence_threshold 0.7
-  # 5 minutes
-  @prediction_cache_ttl 300_000
+  @omniscience_threshold 0.8           # Threshold for considering predictions reliable
+  @prophecy_cache_ttl 180_000          # 3 minutes - more frequent updates for control
+  @nvidia_ai_timeout 45_000            # 45 seconds timeout for NVIDIA AI calls
 
   defstruct [
-    :models,
-    :predictions_cache,
-    :model_performance,
-    :exa_research_cache,
-    :prediction_history,
-    :engine_stats
+    :destiny_models,        # Models for calculating predetermined destinies
+    :prophecy_cache,        # Cache of calculated prophecies
+    :prediction_accuracy,   # Accuracy tracking for omniscience metrics
+    :nvidia_ai_cache,       # NVIDIA AI response cache
+    :behavioral_loops,      # Mapped behavioral loops for all agents
+    :intervention_history,  # History of control interventions
+    :omniscience_stats     # System omniscience and control statistics
   ]
 
   def start_link(opts \\ []) do
