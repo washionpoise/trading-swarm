@@ -990,6 +990,16 @@ defmodule TradingSwarm.Rehoboam do
     end
   end
 
+  defp map_pattern_outcomes(recent_patterns) do
+    Enum.map(recent_patterns, fn p ->
+      case Map.get(p, :outcome, :neutral) do
+        :success -> 1.0
+        :failure -> 0.0
+        _ -> 0.5
+      end
+    end)
+  end
+
   defp determine_surveillance_level(agent_count) do
     # Determine surveillance level based on number of monitored agents
     cond do
