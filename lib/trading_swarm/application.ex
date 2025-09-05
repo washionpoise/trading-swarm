@@ -21,6 +21,13 @@ defmodule TradingSwarm.Application do
       TradingSwarm.AI.ModelCoordinator,
       SwarmSupervisor,
 
+      # Rehoboam Predictive AI System
+      TradingSwarm.Rehoboam,
+      TradingSwarm.Rehoboam.DataCollector,
+      TradingSwarm.Rehoboam.BehavioralProfiler,
+      TradingSwarm.Rehoboam.PredictiveEngine,
+      TradingSwarm.Rehoboam.ManipulationDetector,
+
       # Start to serve requests, typically the last entry
       TradingSwarmWeb.Endpoint
     ]
