@@ -512,7 +512,7 @@ defmodule TradingSwarm.Rehoboam.BehavioralProfiler do
 
       :active ->
         Enum.filter(profiles, fn {_id, profile} ->
-          is_profile_active?(profile)
+          profile_active?(profile)
         end)
         |> Enum.into(%{})
 

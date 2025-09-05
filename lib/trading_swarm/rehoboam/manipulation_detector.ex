@@ -534,7 +534,7 @@ defmodule TradingSwarm.Rehoboam.ManipulationDetector do
     |> Enum.map(fn {algorithm, result} ->
       create_alert_from_detection(algorithm, result)
     end)
-    |> Enum.reject(fn alert -> is_duplicate_alert?(alert, current_alerts) end)
+    |> Enum.reject(fn alert -> duplicate_alert?(alert, current_alerts) end)
   end
 
   defp create_alert_from_detection(algorithm, detection_result) do
