@@ -1,0 +1,360 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-purple-800 to-purple-900 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <div class="text-2xl mr-3">👁️</div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">
+              Rehoboam Surveillance
+            </h1>
+            <p class="text-purple-200 text-sm">Omnipresent Market Oversight</p>
+          </div>
+          <.status_badge status={@omniscience_status.system_status} class="ml-6" />
+        </div>
+        <div class="flex items-center space-x-4">
+          <!-- Auto-refresh toggle -->
+          <button 
+            phx-click="toggle_auto_refresh"
+            class={"inline-flex items-center px-3 py-2 border border-purple-300 shadow-sm text-sm font-medium rounded-md text-purple-100 hover:text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 #{
+              if @auto_refresh, do: "bg-purple-700", else: "bg-transparent"
+            }"}
+          >
+            <%= if @auto_refresh do %>
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2L3 7v11h14V7l-7-5z"/>
+              </svg>
+              Auto-Refresh ON
+            <% else %>
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Auto-Refresh OFF
+            <% end %>
+          </button>
+          
+          <.last_updated timestamp={@last_updated} />
+          <.refresh_button on_click="refresh_surveillance" loading={@loading} />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Omniscience Status Bar -->
+    <div class="bg-gradient-to-r from-purple-700 to-blue-800 rounded-lg shadow-lg p-6 mb-8 text-white">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="text-3xl font-bold">
+            <%= :erlang.float_to_binary(@omniscience_status.omniscience_level * 100, decimals: 1) %>%
+          </div>
+          <div class="text-sm opacity-75">Omniscience Level</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold"><%= @omniscience_status.monitored_agents %></div>
+          <div class="text-sm opacity-75">Agents Under Watch</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-yellow-300"><%= @omniscience_status.active_predictions %></div>
+          <div class="text-sm opacity-75">Active Predictions</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-red-300"><%= @omniscience_status.divergence_alerts %></div>
+          <div class="text-sm opacity-75">Divergence Alerts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column - Market Predictions & Timeline -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Market Destiny Predictions -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Market Destiny Timeline
+            </h2>
+            <select 
+              phx-change="change_prediction_timeframe"
+              name="timeframe"
+              class="block w-32 pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="1h" selected={@prediction_timeframe == "1h"}>1 Hour</option>
+              <option value="4h" selected={@prediction_timeframe == "4h"}>4 Hours</option>
+              <option value="24h" selected={@prediction_timeframe == "24h"}>24 Hours</option>
+            </select>
+          </div>
+          
+          <%= if @market_predictions != [] do %>
+            <div class="space-y-4">
+              <%= for {prediction, index} <- Enum.with_index(@market_predictions) do %>
+                <div class="border-l-4 border-purple-500 pl-4 py-3 bg-purple-50 dark:bg-purple-900 rounded-r-lg">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="text-sm font-medium text-purple-900 dark:text-purple-200">
+                      T+<%= index + 1 %> • <%= format_timestamp(prediction.timestamp) %>
+                    </div>
+                    <div class="text-sm text-purple-700 dark:text-purple-300">
+                      Confidence: <%= :erlang.float_to_binary(prediction.confidence * 100, decimals: 0) %>%
+                    </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4 mb-3">
+                    <div>
+                      <div class="text-xs text-purple-600 dark:text-purple-400">Market Sentiment</div>
+                      <.progress_bar 
+                        label=""
+                        value={prediction.market_sentiment * 100}
+                        color={if prediction.market_sentiment > 0.6, do: "green", else: if prediction.market_sentiment < 0.4, do: "red", else: "yellow"}
+                        show_percentage={true}
+                      />
+                    </div>
+                    <div>
+                      <div class="text-xs text-purple-600 dark:text-purple-400">Volatility Forecast</div>
+                      <.progress_bar 
+                        label=""
+                        value={prediction.volatility_forecast * 100}
+                        color="red"
+                        show_percentage={true}
+                      />
+                    </div>
+                  </div>
+                  
+                  <%= if prediction.key_events != [] do %>
+                    <div class="text-xs text-purple-700 dark:text-purple-300">
+                      Key Events: <%= Enum.join(prediction.key_events, ", ") %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-12">
+              <div class="text-6xl mb-4">🔮</div>
+              <p class="text-gray-500 dark:text-gray-400">The future remains unwritten...</p>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Behavioral Profiles Grid -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+            Agent Behavioral Analysis
+          </h2>
+          
+          <%= if @behavioral_profiles != [] do %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <%= for profile <- @behavioral_profiles do %>
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-medium text-gray-900 dark:text-white">
+                      <%= profile.agent_name %>
+                    </h3>
+                    <.status_badge status={profile.risk_profile} />
+                  </div>
+                  
+                  <div class="space-y-2 mb-4">
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600 dark:text-gray-400">Behavioral Score:</span>
+                      <span class="font-medium">
+                        <%= :erlang.float_to_binary(profile.behavioral_score * 100, decimals: 0) %>%
+                      </span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600 dark:text-gray-400">Confidence:</span>
+                      <span class="font-medium">
+                        <%= :erlang.float_to_binary(profile.confidence * 100, decimals: 0) %>%
+                      </span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-600 dark:text-gray-400">Deviation Alerts:</span>
+                      <span class={"font-medium #{if profile.deviation_alerts > 0, do: "text-red-600", else: "text-green-600"}"}>
+                        <%= profile.deviation_alerts %>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <%= if profile.predicted_actions != [] do %>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                      Next Actions: <%= Enum.join(profile.predicted_actions, ", ") %>
+                    </div>
+                  <% end %>
+                  
+                  <div class="mt-3 flex space-x-2">
+                    <button 
+                      phx-click="select_agent"
+                      phx-value-agent_id={profile.agent_id}
+                      class="text-xs px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
+                    >
+                      Analyze
+                    </button>
+                    <%= if profile.deviation_alerts > 0 do %>
+                      <button 
+                        phx-click="request_intervention"
+                        phx-value-agent_id={profile.agent_id}
+                        class="text-xs px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                      >
+                        Intervene
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-12">
+              <div class="text-6xl mb-4">👥</div>
+              <p class="text-gray-500 dark:text-gray-400">No agents under surveillance</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Right Column - Surveillance Metrics & Logs -->
+      <div class="space-y-8">
+        <!-- Surveillance Metrics -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            System Metrics
+          </h2>
+          
+          <div class="space-y-4">
+            <.metric_widget
+              title="Monitoring Uptime"
+              value={"#{:erlang.float_to_binary(@surveillance_metrics.total_monitoring_time, decimals: 1)}h"}
+              class="p-3"
+            />
+            
+            <.metric_widget
+              title="Predictions Made"
+              value={@surveillance_metrics.predictions_made}
+              class="p-3"
+            />
+            
+            <.metric_widget
+              title="Accuracy Rate"
+              value={"#{:erlang.float_to_binary(@surveillance_metrics.accuracy_rate * 100, decimals: 1)}%"}
+              class="p-3"
+            />
+            
+            <.metric_widget
+              title="Avg Response Time"
+              value={"#{@surveillance_metrics.avg_response_time}s"}
+              class="p-3"
+            />
+            
+            <.progress_bar 
+              label="System Load"
+              value={@surveillance_metrics.system_load * 100}
+              color={if @surveillance_metrics.system_load > 0.8, do: "red", else: "blue"}
+            />
+            
+            <.progress_bar 
+              label="Memory Usage"
+              value={@surveillance_metrics.memory_usage * 100}
+              color={if @surveillance_metrics.memory_usage > 0.9, do: "red", else: "green"}
+            />
+          </div>
+        </div>
+
+        <!-- Agent Divergences -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Active Divergences
+          </h2>
+          
+          <%= if @agent_divergences != [] do %>
+            <div class="space-y-3">
+              <%= for divergence <- @agent_divergences do %>
+                <div class={"border-l-4 pl-4 py-3 rounded-r-lg #{
+                  case divergence.severity do
+                    :critical -> "border-red-500 bg-red-50 dark:bg-red-900"
+                    :high -> "border-orange-500 bg-orange-50 dark:bg-orange-900"
+                    :medium -> "border-yellow-500 bg-yellow-50 dark:bg-yellow-900"
+                    _ -> "border-gray-500 bg-gray-50 dark:bg-gray-700"
+                  end
+                }"}>
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                      <%= divergence.agent_name %>
+                    </div>
+                    <.status_badge status={divergence.severity} />
+                  </div>
+                  
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                    <%= divergence.description %>
+                  </p>
+                  
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-500 dark:text-gray-400">
+                      <%= format_timestamp(divergence.detected_at) %>
+                    </span>
+                    <span class="text-gray-600 dark:text-gray-400">
+                      Confidence: <%= :erlang.float_to_binary(divergence.confidence * 100, decimals: 0) %>%
+                    </span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-8">
+              <div class="text-4xl mb-2">✅</div>
+              <p class="text-gray-500 dark:text-gray-400">All agents within parameters</p>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Intervention Logs -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Recent Interventions
+          </h2>
+          
+          <%= if @intervention_logs != [] do %>
+            <div class="space-y-4 max-h-64 overflow-y-auto">
+              <%= for intervention <- @intervention_logs do %>
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-b-0">
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                      <%= intervention.agent_name %>
+                    </div>
+                    <.status_badge status={intervention.status} />
+                  </div>
+                  
+                  <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                    Type: <%= String.capitalize(to_string(intervention.intervention_type)) %>
+                  </div>
+                  
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                    <%= intervention.reason %>
+                  </p>
+                  
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Action: <%= intervention.action_taken %>
+                  </p>
+                  
+                  <div class="flex justify-between items-center mt-2">
+                    <span class="text-xs text-gray-400">
+                      <%= format_timestamp(intervention.timestamp) %>
+                    </span>
+                    <%= if intervention.effectiveness do %>
+                      <span class="text-xs text-green-600 dark:text-green-400">
+                        Effectiveness: <%= :erlang.float_to_binary(intervention.effectiveness * 100, decimals: 0) %>%
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-8">
+              <div class="text-4xl mb-2">🛡️</div>
+              <p class="text-gray-500 dark:text-gray-400">No interventions required</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
