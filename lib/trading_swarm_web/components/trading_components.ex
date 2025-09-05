@@ -80,7 +80,11 @@ defmodule TradingSwarmWeb.TradingComponents do
       critical: {"bg-red-100 dark:bg-red-900", "text-red-800 dark:text-red-200"}
     }
 
-    Map.get(status_map, status, {"bg-gray-100 dark:bg-gray-700", "text-gray-800 dark:text-gray-200"})
+    Map.get(
+      status_map,
+      status,
+      {"bg-gray-100 dark:bg-gray-700", "text-gray-800 dark:text-gray-200"}
+    )
   end
 
   @doc """
