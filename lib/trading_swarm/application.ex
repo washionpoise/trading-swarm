@@ -28,6 +28,9 @@ defmodule TradingSwarm.Application do
       TradingSwarm.Rehoboam.PredictiveEngine,
       TradingSwarm.Rehoboam.ManipulationDetector,
 
+      # Broker Clients
+      TradingSwarm.Brokers.KrakenClient,
+
       # Start to serve requests, typically the last entry
       TradingSwarmWeb.Endpoint
     ]
